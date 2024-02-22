@@ -1,7 +1,7 @@
-'use client'
-import { InstagramLogo, List } from "@phosphor-icons/react";
+import { InstagramLogo, List } from "@phosphor-icons/react/dist/ssr";
 import Image from "next/image";
 import Navigation from "./Navigation/Navigation";
+import ThreadsIcon from "@/assets/icons/ThreadsIcon";
 
 export default function Aside() {
     return (
@@ -19,9 +19,16 @@ export default function Aside() {
                 <div className="grow">
                     <Navigation />
                 </div>
-                <div className="flex gap-2 items-center">
-                    <List size={30} />
-                    <p className="sm:hidden md:inline lg:inline">More</p>
+                <div className="flex flex-col gap-2">
+                    <div className="flex rounded-sm hover:bg-gray-100 transition-colors duration-300">
+                    <ThreadsIcon  width={30}/>
+                    <p className="pl-4 sm:hidden md:inline lg:inline">Threads</p>
+
+                    </div>
+                    <div className="flex rounded-sm hover:bg-gray-100 transition-colors duration-300">
+                        <List size={30} />
+                        <p className="pl-4 sm:hidden md:inline lg:inline">More</p>
+                    </div>
                 </div>
             </div>
         </aside>
