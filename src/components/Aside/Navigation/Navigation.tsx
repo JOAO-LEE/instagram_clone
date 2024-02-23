@@ -36,4 +36,3 @@ export default function Navigation() {
         </nav>
     )
 }
-// *:hover:bg-gray-300 opacity-20 transition duration-75"
