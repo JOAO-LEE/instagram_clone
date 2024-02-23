@@ -2,7 +2,6 @@ import { PostDTO } from "@/model/Post.dto";
 import { BookmarkSimple, ChatCircle, DotsThree, Heart, PaperPlaneTilt, Smiley } from "@phosphor-icons/react/dist/ssr";
 
 export default function Post({username, postCaption, userImage, postImage}: PostDTO) {
-   
     return (
      <section className="border-b border-gray-200">
         <header className="flex items-center p-5">
@@ -25,7 +24,6 @@ export default function Post({username, postCaption, userImage, postImage}: Post
             <button className="text-blue-400 font-bold" >Post</button>
             <Smiley size={30}/> 
         </form>
-
      </section>
     )
 }
