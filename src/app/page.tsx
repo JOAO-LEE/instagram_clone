@@ -1,6 +1,6 @@
-import Stories from "@/components/Aside/Feed/Stories/Stories";
-import Sidebar from "../components/Aside/Sidebar";
-import Feed from "@/components/Aside/Feed/Feed";
+import Stories from "@/components/Feed/Stories/Stories";
+import Sidebar from "../components/Sidebar/Sidebar";
+import Feed from "@/components/Feed/Feed";
 import  './globals.css'
 
 export default function Home() {
@@ -9,7 +9,7 @@ export default function Home() {
       <div className="">
         <Sidebar />
       </div>
-      <main className="">
+      <main>
         <Feed />
       </main>
     </div>
