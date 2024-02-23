@@ -25,7 +25,6 @@ export default function Sidebar() {
                 <div className="flex rounded-sm hover:bg-gray-100 transition-colors duration-300">
                 <ThreadsIcon  width={30}/>
                 <p className="pl-4 sm:hidden md:inline lg:inline">Threads</p>
-
                 </div>
                 <div className="flex rounded-sm hover:bg-gray-100 transition-colors duration-300">
                     <List size={30} />
