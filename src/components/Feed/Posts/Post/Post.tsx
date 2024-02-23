@@ -1,5 +1,5 @@
 import { PostDTO } from "@/model/Post.dto";
-import { DotsThree } from "@phosphor-icons/react/dist/ssr";
+import { BookmarkSimple, ChatCircle, DotsThree, Heart, PaperPlaneTilt } from "@phosphor-icons/react/dist/ssr";
 
 export default function Post({username, postCaption, userImage, postImage}: PostDTO) {
    
@@ -14,6 +14,16 @@ export default function Post({username, postCaption, userImage, postImage}: Post
             <img src={postImage} alt={`${username} post`} className="object-cover w-full" />
             <p className="font-bold">{username}</p>
         {/* </div> */}
+
+        <div className="flex justify-between px-4">
+            <div className="flex space-x-4">
+                <Heart className="action-buttons"/>
+                <ChatCircle className="action-buttons"/>
+                <PaperPlaneTilt className="action-buttons"/>
+            </div>
+        <BookmarkSimple className="action-buttons"/>
+        </div>
      </section>
     )
 }
+

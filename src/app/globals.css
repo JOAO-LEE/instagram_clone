@@ -10,3 +10,9 @@
     gap: 2rem;
     min-height: 200vh;
 }
+
+@layer components {
+    .action-buttons {
+        @apply h-7 hover:scale-125 transition-transform duration-200 ease-out cursor-pointer
+    }
+}
