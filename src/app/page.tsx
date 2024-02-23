@@ -1,17 +1,17 @@
 import Stories from "@/components/Feed/Stories/Stories";
 import Sidebar from "../components/Sidebar/Sidebar";
 import Feed from "@/components/Feed/Feed";
-import  './globals.css'
+import './globals.css'
 
 export default function Home() {
   return ( 
-    <div className="template">
-      <div className="">
+    <div className="grid grid-cols-[244px_minmax(900px,_1fr)] box-border gap-3">
+      <div className="box-border">
         <Sidebar />
       </div>
-      <main>
+      <div className="col-span-1">
         <Feed />
-      </main>
+      </div>
     </div>
   )
 }

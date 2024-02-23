@@ -3,13 +3,13 @@
 @tailwind utilities;
 
 
-.template {
+/* .template {
     margin: 0;
     display: grid;
-    grid-template-columns: 21rem 2fr;
+    grid-template-columns: 21rem 1fr 1fr;
     gap: 2rem;
     min-height: 200vh;
-}
+} */
 
 @layer components {
     .action-buttons {
