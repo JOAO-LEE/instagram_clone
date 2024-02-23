@@ -13,6 +13,6 @@
 
 @layer components {
     .action-buttons {
-        @apply h-7 hover:scale-125 transition-transform duration-200 ease-out cursor-pointer
+        @apply h-6 w-6 hover:text-gray-400 transition-transform duration-200 ease-out cursor-pointer text-8xl
     }
 }
