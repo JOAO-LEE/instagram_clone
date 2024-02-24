@@ -5,23 +5,13 @@ import './globals.css'
 
 export default function Home() {
   return ( 
-    <div className="grid grid-cols-[244px_minmax(900px,_1fr)] box-border gap-3">
-      <div className="box-border">
+    <div className="flex gap-4">
+      <div className="md:w-[244px] sm:w-[72px]">
         <Sidebar />
       </div>
-      <div className="col-span-1">
+      <div className="flex-1">
         <Feed />
       </div>
     </div>
   )
 }
-
-
-{/* <main className="flex w-full">
-
-<section className="">
-
-</section>
-
-{/* </main> */}
-// </main> */}

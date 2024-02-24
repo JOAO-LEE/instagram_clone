@@ -4,15 +4,13 @@ import Stories from "./Stories/Stories";
 
 export default function Feed() {
     return (
-        <main className="grid grid-cols-1 md:grid-cols-3 md:max-w-4xl mx-auto gap-2">
-            <section className="md:col-span-2 bg-zinc-200">
+        <main className="flex max-w-xl mx-auto">
+            <section className="">
                 <Stories />
                 <Posts />
             </section>
-            <aside className="hidden md:inline-grid md:col-span-1">
-                <div className="">
-                    <MiniProfile />
-                </div>
+            <aside className="hidden lg:inline-block">
+                <MiniProfile />
             </aside>
         </main>
     )
