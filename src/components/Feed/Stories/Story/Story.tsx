@@ -1,4 +1,4 @@
-import { UserStoryDTO } from "@/model/userStory.dto";
+import { UserStoryDTO } from "@/model/UserStory.dto";
 
 export default function Story({username, image}: UserStoryDTO) {
     return (

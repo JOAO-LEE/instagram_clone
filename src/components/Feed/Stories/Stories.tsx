@@ -1,5 +1,5 @@
 'use client'
-import { UserStoryDTO } from '@/model/userStory.dto';
+import { UserStoryDTO } from '@/model/UserStory.dto';
 import minifaker from 'minifaker';
 import "minifaker/locales/en"
 import { useEffect, useState } from 'react';
@@ -16,7 +16,6 @@ export default function Stories() {
                 id: i
             }
         })
-        console.log(userStories)
         setStories(userStories)
     }, []);
 
