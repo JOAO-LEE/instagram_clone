@@ -1,6 +1,6 @@
 export default function MiniProfile() {
     return (
-        <div className="flex mt-14 w-80 justify-between p-1">
+        <div className="flex mt-14 justify-between p-1">
             <div className="flex">
             <img src="https://pbs.twimg.com/profile_images/1745817608992047104/maCsEohv_400x400.jpg" className="h-12 rounded-full object-cover border p-[2px]" />
                 <div className="ml-4">

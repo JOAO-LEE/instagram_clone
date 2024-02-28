@@ -20,9 +20,9 @@ export default function Suggestions() {
         setSuggestions(searchedSuggestions);
     }, [])
     return (
-        <section className="mt-4 p-1 ">
+        <section className="mt-4 p-1">
             <div className="flex justify-between mb-5 text-xs">
-                <h3 className="font-bold text-gray-400 ">Suggested for you</h3>
+                <h3 className="font-bold text-gray-400">Suggested for you</h3>
                 <button className="text-gray-600 font-semibold">See all</button>
             </div>
             {suggestions.map((suggestion:SuggestionsDTO) => (

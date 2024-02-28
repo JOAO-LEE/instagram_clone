@@ -5,11 +5,11 @@ import './globals.css'
 
 export default function Home() {
   return ( 
-    <div className="flex gap-3">
-      <div className="md:w-[244px] sm:w-[72px]">
+    <div className="flex md:gap-3">
+      <div className="sm:inline-block">
         <Sidebar />
       </div>
-      <div className="mx-auto">
+      <div className="w-full">
         <Feed />
       </div>
     </div>
