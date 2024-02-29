@@ -1,41 +1,33 @@
 'use client'
 
 import Image from "next/image"
+import LoginForm from "../Login/LoginForm"
 
-export function SignUp() {
+export default function SignUp() {
     return (
-       <section className="p-5 w-full">
-            <div className="flex justify-center items-center">
-                <div className="hidden lg:inline-block">
-                    <Image src={"https://echoinnovateit.com/wp-content/uploads/2023/07/instagram-like-app-development.png"} width={500} height={500} alt="Instagram demonstration"/>
-                </div>
-                <form action="" className="border rounded border-gray-300 p-10 flex flex-col items-center">
+        <>
+            <section className="flex flex-col justify-center items-center gap-2 max-w-fit">
+                <div className="border  border-gray-300 flex flex-col items-center p-14 gap-1 min-h-80 self-stretch max-w-[450px]">
                     <Image 
-                    width={150}
-                    height={150} 
+                    width={175}
+                    height={51} 
                     src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Instagram_logo.svg/800px-Instagram_logo.svg.png" 
                     alt="Instagram Logo" 
-                    className="object-contain"/>
-                    <div className="flex flex-col space-y-3 text-xs p-5">
-                        <div className="bg-slate-200 flex flex-col border rounded border-gray-300 p-1">
-                            <label htmlFor="">Phone number, username, or email</label>
-                            <input type="text" className="border-none  bg-slate-200 focus:ring-0"/>
-                        </div>
-                        <div className="bg-slate-200 flex flex-col border rounded border-gray-300 p-1">
-                            <label htmlFor="">Password</label>
-                            <input type="password" className="border-none  bg-slate-200 focus:ring-0" />
-                        </div>
-                        <button 
-                        className="bg-blue-400 text-white rounded-md min-h-6 p-2 hover:bg-blue-600 font-bold">
-                            Sign up
-                        </button>
+                    className="object-contain"
+                    />
+                    <LoginForm />
+                </div>
+                    <div className="border border-gray-300 p-5 text-center text-sm self-stretch">
+                        <p>Don't have an account? <span className="font-bold text-blue-400 cursor-pointer">Sign up</span></p>
                     </div>
-                </form>
-            </div>
-            <div className="border rounded border-gray-300 p-8 text-center text-sm">
-                <p>Don't have an account? <span className="font-bold text-blue-400 cursor-pointer">Sign up</span></p>
-            </div>
-            <p className="text-xs text-center">This app was created for learning purposes.</p>
-       </section>
+                    <p className="text-sm">Get the app.</p>
+                    <div className="flex gap-1">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Download_on_the_App_Store_Badge.svg/2560px-Download_on_the_App_Store_Badge.svg.png" alt="" className="h-10"/>
+                        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAZ0AAAB6CAMAAABTN34eAAABklBMVEUAAAD///+jo6Orq6thYWEA8HampqYA4P8AyP8AzP8Axf8Az/8A0v8A4f8A1P8A2f/q6up0dHRpaWkA3P8A0P+ZmZkAyf/5Nkf5+fni4uIA2v+0tLSHh4f/yADDw8P/zADvL0z/0QD2NEmQkJAAv/84ODj/wwDS0tIAeIj+OUTpK0/Nzc0hISH/1wD/LEdaWloA6P8yMjJBQUEZGRm7u7snJyc/Pz/lKFFPT08A82l8fHxwcHAE6XUcHBwAcYgI5HUAbIj/ei8O2nQAAAyL3VL/3wD/IC6VkrQA7f/qAEEqb0kuz30j4YEmilgemcQV25QcVjkMVmwlvW8TLiIipGEbYT4UOSgH5m4eklYURC0C4p0beEkA4akfznMA3rIAEBVRNxe/mh2dgR92YyDfuBhJQB4A270AABUA18iP30f/twCQisD/chj/6ACZhADHqwAiHQA+NABXSABtWgCBaQC7KjIXAAjYMTs/DhFuGB6VISr8FjWtIzaZjaskBwzOJkYAKC0Axd6MGDMAPkScAy9RDR4r2b/BAAAQCklEQVR4nO2d+YPbxBXHddgKISTITpSVsFbLxt24ibyY9dob4026LU2AQnpRWnqlNDS96EEvSg/o9oD/u3NfGsmjWF45jr6/rFcaSaP5zMx7ejMjWTaTn05cp1G9ciepz5FY9EcKdnluo7rlAQ4DhU6E0PQ73VajOtXt9BGgSKSTBJ4bjKxG66BR4HpBwun0QMNp2KyPRqD59CidxPGcYd05aiRoCIgkmE4UeE7d2WmkyPGCCNEBNudO3ZlppOgO6NwgndRpbM4aauQ6KaAD2lDdOWmkEbA3thU1TWc9BRqPb4GOre58NNIKdG1Wz+vXnY1GWvW9nuW5nbqz0UirjutZjtuqOxuNtGq5Dmg7DZ31VAu0nYbOuqqhs85q6KyzGjrrrPWhM5yNqh7DmI3GFZ/xjGVG5/CrK87GwSREs07YOEbIZM+tgS38m9Akdmhbli/u6oqnDPDUiSgW0tNwYmzbkxXfUSUyofPmW/fvv/X1VebC4XNQ5nhLyLfEVmQLSulBcGjK8sVdAp0W3xqOWXqbtE5AJ7GeABnQ+cY3X4W6/6OVZSLF07UihATXb/AzwvI7VgL/hjAF+LdHj0J0BmQXSslvI0bNxvVwk2zR9PaA7d4QOu9d+ALGc/LgW6vJwwSiQfX+IKFdTgiLXpJr2/I4h82STNTEx5DNAfrZgVDGJL1tH6ONm0Pn21efpXhO3v7OCrLQhUVJ//GIPQB0pnKynm3Lo+ucTqLSEc8IO7+QbCS/NojOl68+C/CcIDonJ+9U7x/4YlFSLUXHpRTYuWKUPgEGDHWMG0Tn/LMYD4RzcvukavdgZmdAWEvSCZlzgRRj/MDqTEkvt2F0IB5M53b7/ncrzUHAbLWorN0xp7NnKwfj/+F1XAxq0+gAPO8iOEDtB9+rMAes1O/0Y6I90aOO1HRUuXSO1a4yRC0G1QLws79ZdJ5heG5jtdtvV2d+ElReFq7yNnWslqHTER6KkIBlmxE6I3TUBtG58AzDw+i029+vKge9LJ0uojPAmvB05m1H7iuFtgPTphtGh+D54bsMTrt98mY1OQB2B086maYJFPCrRsvZnSPZZbOm3O7gw0bzzaFz5SrH02ZwgB78oIocAJ/NF/93UVEu67OJU8Ac5rPB/wAZf4PoPHdVwtMW9PZ7FWTBp0/wWCGCtezzjgB8aNPnHdzfDcDeDaJzXsIjqwLzA8MuM/YfcRJCFrGkKhkr4JaHxwrwtiGybZtDR8LzioznZPngKFwI0ee/UbUHdA4Okej0+zJ0IHAfd25jn8JnxPqbROfS+UI87VeXDo7CGLXfnx21PAAlPISbpBEEpDJ0MADfDdyIjyzw9uRvGJ1CPO2lg6MeZ0FKcEk6KLRKx3dmND2lM94cOl+6dGEhnvY7S2Zjb0LY0AG0ZekATw0PzPl9np7ZIneT6Kh4fpzFc3vp4OjBqOpZAIez0WxxqnWWGR0DPO1Xqw2ONrKM6Dx/xQxP+8EqxuaeapnQec4Uz9Lmp5EsIzrmeJY3P40EmdExx9OYnyplQueSHs9P9HiqHZt7umVA54VLJfFUExxtZEqnLJ67Pz2r/G+2DOhcvlQWz93t3YeHZ3YLGyxTOmXw3L2+vb2z8/4vz+wmNlbGdHLw/CKLB8IBdHa3f7bqlQsbL3M6pnjuXsd0dnb3H/38MTIUJAPfjwY9OG/qaVcJOmZ4ABxCZ2d3d/9huVdXtVJbkO+s3njN0EyT+eKEUKNEUi+Qym2CtlWaOwM6554vgQfC4XR29/dLmJ9jaTEOUrU3qxEeB/LMEncy+bMTHlfHNarS3BnRMcdz9wOZzu7+vV1D8zMcZO8daMWvIcF0DF8dqKEjLKKrjY4pHgxHpANazz0j83OsZWOvegnh8nTskEweqo/OAjy/ekWEo9ABfB4u7N4Cfrd+mqQDoZPTzIGvThXQsW1sXGuh80VExwQPhZOhA5rPgt6NTSwYsJ4spqtFV7pu+jHoDOhbvSc0hxhJnXQW47n7QS4d0HoKc9GnbA7ErbNo5XAeh47wurQp8THRksl66Fx8wQjPrz8oonOvKBMjAifj2PZXDedx6EirV0mjhz/romOA5+pvfnu9iM7vijIR5nZhK5+2sSwdsl4c1qua6FxejOf866+99JXrBXT2C67QOwP7kqel6fB5v3XRWYgHwLlxA+DJ9Qru/T7/AtOcbu1MtDQda0Ch1EYH8MniucLwXIBwIJ7tvLbzYcEF8ETDlfrN+Vqejgu3wWn0NdIpwvMchsPxZOgUtBxyV/ZBUZLVaXk6PeoW1EonFw+As3VDwqPQ+fAPRTmYo7tKi5IounPcd5x+Tp5nceAE8yPdrsMYvtKlJ73rSEOn23eCWOuNaOn4OW1nGE8GUTToLdNjm9A5dzmv9UDbcwnA2ZLxiHG2/Q//WJwD/JmZ4+JEgvosjBBlbnyW0H1hT22MU76vYwXw1VSwwqt0jukTZqhpTzo6RzgrlkJnJkQNU1xX8HuwpDVjKXmJVp4M6Lx8Lh/PlQsYjoBnR6Lz6E8Fp0byac9gpLktKpTawaEcR5Xj231x1ySgF5XpTKW3WWVKRUcHXxOufBXpuFJO8MJYl/+kl7Npu8uRGZ18PM8TOCKebUbn0Z8LTkzE6p6JEtvW3De5FXVfOC04UEdnpOyPLVkaOiQ+OLMkOhP1StDnOWQXpXLEi+tkSCcPD4ej4IF0Hv2l4LRUY5RDZb1GL/ulOrRdM8jAQtjd7D7uamjhqHRmmQRKf5ulQ9oIqlycTpy9VMoyIfRjoYpLlSkdPZ7Lr792bUuLZ2dn+/2Ck3Lh+ip/iOFQU5JwmJRWyciJY5eaH1JYRwxXPw7oECvtNGgEPAriuMeXBlkyHXqQG8f0SvLKYkxn0u0gHc/ZqWbscF84ke/FcUAr1JzS590EbuxFC4mM6ejwQDjXdHh2d7YLnWhBOjrsG5uCxqzr8ok/1SVlgxsIgUVHOQkf3LLIeyp8Eo1gb1K0JDqJRBv/Jz+F5Y0gBDzTiM4IHUz6xQNsy2BFwb+YP5nSG8uVOZ0sHgxHi+dhoRMtClcoZYRaUwIzCkAwURgPcsZJZ8K9BE9AlyolTUf6LJEOQciKAjcf6dM3OXR6QqapzxaEPJSNocTUpRFfzrjA4pago+I5R+Bk8Xz016JLypryEubSFMGYGhYhGSlQ2P1gcqJJGLCiOGCVl8rV0MFPlaxM55GC1MqjQw+R6Ig6YGeSDA3ubgtH5svQkfGce/2f165l8AA+H/+t6IIZaW7qUHhRbkj6ryHpayQ/qkeZzLJn4e4q7skk51tDJxTOMOUesfjYpKPDh6TULMSJH9ph1GuRxmNRIOQW2GNsvkrREfGIcAQ8N7b+Xni9rHDWC2ZW0ZLUeDhjWisDueIj4cazR37IxcDCL4zOlIIGZSK4hok4qy5DJ/KE3RKdqeAl+vgWp3KaGb9grsrR4XguSnAonhtb/yi8mk6epmBF7ZE7GlISomxS8Lgs5PgNJjYniWTXaJ6hg3+MxViEHSplh+k40wMsZbadSEfjU8N6QowZcmuSbGXLqCQdigfAefHFLJ6Pii+mlaZTktQnhYudO8V9oH1GpLnVOa2cmko6y9DB5TkWniMHXUuRNs7GJNyHMIdFpnPEawr6tWDCUVk6GA+Ck8FT0uBQ4bqaKQoq6vFgf9rV7dTT6dCCR3/lxjnO0JEiPbAaaILmpnR4zCEU3ruAOsEBvXDMt+XLhM5FFc/LGI6IZ2vrxbIGhwrnM888kgd4estKZaNBOh2dmJYl+itP9xxl6Eh9ka/GcLBM6dD3WCDAMy8U6HRpVUE5XjSoZURHwcPgiHjKGxymsKiR43JPqdlWekAKFj/RyLeBO6k5Ob9cEP0MHSEQlOZ939OQzphmWdpD2glxDXGa3A6DyIyOxOflTxkchueTEk84GZGC0d41mXPAoozyKB2u8APqNMuAMfQxRSftYx2M4rPBkYP8qfWGdGLleh2RDq4Xs56mqmVlSueiHg7Gc/p4BoeJeJ+aYC2Bg+ohLmTJ9/LpcaT/EwuWdFUWdQ9Ei3XE9inPO8WzGwzpBEpbjUQ6ONkAXW3hh0RL0xG6NYLn48c1OFzEiR2o1ZY+eKDtpAoKcWOXNydctkJYBD+g4+bE2598PUukkx1+SdUBW0M6fTkr1N8gdEiFk5tXjozpED6g5dy8KdFZwuAw0W7FdkU+LFpJuudQwUNCaaiW9oXfUHsk8ZFwImZOKHRLpJOZGuTyl4cRGdIZSVdj7saecq8Gy19K0LmI4Lx086aIZymDw8XfdjwIWuA29loBf2CnDhQNXuI1M106jknGhfE/IUo8pJEY0g+SnRNUQHPm5VpSjJpUauLcDfmgJ5OpzxbydGO+Xox6z2xL9vsCqsrQuUjhMDynny+8gKGG2ZVVKhxhDC2M+BAzsVZ86Ix8xwelIwce8QPF61jy+A49LPEcl9YNKYRsSof2ZUJOBDr0achgokspOgwOwnPzdHmDI0g/fCmPT0bZ3ewe59l9PLSjjklr6exlU8hPYcaxAiWfiUSHWr08v11QGTpvcDhQ/1189lLqhnZWkfzInhm6Fly4LB5hYGssnXygn/UxVk+guLzGdGQ882OZzlx3bq1K0Hnj06/d4mw++ZfB2UsqVrs3P+PgKhEs6Zn+SD5ceRAXpsn0LIUODSQUzuopQ0e8WpfgYHQOslnPkTkdCIfRqc7gyJq5vIT9nq7tD7lHGmYW48750YPswX085bm3R704sG3sQPH77/Jan2bGlGdKYlkB3MkeYe446ExRwI5j79ee0IsvlDEdBAfjuVWtwVE168zj+XHB0pCWk6TpJND22wdxL00TN/ehknjsCLE+tDfEZ6hkNbE+7CA110KZ0iFwAJ5bp1UbnBqE63U918aPaUYvcjCkw+DcOv1sBQZn9YpD8R6nWrNyRkLXNnvhshkdBuf0kxUZnJVq6tmyj4Rd3BW/CiFHJAxqlHYxnX+/IcBZqcFZmRKluvIAaQ0KS3SqBt/q/Q+F88QaHDK3NCIPpz29v3w2wl654bIRAzr/w3CeUIODRB9Uo57HYjQ1NZ0o31vMyuQr5J+dAn32JBocJiFsT2W+YqhK4XCg4Vo7IzrWvz5/otFAZfAsHPlajTTjtAUyorMJUqJwi0b0V6SDEu609RTREUNf2RDQWQl7j8ZvZniK6MC3Wk7SpNev8bMvd9DH0oyTP1V0njg1dNZZDZ11FqTjNHTWVC3XAW2nnnhgo0XqgLbT82p6NGu0QH1vYqWOuzhhoxrkOqnlO67B7J1GZ66R6/iW7XjFyxcb1aPAc2zLHjSNZx0Fms4A0AGNxy33OYlGq9fQBU0H0okcz3TIodFZCTCJEB07BT+Hiw9odGYaAiIwoo2m8ExA59bYnvXRCHRraM4onmAFWo+rn17Z6Mw1CgAcMoxKZkQ4gI/b73RbjepUt9N3ARuHTOhmb3QaOAhQo5oF0Dh85hAfbffTies0qlfuJBWWuvwfkL1o99JfK0UAAAAASUVORK5CYII=" alt="" className="h-10"/>
+                    </div>
+            </section>
+        </>
     )
 }
+
+{/* <p className="text-xs text-center">This app was created for learning purposes.</p>  */}
