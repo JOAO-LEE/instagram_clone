@@ -3,10 +3,12 @@
 import { FormEvent, useState } from "react";
 import { useCreateUserWithEmailAndPassword} from 'react-firebase-hooks/auth'
 import { auth } from '@/../../firebase'
+import { useRouter } from "next/navigation";
 
-export default function LoginForm() {
+export default function SignUpFogm() {
     const [username, setUserName] = useState<string>('');
     const [password, setPassword] = useState<string>('');
+    const router = useRouter();
 
     const [createUserWithEmailAndPassword] = useCreateUserWithEmailAndPassword(auth);
 
@@ -17,7 +19,7 @@ export default function LoginForm() {
             console.log(response);
             setUserName('');
             setPassword('');
-            
+            router.push('/');
         } catch (error) {
           console.log(error)  
         }

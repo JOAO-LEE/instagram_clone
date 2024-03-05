@@ -11,8 +11,8 @@ const nextConfig = {
             {
                 protocol: "https",
                 port: "",
-                hostname:  "echoinnovateit.com",
-                pathname: "/wp-content/uploads/2023/07/instagram-like-app-development.png"
+                hostname:  "agenciadebolso.com",
+                pathname: "/wp-content/uploads/2020/12/1214-instagram-reels-fb.png"
             },
         ]
     }
