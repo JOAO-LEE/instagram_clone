@@ -8,7 +8,7 @@ import { CircleNotch } from "@phosphor-icons/react";
 import { SignEnum } from "@/enum/SignEnum";
 
 
-export default function SignUpForm({ pageType }: { pageType: number }) {
+export default function SignForm({ pageType }: { pageType: number }) {
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
     const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -17,7 +17,7 @@ export default function SignUpForm({ pageType }: { pageType: number }) {
     const router = useRouter();
 
     const [createUserWithEmailAndPassword] = useCreateUserWithEmailAndPassword(auth);
-    const [signInWithEmailAndPassword] = useSignInWithEmailAndPassword(auth)
+    const [signInWithEmailAndPassword] = useSignInWithEmailAndPassword(auth);
 
     const errorsLayout = (): string | void => {
         if (email === "") {
@@ -31,34 +31,32 @@ export default function SignUpForm({ pageType }: { pageType: number }) {
         }
     };
 
-    const signUp = async (): Promise<void> => {
+    const sign = async (): Promise<void> => {
         try {
             setIsLoading(true);
 
             const errorMessage = errorsLayout();
             if (errorMessage) {
-                throw new Error(errorMessage)
+                throw new Error(errorMessage);
             }
 
             if (pageType === SignEnum.SignUp) {
-                const response = await createUserWithEmailAndPassword(email, password)
+                const response = await createUserWithEmailAndPassword(email, password);
                 if (!response) {
                     setHasFormError(true);
                     setEmail('');
                     setPassword('');
-                    throw new Error('This email is invalid.');
+                    throw new Error();
                 }
                 router.push('/');
                 return;
             }
 
-
             const response = await signInWithEmailAndPassword(email, password);
             if (!response) {
                 setHasFormError(true);
-                throw new Error('An error occurred.');
+                throw new Error();
             }
-
             router.push('/');
         } catch (error: any) {
             setErrorMessage(error.message);
@@ -69,7 +67,7 @@ export default function SignUpForm({ pageType }: { pageType: number }) {
 
     const handleSign = async (e: FormEvent): Promise<void> => {
         e.preventDefault();
-        signUp();
+        sign();
     };
 
     return (

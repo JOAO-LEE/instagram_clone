@@ -20,12 +20,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={inter.className}>
-        <Login>
-            {children}
-        </Login>
-      </body>
-    </html>
+    <Login>
+        {children}
+    </Login>
   );
 }
