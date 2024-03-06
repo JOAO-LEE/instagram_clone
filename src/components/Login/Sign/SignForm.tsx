@@ -44,10 +44,14 @@ export default function SignUpForm({ pageType }: { pageType: number }) {
                 const response = await createUserWithEmailAndPassword(email, password)
                 if (!response) {
                     setHasFormError(true);
+                    setEmail('');
+                    setPassword('');
                     throw new Error('This email is invalid.');
                 }
+                router.push('/');
                 return;
             }
+
 
             const response = await signInWithEmailAndPassword(email, password);
             if (!response) {
@@ -55,9 +59,6 @@ export default function SignUpForm({ pageType }: { pageType: number }) {
                 throw new Error('An error occurred.');
             }
 
-
-            setEmail('');
-            setPassword('');
             router.push('/');
         } catch (error: any) {
             setErrorMessage(error.message);
@@ -68,10 +69,7 @@ export default function SignUpForm({ pageType }: { pageType: number }) {
 
     const handleSign = async (e: FormEvent): Promise<void> => {
         e.preventDefault();
-        if (pageType === SignEnum.SignUp) {
-            signUp();
-            return;
-        }
+        signUp();
     };
 
     return (
@@ -98,7 +96,7 @@ export default function SignUpForm({ pageType }: { pageType: number }) {
                 disabled={isLoading}
                 type="submit"
                 className="bg-sky-500 bg-opacity-95 text-white rounded-md min-h-6 p-2 hover:bg-blue-600 hover:bg-opacity-85 font-bold text-sm disabled:bg-slate-200 text-center">
-                    {isLoading ? <CircleNotch className="animate-spin text-sky-600 text-xl min-w-full" /> : 'Sign up' }
+                    {isLoading ? <CircleNotch className="animate-spin text-sky-600 text-xl min-w-full" /> : pageType === SignEnum.SignUp ? 'Sign up' : 'Sign in'}
                 </button>
             </div>
         </form>

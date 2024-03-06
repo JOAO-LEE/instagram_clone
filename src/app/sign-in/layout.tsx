@@ -13,18 +13,14 @@ export const metadata: Metadata = {
   
 };
 
-export default function RootLayout({
+export default function SignInLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={inter.className}>
-        <Login>
-            {children}
-        </Login>
-      </body>
-    </html>
+    <Login>
+        {children}
+    </Login>
   );
 }
