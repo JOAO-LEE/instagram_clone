@@ -1,9 +1,8 @@
-import Login from "@/components/Login/Login";
+import { SignEnum } from "@/enum/SignEnum";
+import Sign from '@/components/Login/Sign/Sign'
 
 export default function SignInPage() {
     return ( 
-       <Login>
-        <p>oi</p>
-       </Login>
+        <Sign pageType={SignEnum.SignIn}/>
     )
 }

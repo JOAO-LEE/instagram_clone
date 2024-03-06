@@ -1,12 +1,14 @@
 'use client'
 
 import { FormEvent, useState } from "react";
-import { useCreateUserWithEmailAndPassword} from 'react-firebase-hooks/auth'
+import { useCreateUserWithEmailAndPassword, useSignInWithEmailAndPassword} from 'react-firebase-hooks/auth'
 import { auth } from '@/../../firebase'
 import { useRouter } from "next/navigation";
 import { CircleNotch } from "@phosphor-icons/react";
+import { SignEnum } from "@/enum/SignEnum";
 
-export default function SignUpForm() {
+
+export default function SignUpForm({ pageType }: { pageType: number }) {
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
     const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -15,6 +17,7 @@ export default function SignUpForm() {
     const router = useRouter();
 
     const [createUserWithEmailAndPassword] = useCreateUserWithEmailAndPassword(auth);
+    const [signInWithEmailAndPassword] = useSignInWithEmailAndPassword(auth)
 
     const errorsLayout = (): string | void => {
         if (email === "") {
@@ -28,9 +31,7 @@ export default function SignUpForm() {
         }
     };
 
-    const handleSignUp = async (e: FormEvent): Promise<void> => {
-        e.preventDefault();
-
+    const signUp = async (): Promise<void> => {
         try {
             setIsLoading(true);
 
@@ -39,12 +40,21 @@ export default function SignUpForm() {
                 throw new Error(errorMessage)
             }
 
-            const response = await createUserWithEmailAndPassword(email, password)
+            if (pageType === SignEnum.SignUp) {
+                const response = await createUserWithEmailAndPassword(email, password)
+                if (!response) {
+                    setHasFormError(true);
+                    throw new Error('This email is invalid.');
+                }
+                return;
+            }
 
+            const response = await signInWithEmailAndPassword(email, password);
             if (!response) {
                 setHasFormError(true);
-                throw new Error('This email is invalid.');
+                throw new Error('An error occurred.');
             }
+
 
             setEmail('');
             setPassword('');
@@ -53,10 +63,19 @@ export default function SignUpForm() {
             setErrorMessage(error.message);
             setIsLoading(false);
         }
+    }
+
+
+    const handleSign = async (e: FormEvent): Promise<void> => {
+        e.preventDefault();
+        if (pageType === SignEnum.SignUp) {
+            signUp();
+            return;
+        }
     };
 
     return (
-        <form onSubmit={(e) => handleSignUp(e)} className="mt-3">
+        <form onSubmit={(e) => handleSign(e)} className="mt-3">
             <div className="flex flex-col text-xs gap-2">
                 <div className={`bg-slate-50 flex flex-col border rounded text-neutral-500 ${!hasFormError ? "border-gray-300" : "border-red-600"}`}>
                     <label htmlFor="" className="ml-2 text-[10px]">Email</label>

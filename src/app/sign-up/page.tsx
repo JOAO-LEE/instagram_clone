@@ -1,9 +1,9 @@
-import FooterInfo from "@/components/FooterInfo/FooterInfo";
-import SignUp from "../../components/Login/SignUp/SignUp";
-import Login from "@/components/Login/Login";
+import Sign from "../../components/Login/Sign/Sign";
+import { SignEnum } from "@/enum/SignEnum";
 
 export default function SignUpPage() {
+
     return ( 
-        <SignUp />
+        <Sign pageType={SignEnum.SignUp}/>
     )
 }

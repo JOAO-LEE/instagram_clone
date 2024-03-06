@@ -18,6 +18,7 @@ export default function FooterInfo() {
                 <li>Contact Uploading & Non-Users</li>
                 <li>Meta Verified</li>
             </ul>
+            <p className="text-xs text-center p-1 text-slate-500">This app was created for learning purposes.</p> 
         </>
     )
 }
