@@ -1,7 +1,7 @@
+import Footer from "@/components/Footer/Footer";
 import Login from "@/components/Login/Login";
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-// import "./globals.css";
+import { Inter } from "next/font/google";;
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -14,14 +14,17 @@ export const metadata: Metadata = {
   
 };
 
-export default function RootLayout({
+export default function SignInLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <Login>
+    <div className="max-w-full min-h-svh flex flex-col items-center justify-center">
+      <Login>
         {children}
-    </Login>
+      </Login>
+      <Footer />
+    </div>
   );
 }

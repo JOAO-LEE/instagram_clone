@@ -6,7 +6,7 @@ import { SignEnum } from "@/enum/SignEnum"
 import SignGoogle from "../SignGoogle/SignGoogle"
 
 
-export default function SignUp({ pageType }: { pageType: number }) {
+export default function Sign({ pageType }: { pageType: number }) {
     return (
         <section className="flex flex-col justify-center items-center gap-2 max-w-fit">
             <div className="border border-gray-300 flex flex-col items-center p-10 gap-5 min-h-80 self-stretch max-w-[450px]">
