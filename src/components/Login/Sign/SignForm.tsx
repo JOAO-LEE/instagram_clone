@@ -70,6 +70,8 @@ export default function SignForm({ pageType }: { pageType: number }) {
         sign();
     };
 
+    
+
     return (
         <form onSubmit={(e) => handleSign(e)} className="mt-3">
             <div className="flex flex-col text-xs gap-2">
