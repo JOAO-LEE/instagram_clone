@@ -1,3 +1,4 @@
+import Footer from "@/components/Footer/Footer";
 import Login from "@/components/Login/Login";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
@@ -19,8 +20,11 @@ export default function SignInLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <Login>
-        {children}
-    </Login>
+    <div className="max-w-full min-h-svh flex flex-col items-center justify-center">
+      <Login>
+          {children}
+      </Login>
+      <Footer />
+    </div>
   );
 }
