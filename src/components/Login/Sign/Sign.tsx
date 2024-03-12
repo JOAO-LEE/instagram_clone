@@ -19,7 +19,6 @@ export default function Sign({ pageType }: { pageType: number }) {
                 className="object-contain"
                 />
                 <SignForm pageType={pageType} />
-                
                 {!isSignUp && (
                     <>
                         <span className="text-xs text-center inline-block text-gray-500 min-w-60 mt-3">OR</span>
@@ -27,7 +26,6 @@ export default function Sign({ pageType }: { pageType: number }) {
                     </>
                     )
                 }
-               
             </div>
             <div className="border border-gray-300 p-5 text-center text-sm self-stretch">
                 <p>{isSignUp ? 'Already have an account?' : 'Don\'t have an account?'}<Link href={isSignUp ? '/sign-in' : '/sign-up'} className="font-bold text-sky-500 cursor-pointer"> {isSignUp ? 'Sign In' : 'Sign up'}</Link></p>
