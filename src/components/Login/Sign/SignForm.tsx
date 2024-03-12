@@ -1,7 +1,7 @@
 'use client'
 
 import { FormEvent, useState } from "react";
-// import { useCreateUserWithEmailAndPassword, useSignInWithEmailAndPassword} from 'react-firebase-hooks/auth'
+import { useCreateUserWithEmailAndPassword, useSignInWithEmailAndPassword} from 'react-firebase-hooks/auth'
 import { auth } from '@/../../firebase'
 import { useRouter } from "next/navigation";
 import { CircleNotch } from "@phosphor-icons/react";
@@ -16,8 +16,8 @@ export default function SignForm({ pageType }: { pageType: number }) {
     const [errorMessage, setErrorMessage] = useState<string>(''); 
     const router = useRouter();
 
-    // const [createUserWithEmailAndPassword] = useCreateUserWithEmailAndPassword(auth);
-    // const [signInWithEmailAndPassword] = useSignInWithEmailAndPassword(auth);
+    const [createUserWithEmailAndPassword] = useCreateUserWithEmailAndPassword(auth);
+    const [signInWithEmailAndPassword] = useSignInWithEmailAndPassword(auth);
 
     const errorsLayout = (): string | void => {
         if (email === "") {
@@ -32,45 +32,42 @@ export default function SignForm({ pageType }: { pageType: number }) {
     };
 
     const sign = async (): Promise<void> => {
-        // try {
-        //     setIsLoading(true);
+        try {
+            setIsLoading(true);
 
-        //     const errorMessage = errorsLayout();
-        //     if (errorMessage) {
-        //         throw new Error(errorMessage);
-        //     }
+            const errorMessage = errorsLayout();
+            if (errorMessage) {
+                throw new Error(errorMessage);
+            }
 
-        //     if (pageType === SignEnum.SignUp) {
-        //         const response = await createUserWithEmailAndPassword(email, password);
-        //         if (!response) {
-        //             setHasFormError(true);
-        //             setEmail('');
-        //             setPassword('');
-        //             throw new Error();
-        //         }
-        //         router.push('/');
-        //         return;
-        //     }
+            if (pageType === SignEnum.SignUp) {
+                const response = await createUserWithEmailAndPassword(email, password);
+                if (!response) {
+                    setHasFormError(true);
+                    setEmail('');
+                    setPassword('');
+                    throw new Error();
+                }
+                router.push('/');
+                return;
+            }
 
-        //     const response = await signInWithEmailAndPassword(email, password);
-        //     if (!response) {
-        //         setHasFormError(true);
-        //         throw new Error();
-        //     }
-        //     router.push('/');
-        // } catch (error: any) {
-        //     setErrorMessage(error.message);
-        //     setIsLoading(false);
-        // }
+            const response = await signInWithEmailAndPassword(email, password);
+            if (!response) {
+                setHasFormError(true);
+                throw new Error();
+            }
+            router.push('/');
+        } catch (error: any) {
+            setErrorMessage(error.message);
+            setIsLoading(false);
+        }
     }
-
 
     const handleSign = async (e: FormEvent): Promise<void> => {
         e.preventDefault();
         sign();
     };
-
-    
 
     return (
         <form onSubmit={(e) => handleSign(e)} className="mt-3">

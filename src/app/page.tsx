@@ -1,10 +1,10 @@
-import Stories from "@/components/Feed/Stories/Stories";
 import Sidebar from "../components/Sidebar/Sidebar";
 import Feed from "@/components/Feed/Feed";
 import './globals.css'
 
 export default function Home() {
-  return ( 
+
+  return (
     <div className="flex md:gap-3">
       <div className="sm:inline-block">
         <Sidebar />

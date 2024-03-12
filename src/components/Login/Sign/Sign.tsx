@@ -30,7 +30,7 @@ export default function Sign({ pageType }: { pageType: number }) {
                
             </div>
             <div className="border border-gray-300 p-5 text-center text-sm self-stretch">
-                <p>{isSignUp ? 'Already have an account?' : 'Don\'t have an account?'}<Link href={pageType === SignEnum.SignUp ? '/sign-in' : '/sign-up'} className="font-bold text-sky-500 cursor-pointer"> {pageType === SignEnum.SignUp ? 'Sign In' : 'Sign up'}</Link></p>
+                <p>{isSignUp ? 'Already have an account?' : 'Don\'t have an account?'}<Link href={isSignUp ? '/sign-in' : '/sign-up'} className="font-bold text-sky-500 cursor-pointer"> {isSignUp ? 'Sign In' : 'Sign up'}</Link></p>
             </div>
             <p className="text-sm">Get the app.</p>
             <Downloads />

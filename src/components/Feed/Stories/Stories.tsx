@@ -20,7 +20,7 @@ export default function Stories() {
     }, []);
 
     return (
-        <section className="flex space-x-2 p-6 mt-8 rounded-sm overflow-x-scroll scrollbar-none w-full">
+        <section className="flex space-x-2 p-6 mt-8 rounded-sm overflow-x-scroll scrollbar-none w-full sm:max-w-full">
             {stories.map(story => (
                 <Story key={story.id} username={story.username} image={story.image} />
             ))}
