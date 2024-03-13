@@ -8,7 +8,6 @@ import Link from "next/link";
 
 export default async function Feed() {
     const session: Session | null = await getServerSession(authOptions);
-    console.log(session)
 
     return (
         <main className="flex max-w-full sm:max-w-[58rem] sm:mx-auto">
@@ -16,14 +15,18 @@ export default async function Feed() {
                 {session && <Stories />}
                 <Posts />
             </section>
-            {session ? 
-            <aside className="hidden lg:inline-block w-fit">
-                <MiniProfile  />
-                <Suggestions />
-            </aside> :  <aside className="hidden mt-14 lg:flex flex-col items-end max-w-[50%] p-4 h-fit text-xs">
-            <p className="text-gray-400">Already have an account?</p>
-            <Link className="text-blue-400 text-xs font-semibold" href={'/sign-in'}>Sign In</Link>
-            </aside> }
+            { session 
+                ? 
+                <aside className="hidden lg:inline-block w-fit">
+                    <MiniProfile  />
+                    <Suggestions />
+                </aside> 
+                :  
+                <aside className="hidden mt-14 lg:flex flex-col items-end max-w-[50%] p-4 h-fit text-xs">
+                    <p className="text-gray-400">Already have an account?</p>
+                    <Link className="text-blue-400 text-xs font-semibold" href={'/sign-in'}>Sign In</Link>
+                </aside> 
+            }
         </main>
     )
 }

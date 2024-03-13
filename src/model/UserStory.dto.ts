@@ -1,5 +1,6 @@
 export interface UserStoryDTO {
-    username: string;
-    image: string;
+    username?: string;
+    image?: string
     id?: number;
+    isUser?: boolean
 }
