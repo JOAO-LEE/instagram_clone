@@ -20,20 +20,22 @@ export default function Stories() {
         const getUser = async () => {
             const session = await getSession();
             if (session) {
+
                 userStories.unshift({
-                    image: session.user.image ?? '', username: session.user.username ?? '',
+                    image: session.user.image ?? '', username: session.user.username ?? '', id: userStories.length + 1
                 })
             }
             setStories(userStories);
         }
         getUser();
+        
     }, []);
 
 
     return (
         <section className="flex space-x-2 p-6 mt-8 rounded-sm overflow-x-scroll scrollbar-none max-w-full sm:max-w-max">
             {stories.map((story, index) => (
-                <Story key={story.username} username={story.username} image={story.image} isUser={index === 0}/>
+                <Story key={story.id} username={story.username} image={story.image} isUser={index === 0}/>
             ))}
         </section>
     )
