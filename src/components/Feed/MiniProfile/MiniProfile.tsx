@@ -1,10 +1,18 @@
-import { Session, getServerSession } from "next-auth";
-import { authOptions } from '@/app/api/auth/[...nextauth]/route'
+'use client'
+import { useSession } from "next-auth/react";
+
 import SignOutButton from "@/components/Login/SignOutButton/SignOutButton";
 import { UserCircle } from "@phosphor-icons/react/dist/ssr";
+import { redirect } from "next/navigation";
 
-export default async function MiniProfile() {
-    const session: Session | null = await getServerSession(authOptions);
+export default function MiniProfile() {
+    const { data: session, status } =  useSession();
+
+    if (!session || status !== "authenticated") {
+        redirect('/sign-up')
+        return;
+    }
+    
 
     return (
         <div className="flex flex-wrap mt-14 justify-between p-1">

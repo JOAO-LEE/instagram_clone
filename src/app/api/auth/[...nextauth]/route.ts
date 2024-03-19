@@ -9,9 +9,14 @@ export const authOptions: NextAuthOptions = {
     pages: {
         signIn: 'sign-in',
     },
-    secret: process.env.SECRET,
+    secret: process.env.NEXTAUTH_SECRET,
     callbacks: {
-        async session({session,}) {
+        async jwt({token, user}) {
+
+            user && (token.user = user);
+            return token;
+        },
+        async session({session, user}) {
             if (session.user) {
                 session.user.username = session.user?.name?.split(' ').join('').toLocaleLowerCase();
             }

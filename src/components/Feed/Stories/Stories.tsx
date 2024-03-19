@@ -4,11 +4,12 @@ import minifaker from 'minifaker';
 import "minifaker/locales/en"
 import { useEffect, useState } from 'react';
 import Story from './Story/Story';
-import { getSession } from 'next-auth/react';
+import { getSession, useSession } from 'next-auth/react';
 
 export default function Stories() {
     const [stories, setStories] = useState<Array<UserStoryDTO>>([]);
-    
+    const { data: session, status } = useSession()
+
     useEffect(() => {
         const userStories: Array<UserStoryDTO> = minifaker.array(20, (i) => {
             return {
@@ -19,6 +20,7 @@ export default function Stories() {
         });
         const getUser = async () => {
             const session = await getSession();
+            console.log(session)
             if (session) {
 
                 userStories.unshift({
@@ -34,9 +36,9 @@ export default function Stories() {
 
     return (
         <section className="flex space-x-2 p-6 mt-8 rounded-sm overflow-x-scroll scrollbar-none max-w-full sm:max-w-max">
-            {stories.map((story, index) => (
+         {stories.map((story, index) => (
                 <Story key={story.id} username={story.username} image={story.image} isUser={index === 0}/>
-            ))}
+            ))} 
         </section>
     )
-}
+         }

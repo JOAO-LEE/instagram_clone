@@ -16,7 +16,6 @@ export default function Suggestions() {
                 id: i
             }
         });
-        console.log(searchedSuggestions)
         setSuggestions(searchedSuggestions);
     }, [])
     return (
