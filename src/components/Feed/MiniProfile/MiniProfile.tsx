@@ -1,10 +1,7 @@
-'use client'
 import { useSession } from "next-auth/react";
-
 import SignOutButton from "@/components/Login/SignOutButton/SignOutButton";
 import { UserCircle } from "@phosphor-icons/react/dist/ssr";
 import { redirect } from "next/navigation";
-
 export default function MiniProfile() {
     const { data: session, status } =  useSession();
 
@@ -13,7 +10,6 @@ export default function MiniProfile() {
         return;
     }
     
-
     return (
         <div className="flex flex-wrap mt-14 justify-between p-1">
             <div className="flex">

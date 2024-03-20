@@ -18,6 +18,7 @@ export default function Suggestions() {
         });
         setSuggestions(searchedSuggestions);
     }, [])
+
     return (
         <section className="mt-4 p-1">
             <div className="flex justify-between mb-5 text-xs">
@@ -25,7 +26,7 @@ export default function Suggestions() {
                 <button className="text-gray-600 font-semibold">See all</button>
             </div>
             {suggestions.map((suggestion:SuggestionsDTO) => (
-                <Suggestion key={suggestion.id}  jobTitle={suggestion.jobTitle} username={suggestion.username} />
+                <Suggestion key={suggestion.id} jobTitle={suggestion.jobTitle} username={suggestion.username} />
             ))}
         </section>
     )

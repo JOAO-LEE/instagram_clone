@@ -1,4 +1,3 @@
-import { state } from 'minifaker';
 import { create } from 'zustand';
 
 type ModalState = {

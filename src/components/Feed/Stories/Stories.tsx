@@ -1,4 +1,3 @@
-'use client'
 import { UserStoryDTO } from '@/model/UserStory.dto';
 import minifaker from 'minifaker';
 import "minifaker/locales/en"
@@ -8,7 +7,6 @@ import { getSession, useSession } from 'next-auth/react';
 
 export default function Stories() {
     const [stories, setStories] = useState<Array<UserStoryDTO>>([]);
-    const { data: session, status } = useSession()
 
     useEffect(() => {
         const userStories: Array<UserStoryDTO> = minifaker.array(20, (i) => {
@@ -20,9 +18,7 @@ export default function Stories() {
         });
         const getUser = async () => {
             const session = await getSession();
-            console.log(session)
             if (session) {
-
                 userStories.unshift({
                     image: session.user.image ?? '', username: session.user.username ?? '', id: userStories.length + 1
                 })
@@ -41,4 +37,4 @@ export default function Stories() {
             ))} 
         </section>
     )
-         }
+}

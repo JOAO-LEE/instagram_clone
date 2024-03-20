@@ -2,7 +2,6 @@
 import { PostDTO } from "@/model/Post.dto";
 import Post from "./Post/Post";
 import { redirect } from "next/navigation";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { useSession } from "next-auth/react";
 
 export default  function Posts() {

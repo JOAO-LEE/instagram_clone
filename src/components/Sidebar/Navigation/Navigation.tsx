@@ -1,17 +1,26 @@
 "use client"
 import { Compass, FilmSlate, Heart, House, MagnifyingGlass, MessengerLogo, Plus } from "@phosphor-icons/react"
 import { useModalState } from "../../../../store/modalState"
+import { ResolvingMetadata, Metadata } from "next"
+import { Props } from "react-modal"
 
+export function generateMetadata(): Metadata {
+    return {
+      title: 'Create post - Instagram Clone'
+    }
+
+}
 
 export default function Navigation() {
     const { action } = useModalState();
   
      const openModal = () => {
+        // if
         action()
      }
     
     return (
-        <ul className="flex flex-col gap-7 p-1.5 bg-blue-500">
+        <ul className="flex flex-col gap-7 p-1.5">
             <li className="flex items-center rounded-sm hover:bg-gray-100 transition-colors duration-300">
                 <House size={30} />
                 <p className="pl-4 sm:hidden md:inline lg:inline">Home</p>
