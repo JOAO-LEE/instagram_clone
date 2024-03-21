@@ -4,7 +4,6 @@ import "./globals.css";
 import AuthProvider from "@/providers/AuthProvider";
 import { getServerSession } from "next-auth";
 
-
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -13,7 +12,6 @@ export const metadata: Metadata = {
   icons: {
     icon: ["https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Instagram_icon.png/2048px-Instagram_icon.png"]
   }
-  
 };
 
 export default async function RootLayout({

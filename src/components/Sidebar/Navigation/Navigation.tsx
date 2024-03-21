@@ -1,5 +1,5 @@
 "use client"
-import { Compass, FilmSlate, Heart, House, MagnifyingGlass, MessengerLogo, Plus } from "@phosphor-icons/react"
+import { Compass, FilmSlate, Heart, House, MagnifyingGlass, MessengerLogo, Plus, UserCircle } from "@phosphor-icons/react"
 import { useModalState } from "../../../../store/modalState"
 import { ResolvingMetadata, Metadata } from "next"
 import { Props } from "react-modal"
@@ -9,6 +9,7 @@ import { useSession } from "next-auth/react"
 export default function Navigation() {
     const { action } = useModalState();
     const {data: session } = useSession();
+    console.log(session)
     
     return (
         <ul className="flex flex-col gap-7">
@@ -41,13 +42,9 @@ export default function Navigation() {
                 <p className="sm:hidden md:inline lg:inline">Create</p>
             </li>
            <li className="flex items-center rounded-sm hover:bg-gray-100 transition-colors duration-300 sm:text-sm p-1 md:gap-4">
-                <img src={session?.user.image!} alt="User profile image" className="h-6 rounded-full" />
+                {session?.user.image ? <img src={session?.user.image!} alt="User profile image" className="h-6 rounded-full" /> :  <UserCircle size={25} /> }
                 <p className="sm:hidden md:inline lg:inline">Profile</p>
             </li>
         </ul>
     )
 }
-
-// [&_li]:flex [&_li]:items-center [&_li]:rounded-sm [&_li]:hover:bg-gray-100 [&_li]:transition-colors [&_li]:text-lg [&_li]:sm:text-md
-// flex items-center rounded-sm hover:bg-gray-100 transition-colors duration-300 sm:text-sm
-// flex items-center rounded-sm hover:bg-gray-100 transition-colors duration-300 sm:text-sm

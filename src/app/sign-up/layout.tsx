@@ -11,7 +11,6 @@ export const metadata: Metadata = {
   icons: {
     icon: ["https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Instagram_icon.png/2048px-Instagram_icon.png"]
   }
-  
 };
 
 export default function SignInLayout({
