@@ -1,11 +1,12 @@
 import { PostDTO } from "@/model/Post.dto";
-import { BookmarkSimple, ChatCircle, DotsThree, Heart, PaperPlaneTilt, Smiley } from "@phosphor-icons/react/dist/ssr";
+import { BookmarkSimple, ChatCircle, DotsThree, Heart, PaperPlaneTilt, Smiley, UserCircle } from "@phosphor-icons/react/dist/ssr";
 
 export default function Post({username, postCaption, userImage, postImage}: PostDTO) {
     return (
      <section className="border-b w-full mx-auto p-1">
         <header className="flex items-center p-1">
-            <img src={userImage} alt={`${username} profile photo`} className="h-12 rounded-full object-cover border p-1 mr-3" />
+            {userImage ? <img src={userImage} alt={`${username} profile photo`} className="h-12 rounded-full object-cover border p-1 mr-3" /> : <UserCircle size={'48px'} className="p-1 mr-3"/>}
+            
             <p className="font-semibold flex-1 text-sm">{username}</p>
         <DotsThree size={30} className="" />
         </header>

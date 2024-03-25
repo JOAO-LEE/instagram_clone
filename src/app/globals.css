@@ -12,17 +12,7 @@
 } */
 
 @layer components {
-    .action-buttons {
-        @apply h-6 w-6 hover:text-gray-400 transition-transform duration-200 ease-out cursor-pointer text-8xl
+    .sidebar-buttons {
+        @apply flex items-center rounded-lg hover:bg-gray-100 transition-colors duration-300 sm:text-sm p-1 md:gap-4 text-3xl
     }
-}
-
-/* .login-bg {
-    background-image: url('https://static.wixstatic.com/media/fd63ed_44d6fed781e94f88adeb3152a7a247fb~mv2.png/v1/fill/w_588,h_588,al_c,q_85,usm_0.66_1.00_0.01,enc_auto/mockup-of-two-black-iphones-xr-floating-.png');
-    width: 100%;
-    height: 100%;
-} */
-
-@keyframes login-image {
-    
 }

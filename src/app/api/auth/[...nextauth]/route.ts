@@ -16,7 +16,7 @@ export const authOptions: NextAuthOptions = {
       async authorize(credentials): Promise<any> {
         return await signInWithEmailAndPassword(auth, (credentials as any).email || '', (credentials as any).password  || '')
         .then(userCredential => {
-            if(userCredential) {
+            if (userCredential) {
                 return userCredential.user;
             }
             return null
@@ -29,12 +29,11 @@ export const authOptions: NextAuthOptions = {
     },
     secret: process.env.NEXTAUTH_SECRET,
     callbacks: {
-        async jwt({token, user}) {
+        async jwt({ token, user }) {
             user && (token.user = user);
             return token;
         },
-        async session({session, user}) {
-            console.log(session)
+        async session({ session, user }) {
             if (session.user) {
                 session.user.username = session.user?.name?.split(' ').join('').toLocaleLowerCase();
             }
