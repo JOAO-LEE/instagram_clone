@@ -1,15 +1,19 @@
 "use client"
 import ReactModal from "react-modal";
 import { useModalState } from "../../../../store/modalState";
-import { CircleNotch, ImageSquare, Video } from "@phosphor-icons/react";
+import { CircleNotch, ImageSquare, Video, TrashSimple } from "@phosphor-icons/react";
 import { ChangeEvent, useRef, useState } from "react";
-import { TrashSimple } from "@phosphor-icons/react/dist/ssr";
+import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+import { db, storage } from '../../../../firebase';
+import { useSession } from "next-auth/react";
+import { ref, uploadString } from "firebase/storage";
 
 export default function UploadModal() {
+  const { data: session } = useSession();
   const { isOpen, action } = useModalState();
   const [selectedFile, setSelectedFile] = useState<any>();
   const [loading, setLoading] = useState<boolean>(false);
-  const captionRef = useRef(null);
+  const captionRef = useRef<HTMLInputElement>(null);
 
   const addImageToPost = (e: ChangeEvent<HTMLInputElement>) => {
     const fileReader = new FileReader();
@@ -20,7 +24,18 @@ export default function UploadModal() {
     fileReader.onload = (readerEvent) => {
      setSelectedFile(readerEvent.target?.result); 
     }
+  }
 
+  const uploadPhoto = async () => {
+    if (loading) return;
+    setLoading(true);
+    const caption = captionRef.current?.value;
+    const username = session?.user.username;
+    const profileImage = session?.user.image;
+    const timestamp = serverTimestamp();
+    const docRef = await addDoc(collection(db, "posts"), { caption, username, profileImage, timestamp });
+    const imageRef = ref(storage, `posts/${docRef.id}/image` )
+    await uploadString(imageRef, selectedFile, "data_url");
   }
 
   return (
@@ -53,8 +68,14 @@ export default function UploadModal() {
             (
               <div className="flex flex-grow gap-10 flex-col justify-center items-center p-1">
                 <img src={selectedFile} alt="" className="w-full max-h-[350px] object-cover transition duration-200"/> 
-                <TrashSimple  onClick={() => setSelectedFile(null)} className="post-buttons hover:text-red-600 hover:bg-red-200 hover:scale-[1.2] transition-all duration-700 ease-in-out"/>
-              </div> 
+                { 
+                  loading 
+                  ?
+                  <TrashSimple className="text-2xl text-gray-300 cursor-not-allowed" />
+                  :
+                  <TrashSimple  onClick={() => setSelectedFile(null)} className="post-buttons hover:text-red-600 hover:bg-red-200 hover:scale-[1.2] transition-all duration-700 ease-in-out"/>
+                }
+                </div> 
             )
             : 
             (
@@ -71,8 +92,10 @@ export default function UploadModal() {
           }
           <div className="flex gap-1 flex-col items-center p-2 w-full">
             <input type="text" placeholder="Enter your caption" className="focus:ring-0 border-none placeholder-shown:text-center text-center text-sm w-full" max={50} ref={captionRef}/>
-            <button disabled={loading || !selectedFile } className="font-semibold text-xs bg-sky-500 text-white p-3 rounded-lg cursor-pointer disabled:cursor-not-allowed disabled:text-slate-500 disabled:bg-gray-300 w-1/4 hover:bg-blue-500">
-              { loading ? <CircleNotch className="animate-spin ani text-sky-500" /> : 'Upload' }
+            <button 
+            onClick={uploadPhoto}
+            disabled={loading || !selectedFile } className="font-semibold text-xs bg-sky-500 text-white p-3 rounded-lg cursor-pointer disabled:cursor-not-allowed disabled:text-slate-500 disabled:bg-gray-300 w-1/4 hover:bg-blue-500">
+              { loading ? <CircleNotch className="animate-spin text-center text-sky-500" /> : 'Upload' }
             </button>
           </div>
         </section>
