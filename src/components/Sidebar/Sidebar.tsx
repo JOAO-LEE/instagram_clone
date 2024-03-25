@@ -22,11 +22,11 @@ export default function Sidebar() {
                     <Navigation />
                 </div>
                 <ul className="flex flex-col gap-3.5">
-                    <li className="hidden 2xl:flex items-center rounded-sm hover:bg-gray-100 transition-colors duration-300 sm:text-sm p-1 md:gap-4">
+                    <li className="hidden 2xl:flex sidebar-buttons">
                         <ThreadsIcon  width={25}/>
                         <p className="sm:hidden md:inline lg:inline">Threads</p>
                     </li>
-                    <li className="flex items-center rounded-sm hover:bg-gray-100 transition-colors duration-300 sm:text-sm p-1 md:gap-4">
+                    <li className="sidebar-buttons">
                         <List className="text-2xl" />
                         <p className="sm:hidden md:inline lg:inline">More</p>
                     </li>
