@@ -43,6 +43,8 @@ export default function UploadModal() {
       await uploadString(imageRef, selectedFile, "data_url")
       const downloadUrl = await getDownloadURL(imageRef);
       await updateDoc(doc(db, "posts", docRef.id), { image: downloadUrl });
+      setLoading(false);
+      action();
     } 
     catch (error) {
       setLoading(false);
@@ -53,7 +55,7 @@ export default function UploadModal() {
   return (
     <ReactModal
     overlayClassName=""
-    className="max-w-2xl w-[50%] md:w-3/4 h-[400px] sm:h-[500px] md:h-[750px] bg-white shadow-md shadow-gray-800 flex flex-col focus:outline-none border border-gray-300 rounded-lg"
+    className="max-w-2xl w-[50%] md:w-3/4 h-[450px] sm:h-[500px] md:h-[550px] 2xl:h-[750px] bg-white shadow-md shadow-gray-800 flex flex-col focus:outline-none border border-gray-300 rounded-lg"
     isOpen={isOpen}
     ariaHideApp={false}
     onRequestClose={() => {
