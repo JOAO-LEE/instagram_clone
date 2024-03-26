@@ -3,10 +3,10 @@ import ReactModal from "react-modal";
 import { useModalState } from "../../../../store/modalState";
 import { CircleNotch, ImageSquare, Video, TrashSimple } from "@phosphor-icons/react";
 import { ChangeEvent, useRef, useState } from "react";
-import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+import { addDoc, collection, doc, serverTimestamp, updateDoc } from "firebase/firestore";
 import { db, storage } from '../../../../firebase';
 import { useSession } from "next-auth/react";
-import { ref, uploadString } from "firebase/storage";
+import { getDownloadURL, ref, uploadString } from "firebase/storage";
 
 export default function UploadModal() {
   const { data: session } = useSession();
@@ -15,7 +15,7 @@ export default function UploadModal() {
   const [loading, setLoading] = useState<boolean>(false);
   const captionRef = useRef<HTMLInputElement>(null);
 
-  const addImageToPost = (e: ChangeEvent<HTMLInputElement>) => {
+  const addImageToPost = (e: ChangeEvent<HTMLInputElement>): void => {
     const fileReader = new FileReader();
     const isThereAFile = e?.target?.files![0];
     if (isThereAFile) {
@@ -24,39 +24,51 @@ export default function UploadModal() {
     fileReader.onload = (readerEvent) => {
      setSelectedFile(readerEvent.target?.result); 
     }
-  }
+  };
 
-  const uploadPhoto = async () => {
+  const uploadPhoto = async (): Promise<void> => {
     if (loading) return;
-    setLoading(true);
-    const caption = captionRef.current?.value;
-    const username = session?.user.username;
-    const profileImage = session?.user.image;
-    const timestamp = serverTimestamp();
-    const docRef = await addDoc(collection(db, "posts"), { caption, username, profileImage, timestamp });
-    const imageRef = ref(storage, `posts/${docRef.id}/image` )
-    await uploadString(imageRef, selectedFile, "data_url");
-  }
+
+    try {
+      setLoading(true);
+      const postInfo = {
+        caption: captionRef.current?.value,
+        username: session?.user.username,
+        profileImage: session?.user.image,
+        timestamp: serverTimestamp(),
+      };
+
+      const docRef = await addDoc(collection(db, "posts"), postInfo);
+      const imageRef = ref(storage, `posts/${docRef.id}/image`);
+      await uploadString(imageRef, selectedFile, "data_url")
+      const downloadUrl = await getDownloadURL(imageRef);
+      await updateDoc(doc(db, "posts", docRef.id), { image: downloadUrl });
+    } 
+    catch (error) {
+      setLoading(false);
+      console.log(error);
+    }
+  };
 
   return (
     <ReactModal
-      overlayClassName=""
-      className="max-w-2xl w-[50%] md:w-3/4 h-[400px] sm:h-[500px] md:h-[750px] bg-white shadow-md shadow-gray-800 flex flex-col focus:outline-none border border-gray-300 rounded-lg"
-      isOpen={isOpen}
-      ariaHideApp={false}
-      onRequestClose={() => {
-        action();
-        setSelectedFile(null)
-      }}
-      shouldCloseOnEsc={true}
-      style={{
-        overlay: {
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          backgroundColor: "hsla(0, 0%, 0%, 0.7)"
-        },
-      }}
+    overlayClassName=""
+    className="max-w-2xl w-[50%] md:w-3/4 h-[400px] sm:h-[500px] md:h-[750px] bg-white shadow-md shadow-gray-800 flex flex-col focus:outline-none border border-gray-300 rounded-lg"
+    isOpen={isOpen}
+    ariaHideApp={false}
+    onRequestClose={() => {
+      action();
+      setSelectedFile(null);
+    }}
+    shouldCloseOnEsc={true}
+    style={{
+      overlay: {
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "hsla(0, 0%, 0%, 0.7)"
+      },
+    }}
     >
       <header className="border-b border-gray-300 min-w-full flex justify-center items-center p-2">
         <h1 className="font-semibold text-sm">Create new post</h1>
@@ -75,7 +87,7 @@ export default function UploadModal() {
                   :
                   <TrashSimple  onClick={() => setSelectedFile(null)} className="post-buttons hover:text-red-600 hover:bg-red-200 hover:scale-[1.2] transition-all duration-700 ease-in-out"/>
                 }
-                </div> 
+              </div> 
             )
             : 
             (
@@ -95,7 +107,7 @@ export default function UploadModal() {
             <button 
             onClick={uploadPhoto}
             disabled={loading || !selectedFile } className="font-semibold text-xs bg-sky-500 text-white p-3 rounded-lg cursor-pointer disabled:cursor-not-allowed disabled:text-slate-500 disabled:bg-gray-300 w-1/4 hover:bg-blue-500">
-              { loading ? <CircleNotch className="animate-spin text-center text-sky-500" /> : 'Upload' }
+              { loading ? <CircleNotch className="text-lg text-sky-500 animate-spin min-w-full" /> : 'Upload' }
             </button>
           </div>
         </section>
