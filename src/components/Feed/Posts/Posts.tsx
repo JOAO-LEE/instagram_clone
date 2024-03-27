@@ -6,6 +6,7 @@ import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
 import { db } from "../../../../firebase";
+import PostLoadingSkelenton from "@/components/Loadings/PostLoadingSkeleton";
 
 export default  function Posts() {
     const { data: session, status } =  useSession();
@@ -19,20 +20,25 @@ export default  function Posts() {
         const unsubscribe = onSnapshot(query(collection(db, "posts"), orderBy("timestamp", "desc")), 
         (snapshot) => {
             setPosts(snapshot.docs);
-            // console.log(posts)
-
-            console.log(posts)
         });
 
-    }, []);
+    }, [db]);
 
     return (
-        <section className="flex flex-col justify-center w-full p-3 sm:max-w-fit">
+        <>
+        {
+            !posts 
+            ? 
+            <PostLoadingSkelenton /> 
+            :
+        <section className="flex flex-col justify-center w-full p-3 sm:max-w-fit gap-4">
             {
                 posts.map((post: any) => (
                     <Post key={post.id} username={post.data().username} caption={post.data().caption} image={post.data().image} profileImage={post.data().profileImage} />
                 ))
             }
         </section>
+        }
+        </>
     )
 }

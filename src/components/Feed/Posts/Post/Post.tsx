@@ -9,7 +9,7 @@ export default function Post({ username, caption, profileImage, image }: PostDTO
             <p className="font-semibold flex-1 text-sm">{username}</p>
         <DotsThree className="post-buttons" />
         </header>
-            <img src={image} alt={`${username} post`} className="object-cover mx-auto border-2 border-gray-200  rounded-sm" />
+            <img src={image} alt={`${username} post`} className="object-cover mx-auto border-2 border-gray-50  rounded-sm shadow-sm" />
         <div className="flex justify-between mt-3">
             <div className="flex gap-2">
                 <Heart className="post-buttons"/>
@@ -21,7 +21,6 @@ export default function Post({ username, caption, profileImage, image }: PostDTO
         <p className="mt-3 truncate text-sm"><span className="font-bold mr-2">{username}</span>{caption}</p>
         <form className="flex items-center m-0">
             <input type="text" name="" id="" placeholder="Add a comment" className="flex-1 border-none focus:ring-0 text-sm"/>
-            {/* <button className="text-blue-400 font-semibold">Post</button> */}
             <Smiley size={15}/> 
         </form>
      </section>
