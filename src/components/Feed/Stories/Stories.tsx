@@ -4,6 +4,7 @@ import "minifaker/locales/en"
 import { useEffect, useState } from 'react';
 import Story from './Story/Story';
 import { getSession, useSession } from 'next-auth/react';
+import StoryLoadingSkeleton from '@/components/Loadings/StoryLoadingSkeleton';
 
 export default function Stories() {
     const [stories, setStories] = useState<Array<UserStoryDTO>>([]);
@@ -31,10 +32,23 @@ export default function Stories() {
 
 
     return (
+
         <section className="flex space-x-2 p-6 mt-8 rounded-sm overflow-x-scroll scrollbar-none max-w-full sm:max-w-max">
-         {stories.map((story, index) => (
-                <Story key={story.id} username={story.username} image={story.image} isUser={index === 0}/>
-            ))} 
+            {
+                stories.length 
+                ? (
+                    <>
+                        {stories.map((story, index) => (
+                            <Story key={story.id} username={story.username} image={story.image} isUser={index === 0} />
+                        ))}
+                    </>
+                ) 
+                : 
+                (
+                    <StoryLoadingSkeleton />
+                )
+            }
+            
         </section>
     )
 }

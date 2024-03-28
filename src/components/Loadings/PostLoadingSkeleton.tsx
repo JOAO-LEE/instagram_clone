@@ -1,7 +1,7 @@
 import { BookmarkSimple, ChatCircle, DotsThree, Heart, PaperPlaneTilt, Smiley } from "@phosphor-icons/react";
 export default function PostLoadingSkelenton () {
     return (
-    <section className="border-b w-full mx-auto p-1">
+    <section className="border-b w-full mx-auto p-1 bg-black">
         <header className="flex items-center p-1">
             <div className="h-12 w-12 rounded-full mr-3 p-1 animate-pulse bg-gray-200"></div>
             <div className="flex-1">
@@ -22,12 +22,19 @@ export default function PostLoadingSkelenton () {
         <div className="flex gap-2">
 
             <div className="animate-pulse w-16 bg-gray-200 h-3 mt-3"></div>
-            <div className="animate-pulse w-16 bg-gray-100 h-3 mt-3"></div>
-
+            <div className="animate-pulse  bg-gray-100 h-3 mt-3 w-1/4"></div>
         </div>
-
+       
+        <div className="flex gap-2">
+            <div className="animate-pulse w-1/5 bg-gray-200 h-3 mt-3 "></div>
+            <div className="animate-pulse  bg-gray-100 h-3 mt-3 w-1/2"></div>
+        </div>
+        <div className="flex gap-2">
+            <div className="animate-pulse min-w-12 bg-gray-200 h-3 mt-3"></div>
+            <div className="animate-pulse  bg-gray-100 h-3 mt-3 w-1/2"></div>
+        </div>
         <div className="flex items-center justify-between m-0">
-            <div className="text-sm animate-pulse w-16 bg-gray-200 h-3"></div>
+            <div className="text-sm animate-pulse bg-gray-200 h-3 w-full"></div>
             <Smiley className="animate-pulse text-gray-200"/> 
         </div>
     </section>

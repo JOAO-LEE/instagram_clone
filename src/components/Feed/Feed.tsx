@@ -11,7 +11,7 @@ export default function Feed() {
 
     return (
         <main className="flex max-w-full sm:max-w-[58rem] sm:mx-auto gap-4 p-2">
-            <section className="max-w-full sm:max-w-[35rem] sm:mx-auto md:max-w-[38rem]">
+            <section className="max-w-full sm:max-w-[35rem] mx-auto md:max-w-[38rem]">
                 <Stories />
                 <Posts />
                 {isOpen ? <UploadModal/> : <></>}
