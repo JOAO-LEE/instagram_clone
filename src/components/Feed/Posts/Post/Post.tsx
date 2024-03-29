@@ -1,7 +1,35 @@
 import { PostDTO } from "@/model/Post.dto";
 import { BookmarkSimple, ChatCircle, DotsThree, Heart, PaperPlaneTilt, Smiley, UserCircle } from "@phosphor-icons/react/dist/ssr";
+import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+import { FormEvent, useRef, useState } from "react";
+import { db } from "../../../../../firebase";
+import { useSession } from "next-auth/react";
 
-export default function Post({ username, caption, profileImage, image }: PostDTO) {
+export default function Post({ username, caption, profileImage, image, id }: PostDTO) {
+    const {data: session} = useSession();
+    const commentRef = useRef<HTMLInputElement>(null);
+    const [comment, setComment] = useState<string>("");
+
+    
+
+    const handleChatIconClick = () => {
+        if (commentRef.current) {
+            commentRef.current.focus();
+        }
+    };
+
+    const handlePostComment = async (e: FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        const commentToSend = comment;
+        setComment("");
+        await addDoc(collection(db, "posts", id, "comments"), {
+            comment: commentToSend,
+            username: session?.user.username,
+            userImage: session?.user.image,
+            timestamp: serverTimestamp()
+        });
+    }
+
     return (
      <section className="border-b w-full mx-auto p-1">
         <header className="flex items-center p-1">
@@ -13,14 +41,20 @@ export default function Post({ username, caption, profileImage, image }: PostDTO
         <div className="flex justify-between mt-3">
             <div className="flex gap-2">
                 <Heart className="post-buttons"/>
-                <ChatCircle className="post-buttons"/>
+                <ChatCircle className="post-buttons" onClick={handleChatIconClick} />
                 <PaperPlaneTilt className="post-buttons"/>
             </div>
         <BookmarkSimple className="post-buttons"/>
         </div>
         <p className="mt-3 truncate text-sm"><span className="font-bold mr-2">{username}</span>{caption}</p>
-        <form className="flex items-center m-0">
-            <input type="text" name="" id="" placeholder="Add a comment" className="flex-1 border-none focus:ring-0 text-sm"/>
+        <form
+        onSubmit={handlePostComment} 
+        className="flex items-center m-0">
+            <input 
+            ref={commentRef} 
+            onChange={(e) => setComment(e.target.value)}
+            value={comment}
+            type="text" name="" id="" placeholder="Add a comment" className="flex-1 border-none focus:ring-0 text-sm"/>
             <Smiley size={15}/> 
         </form>
      </section>
