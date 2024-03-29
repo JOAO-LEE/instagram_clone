@@ -16,7 +16,7 @@ export default function Feed() {
                 <Posts />
                 {isOpen ? <UploadModal/> : <></>}
             </section>
-            <aside className="hidden lg:inline-block w-fit">
+            <aside className="hidden lg:inline-block w-fit min-w-max">
                 <MiniProfile  />
                 <Suggestions />
             </aside> 

@@ -1,6 +1,5 @@
 export default function StoryLoadingSkeleton() {
     const storySkeletons = Array.from({ length: 10 }, (_, index) => index)
-    
     return (
         <>
             {storySkeletons.map((_, index) => (

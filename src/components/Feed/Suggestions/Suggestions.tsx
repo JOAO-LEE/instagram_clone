@@ -4,6 +4,7 @@ import minifaker from 'minifaker';
 import "minifaker/locales/en";
 import { useEffect, useState } from 'react';
 import Suggestion from './Suggestion/Suggestion';
+import SuggestionLoadingSkeleton from '@/components/Loadings/SuggestionLoadingSkeleton';
 
 export default function Suggestions() {
     const [suggestions, setSuggestions] = useState<SuggestionsDTO[]>([]);
@@ -20,14 +21,31 @@ export default function Suggestions() {
     }, [])
 
     return (
-        <section className="mt-4 p-1">
-            <div className="flex justify-between mb-5 text-xs">
-                <h3 className="font-bold text-gray-400">Suggested for you</h3>
-                <button className="text-gray-600 font-semibold">See all</button>
-            </div>
-            {suggestions.map((suggestion:SuggestionsDTO) => (
-                <Suggestion key={suggestion.id} jobTitle={suggestion.jobTitle} username={suggestion.username} />
-            ))}
-        </section>
+        <>
+        {
+            suggestions.length 
+            ?
+            (
+
+                <section className="mt-4 p-1">
+                    <div className="flex justify-between mb-5 text-xs">
+                        <h3 className="font-bold text-gray-400">Suggested for you</h3>
+                        <button className="text-gray-600 font-semibold">See all</button>
+                    </div>
+                    {
+                        suggestions.map((suggestion:SuggestionsDTO) => (
+                            <Suggestion key={suggestion.id} jobTitle={suggestion.jobTitle} username={suggestion.username} />
+                        ))
+                    }
+            
+                </section>
+            )
+            :
+            (
+
+                <SuggestionLoadingSkeleton/>
+            )
+            }
+        </>
     )
 }
