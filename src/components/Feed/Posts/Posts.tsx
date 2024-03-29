@@ -25,32 +25,25 @@ export default  function Posts() {
     }, [db]);
 
     return ( 
-        <section className="flex flex-col justify-center w-full p-3 sm:max-w-fit gap-4"> 
+        <section className="flex flex-col justify-center min-w-full p-3 sm:max-w-fit gap-4">
             { 
                 posts.length 
                 ? 
                 (
                     <>
-                    
-                    
                         {
                             posts.map((post: any) => (
                                 <Post key={post.id} username={post.data().username} caption={post.data().caption} image={post.data().image} profileImage={post.data().profileImage} />
                             )) 
                         } 
-                    </>
-                    
-                        )
-                        :
-                        (
-                        
-                        <PostLoadingSkelenton />
-                  
+                    </> 
+                )
+                :
+                (
+                    <PostLoadingSkelenton />
                 )
             }
         </section>
-      
+       
     )
 }
-
-

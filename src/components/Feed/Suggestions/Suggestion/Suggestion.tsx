@@ -11,4 +11,4 @@ export default function Suggestion({ jobTitle, username, id}: SuggestionsDTO) {
                 <button className="text-xs font-semibold text-blue-400">Follow</button>
         </div>
     )
-}
+} 
