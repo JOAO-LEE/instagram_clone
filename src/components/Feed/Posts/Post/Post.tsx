@@ -1,9 +1,10 @@
 import { PostDTO } from "@/model/Post.dto";
 import { BookmarkSimple, ChatCircle, DotsThree, Heart, PaperPlaneTilt, Smiley, UserCircle } from "@phosphor-icons/react/dist/ssr";
-import { addDoc, collection, onSnapshot, orderBy, query, serverTimestamp } from "firebase/firestore";
+import { addDoc, collection, deleteDoc, doc, documentId, onSnapshot, orderBy, query, serverTimestamp } from "firebase/firestore";
 import { FormEvent, useEffect, useRef, useState } from "react";
 import { db } from "../../../../../firebase";
 import { useSession } from "next-auth/react";
+import { TrashSimple } from "@phosphor-icons/react";
 
 export default function Post({ username, caption, profileImage, image, id }: PostDTO) {
     const {data: session} = useSession();
@@ -16,8 +17,9 @@ export default function Post({ username, caption, profileImage, image, id }: Pos
     useEffect(() => {
         const unsubscribe = onSnapshot(query(collection(db, "posts", id, "comments"), orderBy("timestamp", "desc")), 
             (snapshot) => {
-                console.log(snapshot.docs)
+                // console.log(snapshot.)
                 setComments(snapshot.docs);
+                console.log(snapshot.docs)
         });
     }, [db, id]);
 
@@ -37,7 +39,23 @@ export default function Post({ username, caption, profileImage, image, id }: Pos
             userImage: session?.user.image,
             timestamp: serverTimestamp()
         });
-    }
+    };
+
+    const handleDeleteComment = async (idComment: string): Promise<void> => {
+        try {
+           
+            const documentRef = doc(db, "posts", id, "comments", idComment);
+            console.log(documentRef)
+        
+   
+            await deleteDoc(documentRef);
+        
+            console.log("Documento excluído com sucesso!");
+          } catch (error) {
+            console.error("Erro ao excluir o documento:", error);
+          }
+
+    };
 
     
 
@@ -76,9 +94,12 @@ export default function Post({ username, caption, profileImage, image, id }: Pos
                     ? 
                         (
                             comments.map((comment, index) => (
-                                <div key={index} className="flex gap-1"> 
-                                    <p className="font-semibold">{comment.data().username}</p>
-                                    <p className="truncate">{comment.data().comment}</p>
+                                <div key={index} className="group flex gap-1 items-center relative"> 
+                                    <p className="font-semibold text-sm">{comment.data().username}</p>
+                                    <p className="truncate text-sm flex-1">{comment.data().comment}</p>
+                                    {/* {username === } */}
+                                    {session?.user.username === comment.data().username && <TrashSimple onClick={() => handleDeleteComment(comment.id)} className="text-black absolute right-2 top-1/2 transform -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-500 hover:text-red-500 ease-in-out cursor-pointer"/>}
+
                                 </div>
                             ))
                         )
