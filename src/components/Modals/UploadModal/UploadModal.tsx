@@ -33,8 +33,8 @@ export default function UploadModal() {
       setLoading(true);
       const postInfo = {
         caption: captionRef.current?.value,
-        username: session?.user.username,
-        profileImage: session?.user.image,
+        username: session?.user.username ?? "username",
+        profileImage: session?.user.image ?? '',
         timestamp: serverTimestamp(),
       };
 

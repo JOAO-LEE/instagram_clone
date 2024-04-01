@@ -1,7 +1,7 @@
 import { PostDTO } from "@/model/Post.dto";
 import { BookmarkSimple, ChatCircle, DotsThree, Heart, PaperPlaneTilt, Smiley, UserCircle } from "@phosphor-icons/react/dist/ssr";
-import { addDoc, collection, serverTimestamp } from "firebase/firestore";
-import { FormEvent, useRef, useState } from "react";
+import { addDoc, collection, onSnapshot, orderBy, query, serverTimestamp } from "firebase/firestore";
+import { FormEvent, useEffect, useRef, useState } from "react";
 import { db } from "../../../../../firebase";
 import { useSession } from "next-auth/react";
 
@@ -9,8 +9,17 @@ export default function Post({ username, caption, profileImage, image, id }: Pos
     const {data: session} = useSession();
     const commentRef = useRef<HTMLInputElement>(null);
     const [comment, setComment] = useState<string>("");
+    const [comments, setComments] = useState<Array<any>>([]);
+    const [hasToShowComments, setHasToShowComments] = useState<boolean>(false);
 
-    
+
+    useEffect(() => {
+        const unsubscribe = onSnapshot(query(collection(db, "posts", id, "comments"), orderBy("timestamp", "desc")), 
+            (snapshot) => {
+                console.log(snapshot.docs)
+                setComments(snapshot.docs);
+        });
+    }, [db, id]);
 
     const handleChatIconClick = () => {
         if (commentRef.current) {
@@ -30,6 +39,8 @@ export default function Post({ username, caption, profileImage, image, id }: Pos
         });
     }
 
+    
+
     return (
      <section className="border-b w-full mx-auto p-1">
         <header className="flex items-center p-1">
@@ -46,7 +57,16 @@ export default function Post({ username, caption, profileImage, image, id }: Pos
             </div>
         <BookmarkSimple className="post-buttons"/>
         </div>
-        <p className="mt-3 truncate text-sm"><span className="font-bold mr-2">{username}</span>{caption}</p>
+        <p className="mt-3 truncate text-sm"><span className="font-bold mr-1">{username}</span>{caption}</p>
+        {comments.length > 0 && (
+            <div className="mt-1">
+                { !hasToShowComments ?  <p className="text-gray-400 cursor-pointer text-sm" onClick={() => setHasToShowComments(!hasToShowComments)}>View { comments.length === 1 ? "one" : "all" } {comments.length > 1 && comments.length} comment{comments.length > 1 ? "s" : ""}</p> :  <p className="text-gray-400 cursor-pointer text-sm" onClick={() => setHasToShowComments(!hasToShowComments)}>Hide { comments.length === 1 ? "one" : "all" } { comments.length > 1 && comments.length} comment{comments.length > 1 ? "s" : ""} </p> }
+                { hasToShowComments ? (
+                    comments.map((comment, index) => (
+                        <p key={index} className="mt- truncate text-sm"><span className="font-bold mr-1">{comment.data().username}</span>{comment.data().comment}</p>            
+                ))) : <></>} 
+            </div>
+        )}
         <form
         onSubmit={handlePostComment} 
         className="flex items-center m-0">

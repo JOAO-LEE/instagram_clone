@@ -4,12 +4,10 @@ import { useModalState } from "../../../../store/modalState"
 import { ResolvingMetadata, Metadata } from "next"
 import { Props } from "react-modal"
 import { useSession } from "next-auth/react"
-// import { use } from "react"
 
 export default function Navigation() {
     const { action } = useModalState();
     const {data: session } = useSession();
-    console.log(session)
     
     return (
         <ul className="flex flex-col gap-7">
