@@ -60,11 +60,33 @@ export default function Post({ username, caption, profileImage, image, id }: Pos
         <p className="mt-3 truncate text-sm"><span className="font-bold mr-1">{username}</span>{caption}</p>
         {comments.length > 0 && (
             <div className="mt-1">
-                { !hasToShowComments ?  <p className="text-gray-400 cursor-pointer text-sm" onClick={() => setHasToShowComments(!hasToShowComments)}>View { comments.length === 1 ? "one" : "all" } {comments.length > 1 && comments.length} comment{comments.length > 1 ? "s" : ""}</p> :  <p className="text-gray-400 cursor-pointer text-sm" onClick={() => setHasToShowComments(!hasToShowComments)}>Hide { comments.length === 1 ? "one" : "all" } { comments.length > 1 && comments.length} comment{comments.length > 1 ? "s" : ""} </p> }
-                { hasToShowComments ? (
-                    comments.map((comment, index) => (
-                        <p key={index} className="mt- truncate text-sm"><span className="font-bold mr-1">{comment.data().username}</span>{comment.data().comment}</p>            
-                ))) : <></>} 
+                { 
+                    !hasToShowComments 
+                    ?  
+                        ( 
+                            <p className="text-gray-400 cursor-pointer text-sm" onClick={() => setHasToShowComments(!hasToShowComments)}>View { comments.length === 1 ? "one" : "all" } {comments.length > 1 && comments.length} comment{comments.length > 1 ? "s" : ""}</p> 
+                        )
+                    :  
+                        (
+                            <p className="text-gray-400 cursor-pointer text-sm" onClick={() => setHasToShowComments(!hasToShowComments)}>Hide { comments.length === 1 ? "one" : "all" } { comments.length > 1 && comments.length} comment{comments.length > 1 ? "s" : ""} </p>
+                        ) 
+                }
+                { 
+                    hasToShowComments 
+                    ? 
+                        (
+                            comments.map((comment, index) => (
+                                <div key={index} className="flex gap-1"> 
+                                    <p className="font-semibold">{comment.data().username}</p>
+                                    <p className="truncate">{comment.data().comment}</p>
+                                </div>
+                            ))
+                        )
+                    : 
+                        (
+                            <></>
+                        )   
+                } 
             </div>
         )}
         <form
