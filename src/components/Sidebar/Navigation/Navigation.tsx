@@ -4,6 +4,7 @@ import { useModalState } from "../../../../store/modalState"
 import { ResolvingMetadata, Metadata } from "next"
 import { Props } from "react-modal"
 import { useSession } from "next-auth/react"
+import Link from "next/link"
 
 export default function Navigation() {
     const { action } = useModalState();
@@ -40,8 +41,10 @@ export default function Navigation() {
                 <p className="sm:hidden md:inline lg:inline">Create</p>
             </li>
            <li className="sidebar-buttons">
-                {session?.user.image ? <img src={session?.user.image!} alt="User profile image" className="h-6 rounded-full" /> :  <UserCircle size={25} /> }
-                <p className="sm:hidden md:inline lg:inline">Profile</p>
+                <Link href={`/${session?.user.username}`}>
+                    {session?.user.image ? <img src={session?.user.image!} alt="User profile image" className="h-6 rounded-full" /> :  <UserCircle size={25} /> }
+                    <p className="sm:hidden md:inline lg:inline">Profile</p>
+                </Link>
             </li>
         </ul>
     )

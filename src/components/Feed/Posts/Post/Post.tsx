@@ -1,6 +1,6 @@
 import { PostDTO } from "@/model/Post.dto";
 import { BookmarkSimple, ChatCircle, DotsThree, Heart, PaperPlaneTilt, Smiley, UserCircle } from "@phosphor-icons/react/dist/ssr";
-import { addDoc, collection, deleteDoc, doc, documentId, onSnapshot, orderBy, query, serverTimestamp } from "firebase/firestore";
+import { addDoc, collection, deleteDoc, doc, documentId, onSnapshot, orderBy, query, serverTimestamp, setDoc } from "firebase/firestore";
 import { FormEvent, useEffect, useRef, useState } from "react";
 import { db } from "../../../../../firebase";
 import { useSession } from "next-auth/react";
@@ -11,17 +11,40 @@ export default function Post({ username, caption, profileImage, image, id }: Pos
     const commentRef = useRef<HTMLInputElement>(null);
     const [comment, setComment] = useState<string>("");
     const [comments, setComments] = useState<Array<any>>([]);
+    const [hasLiked, setHasLiked] = useState<boolean>(false)
+    const [likes, setLikes] = useState<any[]>([]);
     const [hasToShowComments, setHasToShowComments] = useState<boolean>(false);
+    
+    useEffect(() => {
+        onSnapshot(query(collection(db, "posts", id, "comments"), orderBy("timestamp", "desc")), 
+            (snapshot) => {
+                setComments(snapshot.docs);
 
+            });
+
+        onSnapshot(collection(db, "posts", id, "likes"),
+            (snapshot) => {
+                setLikes(snapshot.docs);
+                console.log(likes)
+            });
+
+    }, [db, id]);
 
     useEffect(() => {
-        const unsubscribe = onSnapshot(query(collection(db, "posts", id, "comments"), orderBy("timestamp", "desc")), 
-            (snapshot) => {
-                // console.log(snapshot.)
-                setComments(snapshot.docs);
-                console.log(snapshot.docs)
-        });
-    }, [db, id]);
+        const isUserLike = likes.findIndex((like: any) => like.username === session?.user.username);
+        console.log(isUserLike)
+
+        if (isUserLike !== -1) {
+            
+            setHasLiked(true)
+           
+        } else {
+
+            setHasLiked(false);
+        }
+    }, [db]);
+
+
 
     const handleChatIconClick = () => {
         if (commentRef.current) {
@@ -43,18 +66,19 @@ export default function Post({ username, caption, profileImage, image, id }: Pos
 
     const handleDeleteComment = async (idComment: string): Promise<void> => {
         try {
-           
             const documentRef = doc(db, "posts", id, "comments", idComment);
-            console.log(documentRef)
-        
-   
             await deleteDoc(documentRef);
-        
-            console.log("Documento excluído com sucesso!");
-          } catch (error) {
-            console.error("Erro ao excluir o documento:", error);
-          }
+        } catch (error) {
+        console.error("Erro ao excluir o documento:", error);
+        }
+    };
 
+    const handleLikePost = async (): Promise<void> => {
+        if (hasLiked) {
+            await deleteDoc(doc(db, "posts", id, "likes", username));
+            return;
+        }
+        await setDoc(doc(db, "posts", id, "likes", username), {timestamp: serverTimestamp(), username })
     };
 
     
@@ -67,9 +91,28 @@ export default function Post({ username, caption, profileImage, image, id }: Pos
         <DotsThree className="post-buttons" />
         </header>
             <img src={image} alt={`${username} post`} className="object-cover mx-auto border-2 border-gray-50  rounded-sm shadow-sm" />
+            {
+                likes.length
+                && 
+                    (
+                        <div className="pt-1 mt-1.5">
+                            <p className="text-sm">Liked by {likes.length} users</p>
+                        </div>
+                    )
+            }
         <div className="flex justify-between mt-3">
             <div className="flex gap-2">
-                <Heart className="post-buttons"/>
+                { 
+                    hasLiked 
+                    ? 
+                        <Heart 
+                        onClick={handleLikePost}
+                        weight="fill" className="post-buttons text-red-600 hover:text-transparent"/>
+                    :
+                        <Heart
+                        onClick={handleLikePost}
+                        className="post-buttons"/>
+                    }
                 <ChatCircle className="post-buttons" onClick={handleChatIconClick} />
                 <PaperPlaneTilt className="post-buttons"/>
             </div>
@@ -97,8 +140,7 @@ export default function Post({ username, caption, profileImage, image, id }: Pos
                                 <div key={index} className="group flex gap-1 items-center relative"> 
                                     <p className="font-semibold text-sm">{comment.data().username}</p>
                                     <p className="truncate text-sm flex-1">{comment.data().comment}</p>
-                                    {/* {username === } */}
-                                    {session?.user.username === comment.data().username && <TrashSimple onClick={() => handleDeleteComment(comment.id)} className="text-black absolute right-2 top-1/2 transform -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-500 hover:text-red-500 ease-in-out cursor-pointer"/>}
+                                    {(session?.user.username === comment.data().username) && <TrashSimple onClick={() => handleDeleteComment(comment.id)} className="text-black absolute right-2 top-1/2 transform -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-500 hover:text-red-500 ease-in-out cursor-pointer text-lg font-thin" weight="thin"/>}
 
                                 </div>
                             ))

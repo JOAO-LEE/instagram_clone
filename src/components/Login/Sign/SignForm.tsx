@@ -21,7 +21,7 @@ export default function SignForm({ pageType }: { pageType: number }) {
             // }
 
             // if (pageType === SignEnum.SignUp) {
-            //     const response = await createUserWithEmailAndPassword(email, password);
+            //     const response = await sign(email, password);
             //     if (!response) {
             //         setHasFormError(true);
             //         setEmail('');
