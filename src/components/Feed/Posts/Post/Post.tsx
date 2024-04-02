@@ -79,7 +79,6 @@ export default function Post({ username, caption, profileImage, image, id }: Pos
         await setDoc(doc(db, "posts", id, "likes", username), {timestamp: serverTimestamp(), username })
     };
 
-    
 
     return (
      <section className="border-b w-full mx-auto p-1">

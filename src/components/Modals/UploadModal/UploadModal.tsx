@@ -2,55 +2,52 @@
 import ReactModal from "react-modal";
 import { useModalState } from "../../../../store/modalState";
 import { CircleNotch, ImageSquare, Video, TrashSimple } from "@phosphor-icons/react";
-import { ChangeEvent, useRef, useState } from "react";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { addDoc, collection, doc, serverTimestamp, updateDoc } from "firebase/firestore";
 import { db, storage } from '../../../../firebase';
 import { useSession } from "next-auth/react";
-import { getDownloadURL, ref, uploadString } from "firebase/storage";
+import { getDownloadURL, ref, uploadBytesResumable, uploadString } from "firebase/storage";
 
 export default function UploadModal() {
   const { data: session } = useSession();
   const { isOpen, action } = useModalState();
-  const [selectedFile, setSelectedFile] = useState<any>();
+  const [selectedFile, setSelectedFile] = useState<any>(null);
+  const [imageFileUrl, setImageFileUrl] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(false);
-  const captionRef = useRef<HTMLInputElement>(null);
+  const [caption, setCaption] = useState<string>('');
 
   const addImageToPost = (e: ChangeEvent<HTMLInputElement>): void => {
     const fileReader = new FileReader();
-    const isThereAFile = e?.target?.files![0];
-    if (isThereAFile) {
-      fileReader.readAsDataURL(isThereAFile);
-    }
-    fileReader.onload = (readerEvent) => {
-     setSelectedFile(readerEvent.target?.result); 
+    const file = e?.target?.files![0];
+    if (file) {
+      setSelectedFile(file);
+      setImageFileUrl(URL.createObjectURL(file));
     }
   };
 
   const uploadPhoto = async (): Promise<void> => {
     if (loading) return;
-    console.log('oi')
-    try {
-      setLoading(true);
-      const postInfo = {
-        caption: captionRef.current?.value,
-        username: session?.user.username,
-        profileImage: session?.user.image ?? '',
-        uid: session?.user.uid,
-        timestamp: serverTimestamp(),
-      };
+    setLoading(true)
+    const fileName = `${new Date().getTime()} - ${selectedFile.name}`;
+    const storageRef = ref(storage, fileName);
+    const uploadTask = uploadBytesResumable(storageRef, selectedFile);
+    uploadTask.on("state_changed", 
+      (snapshot) => {
+        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+    }, 
+      (error) => {
+        setLoading(false);
+        setImageFileUrl(null);
+        setSelectedFile(null);
 
-      const docRef = await addDoc(collection(db, "posts"), postInfo);
-      const imageRef = ref(storage, `posts/${docRef.id}/image`);
-      await uploadString(imageRef, selectedFile, "data_url")
-      const downloadUrl = await getDownloadURL(imageRef);
-      await updateDoc(doc(db, "posts", docRef.id), { image: downloadUrl });
-      setLoading(false);
-      action();
-    } 
-    catch (error) {
-      console.error(error)
-      setLoading(false);
-    }
+    }, () => {
+      getDownloadURL(uploadTask.snapshot.ref).then((downloadUrl) => {
+        setImageFileUrl(downloadUrl);
+        setLoading(false);
+        action();
+      });
+    });
+
   };
 
   return (
@@ -81,7 +78,7 @@ export default function UploadModal() {
             ?
             (
               <div className="flex flex-grow gap-10 flex-col justify-center items-center p-1">
-                <img src={selectedFile} alt="" className="w-full max-h-[350px] object-cover transition duration-200"/> 
+                <img src={imageFileUrl} alt="" className={`w-full max-h-[350px] object-cover ${loading && 'animate-pulse'}`}/> 
                 { 
                   loading 
                   ?
@@ -105,10 +102,10 @@ export default function UploadModal() {
             )
           }
           <div className="flex gap-1 flex-col items-center p-2 w-full">
-            <input type="text" placeholder="Enter your caption" className="focus:ring-0 border-none placeholder-shown:text-center text-center text-sm w-full" max={50} ref={captionRef}/>
+            <input type="text" placeholder="Enter your caption" className="focus:ring-0 border-none placeholder-shown:text-center text-center text-sm w-full" max={50} onChange={(e) => setCaption(e.target.value)} value={caption}/>
             <button 
             onClick={uploadPhoto}
-            disabled={loading || !selectedFile } className="font-semibold text-xs bg-sky-500 text-white p-3 rounded-lg cursor-pointer disabled:cursor-not-allowed disabled:text-slate-500 disabled:bg-gray-300 w-1/4 hover:bg-blue-500">
+            disabled= {loading || !selectedFile || caption.trim() === ''} className="font-semibold text-xs bg-sky-500 text-white p-3 rounded-lg cursor-pointer disabled:cursor-not-allowed disabled:text-slate-500 disabled:bg-gray-300 w-1/4 hover:bg-blue-500">
               { loading ? <CircleNotch className="text-lg text-sky-500 animate-spin min-w-full" /> : 'Upload' }
             </button>
           </div>
