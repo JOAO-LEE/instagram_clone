@@ -25,14 +25,12 @@ export default function Post({ username, caption, profileImage, image, id }: Pos
         onSnapshot(collection(db, "posts", id, "likes"),
             (snapshot) => {
                 setLikes(snapshot.docs);
-                console.log(likes)
             });
 
     }, [db, id]);
 
     useEffect(() => {
         const isUserLike = likes.findIndex((like: any) => like.username === session?.user.username);
-        console.log(isUserLike)
 
         if (isUserLike !== -1) {
             
@@ -59,7 +57,7 @@ export default function Post({ username, caption, profileImage, image, id }: Pos
         await addDoc(collection(db, "posts", id, "comments"), {
             comment: commentToSend,
             username: session?.user.username,
-            userImage: session?.user.image,
+            userImage: session?.user.image ?? '',
             timestamp: serverTimestamp()
         });
     };
@@ -90,35 +88,45 @@ export default function Post({ username, caption, profileImage, image, id }: Pos
             <p className="font-semibold flex-1 text-sm">{username}</p>
         <DotsThree className="post-buttons" />
         </header>
-            <img src={image} alt={`${username} post`} className="object-cover mx-auto border-2 border-gray-50  rounded-sm shadow-sm" />
-            {
-                likes.length
-                && 
-                    (
-                        <div className="pt-1 mt-1.5">
-                            <p className="text-sm">Liked by {likes.length} users</p>
-                        </div>
-                    )
-            }
+          <img src={image} alt={`${username} post`} className="object-cover mx-auto border-2 border-gray-50  rounded-sm shadow-sm cursor-pointer" />
+          {
+            likes.length
+            ?
+              (
+                <div className="pt-1 mt-1.5">
+                  <span className="text-sm inline">Liked by <p className="font-semibold inline">{likes.length}</p> user{likes.length > 1 ? "s" : "" }</span>
+                </div>
+              )
+            :
+              (
+                <></>
+              )    
+          }
         <div className="flex justify-between mt-3">
             <div className="flex gap-2">
-                { 
-                    hasLiked 
-                    ? 
-                        <Heart 
-                        onClick={handleLikePost}
-                        weight="fill" className="post-buttons text-red-600 hover:text-transparent"/>
-                    :
-                        <Heart
-                        onClick={handleLikePost}
-                        className="post-buttons"/>
-                    }
+              { 
+                hasLiked 
+                ? 
+                  <Heart 
+                  onClick={handleLikePost}
+                  weight="fill" className="post-buttons text-red-600 hover:text-transparent"/>
+                :
+                  <Heart
+                  onClick={handleLikePost}
+                  className="post-buttons"/>
+                }
                 <ChatCircle className="post-buttons" onClick={handleChatIconClick} />
                 <PaperPlaneTilt className="post-buttons"/>
             </div>
         <BookmarkSimple className="post-buttons"/>
         </div>
-        <p className="mt-3 truncate text-sm"><span className="font-bold mr-1">{username}</span>{caption}</p>
+        {
+            caption 
+            && 
+                (
+                    <p className="mt-3 truncate text-sm"><span className="font-bold mr-1">{username}</span>{caption}</p>
+                ) 
+        }
         {comments.length > 0 && (
             <div className="mt-1">
                 { 
@@ -140,7 +148,7 @@ export default function Post({ username, caption, profileImage, image, id }: Pos
                                 <div key={index} className="group flex gap-1 items-center relative"> 
                                     <p className="font-semibold text-sm">{comment.data().username}</p>
                                     <p className="truncate text-sm flex-1">{comment.data().comment}</p>
-                                    {(session?.user.username === comment.data().username) && <TrashSimple onClick={() => handleDeleteComment(comment.id)} className="text-black absolute right-2 top-1/2 transform -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-500 hover:text-red-500 ease-in-out cursor-pointer text-lg font-thin" weight="thin"/>}
+                                    {(session?.user.username === comment.data().username || username === session?.user.username) && <TrashSimple onClick={() => handleDeleteComment(comment.id)} className="text-black absolute right-2 top-1/2 transform -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-500 hover:text-red-500 ease-in-out cursor-pointer text-lg font-thin" weight="thin"/>}
 
                                 </div>
                             ))

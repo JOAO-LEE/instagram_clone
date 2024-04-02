@@ -4,7 +4,11 @@ import { useRouter } from "next/navigation";
 import { CircleNotch } from "@phosphor-icons/react";
 import { SignEnum } from "@/enum/SignEnum";
 import { signIn } from "next-auth/react";
+import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
+import { addDoc, collection } from "firebase/firestore";
+import { db } from "../../../../firebase";
 
+const auth = getAuth();
 
 export default function SignForm({ pageType }: { pageType: number }) {
     const [email, setEmail] = useState<string>('');
@@ -16,31 +20,24 @@ export default function SignForm({ pageType }: { pageType: number }) {
     const sign = async (): Promise<void> => {
         try {
             setIsLoading(true);
-            // if (errorMessage) {
-            //     throw new Error(errorMessage);
-            // }
-
-            // if (pageType === SignEnum.SignUp) {
-            //     const response = await sign(email, password);
-            //     if (!response) {
-            //         setHasFormError(true);
-            //         setEmail('');
-            //         setPassword('');
-            //         throw new Error();
-            //     }
-            //     router.push('/');
-            //     return;
-            // }
+            if (pageType === SignEnum.SignUp) {
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+               const doc = await addDoc(collection(db, "users"), {
+                    uid: userCredential.user.uid,
+                    email: email,
+                  });
+                  router.push('/');
+                  return;
+            }
             
             const response = await signIn('credentials', { email, password, redirect: true, callbackUrl: '/' });
+  
             if (!response) {
                 setHasFormError(true);
                 throw new Error();
             }
-            console.log(response)
             router.push('/');
         } catch (error: any) {
-            console.log(error);
             setIsLoading(false);
         }
     }

@@ -11,4 +11,8 @@ declare module "next-auth" {
       uid?: string;
     } & DefaultSession["user"]
   }
+
+  interface User {
+    uid: string
+  }
 }

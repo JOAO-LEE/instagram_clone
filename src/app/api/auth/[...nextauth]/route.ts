@@ -30,14 +30,17 @@ export const authOptions: NextAuthOptions = {
     secret: process.env.NEXTAUTH_SECRET,
     callbacks: {
         async jwt({ token, user }) {
-            user && (token.user = user);
+           if(user) {
+            token.uid = user.uid;
             return token;
+           }
+           return token
+
         },
         async session({ session, user, token }) {
             if (session.user) {
-                session.user.username = session.user?.email?.slice(0, session.user?.email.indexOf('@'))
-                session.user.uid = token.sub;
-                console.log(session.user)
+                session.user.username = session.user?.email?.slice(0, session.user?.email.indexOf('@'));
+                session.user.uid = token.sub ?? (token.uid as string);
             }
             return session;
         },

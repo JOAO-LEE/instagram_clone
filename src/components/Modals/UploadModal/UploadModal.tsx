@@ -28,13 +28,14 @@ export default function UploadModal() {
 
   const uploadPhoto = async (): Promise<void> => {
     if (loading) return;
-
+    console.log('oi')
     try {
       setLoading(true);
       const postInfo = {
         caption: captionRef.current?.value,
-        username: session?.user.username ?? "username",
+        username: session?.user.username,
         profileImage: session?.user.image ?? '',
+        uid: session?.user.uid,
         timestamp: serverTimestamp(),
       };
 
@@ -47,14 +48,13 @@ export default function UploadModal() {
       action();
     } 
     catch (error) {
+      console.error(error)
       setLoading(false);
-      console.log(error);
     }
   };
 
   return (
     <ReactModal
-    overlayClassName=""
     className="max-w-2xl w-[50%] md:w-3/4 h-[450px] sm:h-[500px] md:h-[550px] 2xl:h-[750px] bg-white shadow-md shadow-gray-800 flex flex-col focus:outline-none border border-gray-300 rounded-lg"
     isOpen={isOpen}
     ariaHideApp={false}
