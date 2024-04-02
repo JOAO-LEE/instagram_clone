@@ -16,31 +16,34 @@ export default function Post({ username, caption, profileImage, image, id }: Pos
     const [hasToShowComments, setHasToShowComments] = useState<boolean>(false);
     
     useEffect(() => {
-        onSnapshot(query(collection(db, "posts", id, "comments"), orderBy("timestamp", "desc")), 
+        const unsubscribe = onSnapshot(query(collection(db, "posts", id, "comments"), orderBy("timestamp", "desc")), 
             (snapshot) => {
                 setComments(snapshot.docs);
 
             });
+            return () => unsubscribe();
+    }, [db]);
 
-        onSnapshot(collection(db, "posts", id, "likes"),
+    useEffect(() => {
+        const unsubscribe = onSnapshot(query(collection(db, "posts", id, "likes"), orderBy("timestamp", "desc")), 
             (snapshot) => {
                 setLikes(snapshot.docs);
             });
 
-    }, [db, id]);
+        return () => unsubscribe();
+    }, [db]);
 
     useEffect(() => {
-        const isUserLike = likes.findIndex((like: any) => like.username === session?.user.username);
-
-        if (isUserLike !== -1) {
-            
-            setHasLiked(true)
-           
-        } else {
-
-            setHasLiked(false);
+        const liked = likes.findIndex((like: any) => like.id === session?.user?.uid);
+        if (liked !== -1) {
+            setHasLiked(true);
+            return;
         }
-    }, [db]);
+        setHasLiked(false)
+
+    }, [likes]);
+
+
 
 
 
@@ -72,11 +75,12 @@ export default function Post({ username, caption, profileImage, image, id }: Pos
     };
 
     const handleLikePost = async (): Promise<void> => {
+        console.log(hasLiked)
         if (hasLiked) {
-            await deleteDoc(doc(db, "posts", id, "likes", username));
+            await deleteDoc(doc(db, "posts", id, "likes", session?.user.uid!));
             return;
         }
-        await setDoc(doc(db, "posts", id, "likes", username), {timestamp: serverTimestamp(), username })
+        await setDoc(doc(db, "posts", id, "likes", session?.user.uid!), {timestamp: serverTimestamp(), uid: session?.user.uid! })
     };
 
 
@@ -108,7 +112,7 @@ export default function Post({ username, caption, profileImage, image, id }: Pos
                 ? 
                   <Heart 
                   onClick={handleLikePost}
-                  weight="fill" className="post-buttons text-red-600 hover:text-transparent"/>
+                  weight="fill" className="post-buttons text-red-600 hover:bg-transparent hover:text-gray-300"/>
                 :
                   <Heart
                   onClick={handleLikePost}
@@ -147,7 +151,7 @@ export default function Post({ username, caption, profileImage, image, id }: Pos
                                 <div key={index} className="group flex gap-1 items-center relative"> 
                                     <p className="font-semibold text-sm">{comment.data().username}</p>
                                     <p className="truncate text-sm flex-1">{comment.data().comment}</p>
-                                    {(session?.user.username === comment.data().username || username === session?.user.username) && <TrashSimple onClick={() => handleDeleteComment(comment.id)} className="text-black absolute right-2 top-1/2 transform -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-500 hover:text-red-500 ease-in-out cursor-pointer text-lg font-thin" weight="thin"/>}
+                                    {(session?.user.username === comment.data().username || username === session?.user.username) && <TrashSimple onClick={() => handleDeleteComment(comment.id)} className="text-black absolute right-2 top-1/2 transform -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-500 hover:text-red-500 ease-in-out cursor-pointer" weight="light"/>}
 
                                 </div>
                             ))

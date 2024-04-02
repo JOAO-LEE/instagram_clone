@@ -44,10 +44,22 @@ export default function UploadModal() {
       getDownloadURL(uploadTask.snapshot.ref).then((downloadUrl) => {
         setImageFileUrl(downloadUrl);
         setLoading(false);
-        action();
+        createPost(downloadUrl);
       });
     });
+  };
 
+  const createPost = async (downloadUrl: any) => {
+      const postInfo = {
+        caption,
+        username: session?.user.username,
+        profileImage: session?.user.image ?? '',
+        uid: session?.user.uid,
+        image: downloadUrl,
+        timestamp: serverTimestamp(),
+      };
+      const docRef = await addDoc(collection(db, 'posts'), postInfo);
+      action();
   };
 
   return (
