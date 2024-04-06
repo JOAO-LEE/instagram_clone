@@ -3,11 +3,11 @@ import { BookmarkSimple, ChatCircle, DotsThree, Heart, PaperPlaneTilt, Smiley, U
 import { addDoc, collection, deleteDoc, doc, documentId, onSnapshot, orderBy, query, serverTimestamp, setDoc } from "firebase/firestore";
 import { FormEvent, useEffect, useRef, useState } from "react";
 import { db } from "../../../../../firebase";
-import { useSession } from "next-auth/react";
+import { getSession, useSession } from "next-auth/react";
 import { TrashSimple } from "@phosphor-icons/react";
 
 export default function Post({ username, caption, profileImage, image, id }: PostDTO) {
-    const {data: session} = useSession();
+    const { data: session } = useSession();
     const commentRef = useRef<HTMLInputElement>(null);
     const [comment, setComment] = useState<string>("");
     const [comments, setComments] = useState<Array<any>>([]);
@@ -34,6 +34,7 @@ export default function Post({ username, caption, profileImage, image, id }: Pos
     }, [db]);
 
     useEffect(() => {
+        console.log(likes)
         const liked = likes.findIndex((like: any) => like.id === session?.user?.uid);
         if (liked !== -1) {
             setHasLiked(true);
@@ -42,10 +43,6 @@ export default function Post({ username, caption, profileImage, image, id }: Pos
         setHasLiked(false)
 
     }, [likes]);
-
-
-
-
 
     const handleChatIconClick = () => {
         if (commentRef.current) {
@@ -75,14 +72,12 @@ export default function Post({ username, caption, profileImage, image, id }: Pos
     };
 
     const handleLikePost = async (): Promise<void> => {
-        console.log(hasLiked)
         if (hasLiked) {
             await deleteDoc(doc(db, "posts", id, "likes", session?.user.uid!));
             return;
         }
-        await setDoc(doc(db, "posts", id, "likes", session?.user.uid!), {timestamp: serverTimestamp(), uid: session?.user.uid! })
+        await setDoc(doc(db, "posts", id, "likes", session?.user.uid!), {timestamp: serverTimestamp(), uid: session?.user.uid!, username: session?.user.username })
     };
-
 
     return (
      <section className="border-b w-full mx-auto p-1">
@@ -92,18 +87,18 @@ export default function Post({ username, caption, profileImage, image, id }: Pos
         <DotsThree className="post-buttons" />
         </header>
           <img src={image} alt={`${username} post`} className="object-cover mx-auto border-2 border-gray-50  rounded-sm shadow-sm cursor-pointer" />
-          {
-            likes.length
+          { 
+            likes.length 
             ?
-              (
-                <div className="pt-1 mt-1.5">
-                  <span className="text-sm inline">Liked by <p className="font-semibold inline">{likes.length}</p> user{likes.length > 1 ? "s" : "" }</span>
-                </div>
-              )
-            :
-              (
-                <></>
-              )    
+                (
+                    <div className="pt-1 mt-1.5">
+                        <span className="text-sm inline">Liked by <p className="font-semibold inline">{likes[0]?.data().username}</p> {likes.length > 1 && <span> and other <p className="font-semibold inline">{likes.length - 1}</p> user{likes.length - 1 > 1 ? "s" : ""} </span>}</span> 
+                    </div>
+                ) 
+            : 
+                (
+                    <></>
+                )
           }
         <div className="flex justify-between mt-3">
             <div className="flex gap-2">

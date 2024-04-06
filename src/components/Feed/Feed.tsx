@@ -6,6 +6,7 @@ import Suggestions from "./Suggestions/Suggestions";
 import UploadModal from "../Modals/UploadModal/UploadModal";
 import { useModalState } from "../../../store/modalState";
 import { useSession } from "next-auth/react";
+import { useEffect } from "react";
 
 export default function Feed() {
     const { isOpen } = useModalState();

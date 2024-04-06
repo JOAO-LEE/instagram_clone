@@ -17,6 +17,7 @@ export const authOptions: NextAuthOptions = {
         return await signInWithEmailAndPassword(auth, (credentials as any).email || '', (credentials as any).password  || '')
         .then(userCredential => {
             if (userCredential) {
+
                 return userCredential.user;
             }
             return null
@@ -26,27 +27,40 @@ export const authOptions: NextAuthOptions = {
  ],    
     pages: {
         signIn: 'sign-in',
+        
     },
     secret: process.env.NEXTAUTH_SECRET,
     callbacks: {
-        async jwt({ token, user }) {
-           if(user) {
-            token.uid = user.uid;
-            return token;
-           }
-           return token
+        async jwt({ token, user, session }) {
+            try {
+                if (user) {
+                    token.uid = user.uid;
+                } 
+                return token;
 
+            } catch (error) {
+                console.log(error)
+            }
+            return token;
         },
-        async session({ session, user, token }) {
-            if (session.user) {
-                session.user.username = session.user?.email?.slice(0, session.user?.email.indexOf('@'));
-                session.user.uid = token.sub ?? (token.uid as string);
+        async session({ session, user, token  }) {
+
+            try {
+                if (session.user) {
+                    session.user.username = session.user?.email?.slice(0, session.user?.email.indexOf('@'));
+                    session.user.uid = token.sub ?? token.uid as string;
+                } 
+
+            } catch (error) {
+                console.log(error)
             }
             return session;
         },
+
     }
 };
 
 const handler = NextAuth(authOptions);
 
 export { handler as GET, handler as POST };
+

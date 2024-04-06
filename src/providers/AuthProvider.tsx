@@ -7,7 +7,6 @@ interface AuthProviderProps {
 }
 
 export default function AuthProvider ({children, session}: AuthProviderProps) {
-    // const session = useSession();
     return (
         <SessionProvider session={session}>{children}</SessionProvider>
     )

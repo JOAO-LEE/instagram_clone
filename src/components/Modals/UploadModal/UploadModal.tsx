@@ -58,6 +58,7 @@ export default function UploadModal() {
         image: downloadUrl,
         timestamp: serverTimestamp(),
       };
+      console.log(postInfo);
       const docRef = await addDoc(collection(db, 'posts'), postInfo);
       action();
   };

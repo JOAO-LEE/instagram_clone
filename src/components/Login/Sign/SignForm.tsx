@@ -1,14 +1,15 @@
 'use client'
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { CircleNotch } from "@phosphor-icons/react";
 import { SignEnum } from "@/enum/SignEnum";
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
 import { addDoc, collection } from "firebase/firestore";
-import { db } from "../../../../firebase";
+// import {app} 
+import { db, app } from "../../../../firebase";
 
-const auth = getAuth();
+const auth = getAuth(app);
 
 export default function SignForm({ pageType }: { pageType: number }) {
     const [email, setEmail] = useState<string>('');
@@ -16,28 +17,35 @@ export default function SignForm({ pageType }: { pageType: number }) {
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [hasFormError, setHasFormError] = useState<boolean>(false);
     const router = useRouter();
+    const session = useSession();
+
+    // useEffect(() => {
+    //     if (session?.data?.user) {
+    //         console.log("User session updated:", session?.data?.user);
+    //         // Realize ações adicionais aqui após a atualização da sessão
+    //     }
+    // }, [session]);
     
     const sign = async (): Promise<void> => {
+        setIsLoading(true);
         try {
-            setIsLoading(true);
             if (pageType === SignEnum.SignUp) {
                 const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-               const doc = await addDoc(collection(db, "users"), {
-                    uid: userCredential.user.uid,
-                    email: email,
-                  });
-                  router.push('/');
-                  return;
-            }
-            
-            const response = await signIn('credentials', { email, password, redirect: true, callbackUrl: '/' });
-  
-            if (!response) {
-                setHasFormError(true);
-                throw new Error();
+                if (userCredential) {
+                    await addDoc(collection(db, "users"), {
+                        uid: userCredential.user.uid,
+                        email: email,
+                    });
+                    await signIn('credentials', { email, password, redirect: true, callbackUrl: '/' });
+                }
+                return;
+            } else {
+                await signIn('credentials', { email, password, redirect: true, callbackUrl: '/' });
             }
             router.push('/');
-        } catch (error: any) {
+        } catch (error) {
+            setHasFormError(true);
+        } finally {
             setIsLoading(false);
         }
     }
@@ -67,7 +75,6 @@ export default function SignForm({ pageType }: { pageType: number }) {
                     onChange={(e) => setPassword(e.target.value)}
                     className="border-none bg-slate-50 focus:ring-0 max-h-6" />
                 </div>
-                {/* {hasFormError && <p className="text-red-600">{errorMessage}</p>} */}
                 <button
                 disabled={isLoading || (email === ''  || password === '')}
                 type="submit"

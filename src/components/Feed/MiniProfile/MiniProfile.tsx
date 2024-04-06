@@ -14,7 +14,7 @@ export default function MiniProfile() {
                 ?
                 (
                 <div className="flex flex-wrap mt-14 justify-between p-1">
-                    <div className="flex">
+                    <div className="flex ">
                     { session?.user?.image ? <img src={session?.user?.image} className="h-12 rounded-full object-cover border p-[2px]" /> : <UserCircle size={'48px'} className="text-neutral-500"/>}
                         <div className="ml-4 max-w-fit">
                             <h2 className="font-bold text-sm">{session?.user?.username ?? 'username' }</h2>
