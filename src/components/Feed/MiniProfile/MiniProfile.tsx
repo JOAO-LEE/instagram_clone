@@ -10,7 +10,7 @@ export default function MiniProfile() {
     return (
         <>
             { 
-                session?.user 
+                session?.user.username 
                 ?
                 (
                 <div className="flex flex-wrap mt-14 justify-between p-1">

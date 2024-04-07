@@ -21,6 +21,9 @@ export default  function Posts() {
 
     }, [db]);
 
+    console.log(posts)
+
+
     return ( 
         <section className="flex flex-col justify-center min-w-full p-3 sm:max-w-fit gap-4">
             { 
