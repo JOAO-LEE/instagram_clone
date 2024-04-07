@@ -1,8 +1,15 @@
-export default function Profile () {
-    return (
-        <main className="flex justify-center items-center mt-14">
+import Sidebar from "@/components/Sidebar/Sidebar";
+import Profile from "@/components/Profile/Profile";
 
-            
-        </main>
-    )
+export default function ProfilePage() {
+  return (
+    <div className="flex md:gap-3">
+      <div className="sm:inline-block">
+        <Sidebar />
+      </div>
+      <div className="w-full">
+        <Profile />
+      </div>
+    </div>
+  )
 }
