@@ -1,5 +1,5 @@
 'use client'
-import { BookmarkSimple, Gear, GridNine, Heart, IdentificationBadge } from '@phosphor-icons/react';
+import { BookmarkSimple, ChatCircle, Gear, GridNine, Heart, IdentificationBadge } from '@phosphor-icons/react';
 import { useSession } from 'next-auth/react';
 import { useModalState } from '../../../store/modalState';
 import UploadModal from '../Modals/UploadModal/UploadModal';
@@ -30,8 +30,13 @@ export default function Profile() {
                         const likesAmount = queryLikes.docs.map(docLikes => {
                             return docLikes.data();
                         });
+                        const comments = query(collection(db, "posts", doc.id, "comments"))
+                        const queryComments = await getDocs(comments);
+                        const commentsAmount = queryComments.docs.map(docComments => {
+                            return docComments.data();
+                        });
 
-                        return { id: doc.id, stats: false,...doc.data(), likesAmount };
+                        return { id: doc.id, stats: false,...doc.data(), likesAmount, commentsAmount };
                     });
                     const promiseAllPosts = await Promise.all(postsData)
                     setUserPosts(promiseAllPosts)
@@ -121,16 +126,24 @@ export default function Profile() {
                                         onMouseOver={() => handleMouseOver(index)}
                                         onMouseLeave={() => handleMouseLeave(index)}
                                         >
-                                            <img src={userPost.image} alt="" className='h-64 object-cover w-64 hover:opacity-70 transition-all duration-500 hover:scale-110 hover:shadow-lg shadow-black p-1' />
+                                            <img src={userPost.image} alt="" className='h-64 object-cover w-64 hover:brightness-50 transition-all duration-500 hover:scale-105 hover:shadow-lg shadow-black' />
                                             {
                                                 userPost.stats 
                                                 ?
                                                 (
-                                                    <div className='absolute top-1/2 left-1/2 flex gap-2 text-white'>
-                                                        <Heart 
-                                                        weight="fill" 
-                                                        className="text-white text-xl"/>
-                                                        <p>{userPost.likesAmount?.length}</p>
+                                                    <div className='absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex gap-6'>
+                                                        <div className='flex gap-2 text-white cursor-none'>
+                                                            <Heart 
+                                                            weight="fill" 
+                                                            className="text-white text-xl"/>
+                                                            <p>{userPost.likesAmount?.length}</p>
+                                                        </div>
+                                                        <div className='flex gap-2 text-white cursor-none'>
+                                                            <ChatCircle 
+                                                            weight="fill" 
+                                                            className="text-white text-xl"/>
+                                                            <p>{userPost.commentsAmount?.length}</p>
+                                                        </div>
                                                     </div>
                                                 ) 
                                                 :

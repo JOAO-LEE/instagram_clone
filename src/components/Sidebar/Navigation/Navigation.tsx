@@ -1,10 +1,7 @@
 "use client"
 import { Compass, FilmSlate, Heart, House, MagnifyingGlass, MessengerLogo, Plus, UserCircle } from "@phosphor-icons/react"
 import { useModalState } from "../../../../store/modalState"
-import { ResolvingMetadata, Metadata } from "next"
-import { Props } from "react-modal"
 import { useSession } from "next-auth/react"
-import Link from "next/link"
 import { useRouter } from "next/navigation"
 
 export default function Navigation() {
