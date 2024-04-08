@@ -18,33 +18,27 @@ export default function Profile() {
             try {
                 if (session && (session.user.username && session.user.uid)) {
 
-                    const q = query(collection(db, "posts"),
+                    const posts = query(collection(db, "posts"),
                         where("username", "==", session.user.username), 
                         where("uid", "==", session.user.uid));
+                       
+                    const queryPosts = await getDocs(posts);
+                    const postsData = queryPosts.docs.map(async(doc)=> {
 
-                    const querySnapshot = await getDocs(q);
-                    const postsData = querySnapshot.docs.map(doc => ({
-                        id: doc.id,
-                        stats: false,
-                        ...doc.data()
-                    }));
-                    setUserPosts(postsData);
+                        const likes = query(collection(db, "posts", doc.id, "likes"))
+                        const queryLikes = await getDocs(likes);
+                        const likesAmount = queryLikes.docs.map(docLikes => {
+                            return docLikes.data();
+                        });
 
-                    // if (userPosts) {
-                    //     userPosts.map(async (post: any) => {
-                    //         const q = query(collection(db, "posts", post.id, "likes"));
-                    //         const querySnapshot = await getDocs(q);
-                    //         console.log(querySnapshot)
-                            
-                    //     });
-                    // }
-                   
+                        return { id: doc.id, stats: false,...doc.data(), likesAmount };
+                    });
+                    const promiseAllPosts = await Promise.all(postsData)
+                    setUserPosts(promiseAllPosts)
                 }
             } catch (error) {
                 console.error("Error fetching user posts:", error);
             }
-
-
         };
 
         if (session) {
@@ -52,21 +46,21 @@ export default function Profile() {
         }
     }, [session, db]);
 
-    // const handleMouseOver = (index: number) => {
-    //     setUserPosts(prevPosts => {
-    //         const updatedPosts = [...prevPosts];
-    //         updatedPosts[index].stats = true;
-    //         return updatedPosts;
-    //     });
-    // };
+    const handleMouseOver = (index: number) => {
+        setUserPosts(prevPosts => {
+            const updatedPosts = [...prevPosts];
+            updatedPosts[index].stats = true;
+            return updatedPosts;
+        });
+    };
 
-    // const handleMouseLeave = (index: number) => {
-    //     setUserPosts(prevPosts => {
-    //         const updatedPosts = [...prevPosts];
-    //         updatedPosts[index].stats = false;
-    //         return updatedPosts;
-    //     });
-    // };
+    const handleMouseLeave = (index: number) => {
+        setUserPosts(prevPosts => {
+            const updatedPosts = [...prevPosts];
+            updatedPosts[index].stats = false;
+            return updatedPosts;
+        });
+    };
 
     return (
         <>
@@ -124,11 +118,11 @@ export default function Profile() {
                                 {
                                     userPosts.length ? userPosts.map((userPost, index) => (
                                         <div className='w-fit relative' key={index} 
-                                        //  onMouseOver={() => handleMouseOver(index)}
-                                        // onMouseLeave={() => handleMouseLeave(index)}
+                                        onMouseOver={() => handleMouseOver(index)}
+                                        onMouseLeave={() => handleMouseLeave(index)}
                                         >
                                             <img src={userPost.image} alt="" className='h-64 object-cover w-64 hover:opacity-70 transition-all duration-500 hover:scale-110 hover:shadow-lg shadow-black p-1' />
-                                            {/* {
+                                            {
                                                 userPost.stats 
                                                 ?
                                                 (
@@ -136,12 +130,12 @@ export default function Profile() {
                                                         <Heart 
                                                         weight="fill" 
                                                         className="text-white text-xl"/>
-                                                        <p>{userPost.likes?.length}</p>
+                                                        <p>{userPost.likesAmount?.length}</p>
                                                     </div>
                                                 ) 
                                                 :
                                                 <></>
-                                            } */}
+                                            }
                                         </div>
                                     ))
                                     :
@@ -160,18 +154,5 @@ export default function Profile() {
             )
         }
         </>
-    )
-                      
-            
+    )         
 }
-
-
-// {
-//     isOpen 
-//     && 
-//         (
-//             <UploadModal />
-//         )
-// }
-        
-// }

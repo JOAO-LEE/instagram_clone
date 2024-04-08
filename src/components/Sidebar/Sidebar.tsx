@@ -35,12 +35,3 @@ export default function Sidebar() {
         </nav>
     )
 }
-
-// flex items-center rounded-sm hover:bg-gray-100 transition-colors duration-300 sm:text-sm p-1 md:gap-4
-
-// nav responsivity (see it later)
-// h-screen md:w-[244px] lg:w-[335px] sm:w-[4.5em] m-0
-{/*
-<div className="flex rounded-sm hover:bg-gray-100 transition-colors duration-300">
-
-</div> */}

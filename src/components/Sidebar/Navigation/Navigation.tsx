@@ -5,14 +5,16 @@ import { ResolvingMetadata, Metadata } from "next"
 import { Props } from "react-modal"
 import { useSession } from "next-auth/react"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 
 export default function Navigation() {
     const { action } = useModalState();
-    const {data: session } = useSession();
+    const { data: session } = useSession();
+    const router = useRouter();
     
     return (
         <ul className="flex flex-col gap-7">
-            <li className="sidebar-buttons">
+            <li className="sidebar-buttons" onClick={() => router.push(`/`)}>
                 <House className="text-2xl" />
                 <p className="sm:hidden md:inline lg:inline">Home</p>
             </li>
@@ -40,11 +42,9 @@ export default function Navigation() {
                 <Plus className="text-2xl" />
                 <p className="sm:hidden md:inline lg:inline">Create</p>
             </li>
-           <li className="sidebar-buttons">
-                <Link href={`/${session?.user.username}`}>
-                    {session?.user.image ? <img src={session?.user.image!} alt="User profile image" className="h-6 rounded-full" /> :  <UserCircle size={25} /> }
-                    <p className="sm:hidden md:inline lg:inline">Profile</p>
-                </Link>
+           <li className="sidebar-buttons" onClick={() => router.push(`/user/${session?.user.username}`)}>
+                {session?.user.image ? <img src={session?.user.image!} alt="User profile image" className="h-6 rounded-full" /> :  <UserCircle size={25} /> }
+                <p className="sm:hidden md:inline lg:inline">Profile</p>
             </li>
         </ul>
     )
