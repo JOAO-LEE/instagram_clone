@@ -1,7 +1,7 @@
 import Sidebar from "../components/Sidebar/Sidebar";
 import Feed from "@/components/Feed/Feed";
 
-export default function Home() {
+export default function HomePage() {
   return (
     <div className="flex md:gap-3">
       <div className="sm:inline-block">

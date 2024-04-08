@@ -57,7 +57,7 @@ export default function Post({ username, caption, profileImage, image, id }: Pos
         await addDoc(collection(db, "posts", id, "comments"), {
             comment: commentToSend,
             username: session?.user.username,
-            userImage: session?.user.image ?? '',
+            userImage: session?.user.image ?? "",
             timestamp: serverTimestamp()
         });
     };
@@ -82,7 +82,7 @@ export default function Post({ username, caption, profileImage, image, id }: Pos
     return (
      <section className="border-b w-full mx-auto p-1">
         <header className="flex items-center p-1">
-            {profileImage ? <img src={profileImage} alt={`${username} profile photo`} className="h-12 rounded-full object-cover border p-1 mr-3" /> : <UserCircle size={'48px'} className="p-1 mr-3"/>}
+            {profileImage ? <img src={profileImage} alt={`${username} profile photo`} className="h-12 rounded-full object-cover border p-1 mr-3" /> : <UserCircle size={"48px"} className="p-1 mr-3"/>}
             <p className="font-semibold flex-1 text-sm">{username}</p>
         <DotsThree className="post-buttons" />
         </header>

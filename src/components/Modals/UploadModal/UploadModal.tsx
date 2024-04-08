@@ -1,10 +1,11 @@
-"use client"
+"use client";
+
 import ReactModal from "react-modal";
 import { useModalState } from "../../../../store/modalState";
 import { CircleNotch, ImageSquare, Video, TrashSimple } from "@phosphor-icons/react";
 import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { addDoc, collection, doc, serverTimestamp, updateDoc } from "firebase/firestore";
-import { db, storage } from '../../../../firebase';
+import { db, storage } from "../../../../firebase";
 import { useSession } from "next-auth/react";
 import { getDownloadURL, ref, uploadBytesResumable, uploadString } from "firebase/storage";
 
@@ -14,7 +15,7 @@ export default function UploadModal() {
   const [selectedFile, setSelectedFile] = useState<any>(null);
   const [imageFileUrl, setImageFileUrl] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(false);
-  const [caption, setCaption] = useState<string>('');
+  const [caption, setCaption] = useState<string>("");
 
   const addImageToPost = (e: ChangeEvent<HTMLInputElement>): void => {
     const fileReader = new FileReader();
@@ -28,6 +29,7 @@ export default function UploadModal() {
   const uploadPhoto = async (): Promise<void> => {
     if (loading) return;
     setLoading(true)
+
     const fileName = `${new Date().getTime()} - ${selectedFile.name}`;
     const storageRef = ref(storage, fileName);
     const uploadTask = uploadBytesResumable(storageRef, selectedFile);
@@ -50,17 +52,17 @@ export default function UploadModal() {
   };
 
   const createPost = async (downloadUrl: any) => {
-      const postInfo = {
-        caption,
-        username: session?.user.username,
-        profileImage: session?.user.image ?? '',
-        uid: session?.user.uid,
-        image: downloadUrl,
-        timestamp: serverTimestamp(),
-      };
-      console.log(postInfo);
-      const docRef = await addDoc(collection(db, 'posts'), postInfo);
-      action();
+    const postInfo = {
+      caption,
+      username: session?.user.username,
+      profileImage: session?.user.image ?? "",
+      uid: session?.user.uid,
+      image: downloadUrl,
+      timestamp: serverTimestamp(),
+    };
+    
+    const docRef = await addDoc(collection(db, "posts"), postInfo);
+    action();
   };
 
   return (
@@ -91,7 +93,7 @@ export default function UploadModal() {
             ?
             (
               <div className="flex flex-grow gap-10 flex-col justify-center items-center p-1">
-                <img src={imageFileUrl} alt="" className={`w-full max-h-[350px] object-cover ${loading && 'animate-pulse'}`}/> 
+                <img src={imageFileUrl} alt="" className={`w-full max-h-[350px] object-cover ${loading && "animate-pulse"}`}/> 
                 { 
                   loading 
                   ?
@@ -118,8 +120,8 @@ export default function UploadModal() {
             <input type="text" placeholder="Enter your caption" className="focus:ring-0 border-none placeholder-shown:text-center text-center text-sm w-full" max={50} onChange={(e) => setCaption(e.target.value)} value={caption}/>
             <button 
             onClick={uploadPhoto}
-            disabled= {loading || !selectedFile || caption.trim() === ''} className="font-semibold text-xs bg-sky-500 text-white p-3 rounded-lg cursor-pointer disabled:cursor-not-allowed disabled:text-slate-500 disabled:bg-gray-300 w-1/4 hover:bg-blue-500">
-              { loading ? <CircleNotch className="text-lg text-sky-500 animate-spin min-w-full" /> : 'Upload' }
+            disabled= {loading || !selectedFile || caption.trim() === ""} className="font-semibold text-xs bg-sky-500 text-white p-3 rounded-lg cursor-pointer disabled:cursor-not-allowed disabled:text-slate-500 disabled:bg-gray-300 w-1/4 hover:bg-blue-500">
+              { loading ? <CircleNotch className="text-lg text-sky-500 animate-spin min-w-full" /> : "Upload" }
             </button>
           </div>
         </section>

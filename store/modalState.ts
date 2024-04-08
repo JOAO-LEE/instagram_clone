@@ -3,7 +3,7 @@ import { create } from 'zustand';
 type ModalState = {
     isOpen: boolean
     action: () => void
-}
+};
 
 export const useModalState = create<ModalState>()((set) => ({
     isOpen: false,
@@ -11,6 +11,6 @@ export const useModalState = create<ModalState>()((set) => ({
         set((state) => ({
             ...state,
             isOpen: !state.isOpen
-        }))
+        }));
     }
 }));

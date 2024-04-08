@@ -1,6 +1,6 @@
 import { SuggestionsDTO } from "@/model/Suggestions.dto";
 
-export default function Suggestion({ jobTitle, username, id}: SuggestionsDTO) {
+export default function Suggestion({ jobTitle, username, id }: SuggestionsDTO) {
     return (
         <div className="flex items-center justify-between mt-3">
             <img src={`https://i.pravatar.cc/150?img=${Math.floor(Math.random() * 70)}`} alt={`${username} picture`} className="h-10 rounded-full border p-[2px]" />

@@ -1,4 +1,5 @@
-'use client'
+"use client";
+
 import { FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { CircleNotch } from "@phosphor-icons/react";
@@ -6,26 +7,17 @@ import { SignEnum } from "@/enum/SignEnum";
 import { signIn, useSession } from "next-auth/react";
 import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
 import { addDoc, collection } from "firebase/firestore";
-// import {app} 
 import { db, app } from "../../../../firebase";
 
 const auth = getAuth(app);
 
 export default function SignForm({ pageType }: { pageType: number }) {
-    const [email, setEmail] = useState<string>('');
-    const [password, setPassword] = useState<string>('');
+    const [email, setEmail] = useState<string>("");
+    const [password, setPassword] = useState<string>("");
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [hasFormError, setHasFormError] = useState<boolean>(false);
     const router = useRouter();
-    const session = useSession();
 
-    // useEffect(() => {
-    //     if (session?.data?.user) {
-    //         console.log("User session updated:", session?.data?.user);
-    //         // Realize ações adicionais aqui após a atualização da sessão
-    //     }
-    // }, [session]);
-    
     const sign = async (): Promise<void> => {
         setIsLoading(true);
         try {
@@ -36,13 +28,13 @@ export default function SignForm({ pageType }: { pageType: number }) {
                         uid: userCredential.user.uid,
                         email: email,
                     });
-                    await signIn('credentials', { email, password, redirect: true, callbackUrl: '/' });
+                    await signIn("credentials", { email, password, redirect: true, callbackUrl: "/" });
                 }
                 return;
             } else {
-                await signIn('credentials', { email, password, redirect: true, callbackUrl: '/' });
+                await signIn("credentials", { email, password, redirect: true, callbackUrl: "/" });
             }
-            router.push('/');
+            router.push("/");
         } catch (error) {
             setHasFormError(true);
         } finally {
@@ -79,7 +71,7 @@ export default function SignForm({ pageType }: { pageType: number }) {
                 disabled={isLoading || (email === ''  || password === '')}
                 type="submit"
                 className="bg-sky-500 bg-opacity-95 text-white rounded-md min-h-6 p-2 hover:bg-blue-600 hover:bg-opacity-85 font-bold text-sm disabled:bg-slate-200 text-center">
-                    {isLoading ? <CircleNotch className="animate-spin text-sky-600 text-xl min-w-full" /> : pageType === SignEnum.SignUp ? 'Sign up' : 'Sign in'}
+                    {isLoading ? <CircleNotch className="animate-spin text-sky-600 text-xl min-w-full" /> : pageType === SignEnum.SignUp ? "Sign up" : "Sign in"}
                 </button>
             </div>
         </form>

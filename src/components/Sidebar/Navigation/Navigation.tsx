@@ -1,8 +1,8 @@
 "use client"
-import { Compass, FilmSlate, Heart, House, MagnifyingGlass, MessengerLogo, Plus, UserCircle } from "@phosphor-icons/react"
-import { useModalState } from "../../../../store/modalState"
-import { useSession } from "next-auth/react"
-import { useRouter } from "next/navigation"
+import { Compass, FilmSlate, Heart, House, MagnifyingGlass, MessengerLogo, Plus, UserCircle } from "@phosphor-icons/react";
+import { useModalState } from "../../../../store/modalState";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 export default function Navigation() {
     const { action } = useModalState();
@@ -11,7 +11,7 @@ export default function Navigation() {
     
     return (
         <ul className="flex flex-col gap-7">
-            <li className="sidebar-buttons" onClick={() => router.push(`/`)}>
+            <li className="sidebar-buttons" onClick={() => router.push("/")}>
                 <House className="text-2xl" />
                 <p className="sm:hidden md:inline lg:inline">Home</p>
             </li>

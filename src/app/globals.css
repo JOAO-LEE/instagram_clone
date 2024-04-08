@@ -3,14 +3,6 @@
 @tailwind utilities;
 
 
-/* .template {
-    margin: 0;
-    display: grid;
-    grid-template-columns: 21rem 1fr 1fr;
-    gap: 2rem;
-    min-height: 200vh;
-} */
-
 @layer components {
     .sidebar-buttons {
         @apply flex items-center rounded-lg hover:bg-neutral-100 transition-colors duration-300 sm:text-sm md:gap-4 cursor-pointer p-1

@@ -1,10 +1,11 @@
-'use client'
-import { SuggestionsDTO } from '@/model/Suggestions.dto';
-import minifaker from 'minifaker';
+"use client";
+
+import { SuggestionsDTO } from "@/model/Suggestions.dto";
+import minifaker from "minifaker";
 import "minifaker/locales/en";
-import { useEffect, useState } from 'react';
-import Suggestion from './Suggestion/Suggestion';
-import SuggestionLoadingSkeleton from '@/components/Loadings/SuggestionLoadingSkeleton';
+import { useEffect, useState } from "react";
+import Suggestion from "./Suggestion/Suggestion";
+import SuggestionLoadingSkeleton from "@/components/Loadings/SuggestionLoadingSkeleton";
 
 export default function Suggestions() {
     const [suggestions, setSuggestions] = useState<SuggestionsDTO[]>([]);
@@ -12,8 +13,8 @@ export default function Suggestions() {
     useEffect(() => {
         const searchedSuggestions = minifaker.array(5, (i) => {
             return {
-                username: minifaker.username({locale: 'en'}),
-                jobTitle: minifaker.jobTitle({locale: 'en'}),
+                username: minifaker.username({locale: "en"}),
+                jobTitle: minifaker.jobTitle({locale: "en"}),
                 id: i
             }
         });

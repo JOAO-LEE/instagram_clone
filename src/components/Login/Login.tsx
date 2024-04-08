@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 import Image from "next/image";
-import '@/app/globals.css';
+import "@/app/globals.css";
 
 export default function Login({ children }: { children: ReactNode }) {
     return (
