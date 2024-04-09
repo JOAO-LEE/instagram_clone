@@ -1,6 +1,6 @@
 import { useSession } from "next-auth/react";
 import SignOutButton from "@/components/Login/SignOutButton/SignOutButton";
-import { User} from "@phosphor-icons/react/dist/ssr";
+import { User } from "@phosphor-icons/react/dist/ssr";
 import MiniProfileLoadingSkeleton from "@/components/Loadings/MiniProfileLoadingSkeleton";
 
 export default function MiniProfile() {

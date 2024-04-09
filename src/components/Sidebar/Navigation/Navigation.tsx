@@ -1,8 +1,9 @@
 "use client"
-import { Compass, FilmSlate, Heart, House, MagnifyingGlass, MessengerLogo, Plus, User } from "@phosphor-icons/react";
+
 import { useModalState } from "../../../../store/modalState";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { Compass, FilmSlate, Heart, House, MagnifyingGlass, MessengerLogo, Plus, User } from "@phosphor-icons/react";
 
 export default function Navigation() {
     const { action } = useModalState();

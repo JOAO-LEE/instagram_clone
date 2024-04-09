@@ -1,8 +1,12 @@
+"use client";
+
 import { ProfilePostDTO } from "@/model/ProfilePost.dto";
 import { Heart, ChatCircle } from "@phosphor-icons/react";
+import { useRouter } from "next/navigation";
 import { Dispatch, SetStateAction } from "react";
 
 export default function ProfilePosts({ userPosts, setStateFunction }: { userPosts: Array<ProfilePostDTO>, setStateFunction: Dispatch<SetStateAction<ProfilePostDTO[]>> }) {
+    const router = useRouter();
 
     const handleMouseOver = (index: number) => {
         setStateFunction(prevPosts => {
@@ -27,6 +31,7 @@ export default function ProfilePosts({ userPosts, setStateFunction }: { userPost
                     <div className="w-fit relative cursor-pointer" key={index} 
                     onMouseOver={() => handleMouseOver(index)}
                     onMouseLeave={() => handleMouseLeave(index)}
+                    onClick={() => router.push(`/post/${userPost.id}`)}
                     >
                         <img src={userPost.image} alt="" className="h-64 object-cover w-64 hover:brightness-50 transition-all duration-500 hover:scale-105 hover:shadow-lg shadow-black" />
                         {
