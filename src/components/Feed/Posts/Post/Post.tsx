@@ -4,7 +4,7 @@ import { addDoc, collection, deleteDoc, doc, documentId, onSnapshot, orderBy, qu
 import { FormEvent, useEffect, useRef, useState } from "react";
 import { db } from "../../../../../firebase";
 import { getSession, useSession } from "next-auth/react";
-import { TrashSimple } from "@phosphor-icons/react";
+import { HeartBreak, TrashSimple } from "@phosphor-icons/react";
 
 export default function Post({ username, caption, profileImage, image, id }: PostDTO) {
     const { data: session } = useSession();
@@ -14,6 +14,7 @@ export default function Post({ username, caption, profileImage, image, id }: Pos
     const [hasLiked, setHasLiked] = useState<boolean>(false)
     const [likes, setLikes] = useState<any[]>([]);
     const [hasToShowComments, setHasToShowComments] = useState<boolean>(false);
+    const [showHeart, setShowHeart] = useState<boolean>(false)
     
     useEffect(() => {
         const unsubscribe = onSnapshot(query(collection(db, "posts", id, "comments"), orderBy("timestamp", "desc")), 
@@ -34,7 +35,6 @@ export default function Post({ username, caption, profileImage, image, id }: Pos
     }, [db]);
 
     useEffect(() => {
-        console.log(likes)
         const liked = likes.findIndex((like: any) => like.id === session?.user?.uid);
         if (liked !== -1) {
             setHasLiked(true);
@@ -73,10 +73,23 @@ export default function Post({ username, caption, profileImage, image, id }: Pos
 
     const handleLikePost = async (): Promise<void> => {
         if (hasLiked) {
+            setTimeout(() => {
+                setShowHeart(true)
+            }, 250)
             await deleteDoc(doc(db, "posts", id, "likes", session?.user.uid!));
+            setTimeout(() => {
+                setShowHeart(false)
+            }, 500)
             return;
+
         }
+        setTimeout(() => {
+            setShowHeart(true)
+        }, 250)
         await setDoc(doc(db, "posts", id, "likes", session?.user.uid!), {timestamp: serverTimestamp(), uid: session?.user.uid!, username: session?.user.username })
+        setTimeout(() => {
+            setShowHeart(false)
+        }, 500)
     };
 
     return (
@@ -86,7 +99,15 @@ export default function Post({ username, caption, profileImage, image, id }: Pos
             <p className="font-semibold flex-1 text-sm">{username}</p>
         <DotsThree className="post-buttons" />
         </header>
-          <img src={image} alt={`${username} post`} className="object-cover mx-auto border-2 border-gray-50  rounded-sm shadow-sm cursor-pointer" />
+        <div className="relative">
+            <img src={image} alt={`${username} post`} className="object-cover mx-auto border-2 border-gray-50  rounded-sm shadow-sm cursor-pointer" onDoubleClick={handleLikePost} />
+            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex items-center justify-center">
+                { (hasLiked && showHeart) && <Heart weight="fill" className="text-[150px] opacity-60 text-red-500 animate-ping"/> }
+                { (!hasLiked && showHeart) && <HeartBreak  weight="fill" className="text-[150px] opacity-60 text-gray-500 animate-ping"/> }
+            </div>
+         
+
+        </div>
           { 
             likes.length 
             ?
