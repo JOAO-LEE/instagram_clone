@@ -1,10 +1,9 @@
-import { PostDTO } from "@/model/Post.dto";
-import { BookmarkSimple, ChatCircle, DotsThree, Heart, PaperPlaneTilt, Smiley, UserCircle } from "@phosphor-icons/react/dist/ssr";
-import { addDoc, collection, deleteDoc, doc, documentId, onSnapshot, orderBy, query, serverTimestamp, setDoc } from "firebase/firestore";
 import { FormEvent, useEffect, useRef, useState } from "react";
 import { db } from "../../../../../firebase";
-import { getSession, useSession } from "next-auth/react";
-import { HeartBreak, TrashSimple } from "@phosphor-icons/react";
+import { PostDTO } from "@/model/Post.dto";
+import { useSession } from "next-auth/react";
+import { addDoc, collection, deleteDoc, doc, onSnapshot, orderBy, query, serverTimestamp, setDoc } from "firebase/firestore";
+import { HeartBreak, TrashSimple, User, BookmarkSimple, ChatCircle, DotsThree, Heart, PaperPlaneTilt, Smiley } from "@phosphor-icons/react";
 
 export default function Post({ username, caption, profileImage, image, id }: PostDTO) {
     const { data: session } = useSession();
@@ -36,6 +35,7 @@ export default function Post({ username, caption, profileImage, image, id }: Pos
 
     useEffect(() => {
         const liked = likes.findIndex((like: any) => like.id === session?.user?.uid);
+        console.log(liked)
         if (liked !== -1) {
             setHasLiked(true);
             return;
@@ -86,7 +86,7 @@ export default function Post({ username, caption, profileImage, image, id }: Pos
         setTimeout(() => {
             setShowHeart(true)
         }, 250)
-        await setDoc(doc(db, "posts", id, "likes", session?.user.uid!), {timestamp: serverTimestamp(), uid: session?.user.uid!, username: session?.user.username })
+        await setDoc(doc(db, "posts", id, "likes", session?.user.uid!), { timestamp: serverTimestamp(), uid: session?.user.uid!, username: session?.user.username })
         setTimeout(() => {
             setShowHeart(false)
         }, 500)
@@ -95,9 +95,9 @@ export default function Post({ username, caption, profileImage, image, id }: Pos
     return (
      <section className="border-b w-full mx-auto p-1">
         <header className="flex items-center p-1">
-            {profileImage ? <img src={profileImage} alt={`${username} profile photo`} className="h-12 rounded-full object-cover border p-1 mr-3" /> : <UserCircle size={"48px"} className="p-1 mr-3"/>}
+            {profileImage ? <img src={profileImage} alt={`${username} profile photo`} className="h-12 rounded-full object-cover border p-1 mr-3" /> : <User weight="thin" size={"48px"} className="p-1 mr-3 border rounded-full"/>}
             <p className="font-semibold flex-1 text-sm">{username}</p>
-        <DotsThree className="post-buttons" />
+        <DotsThree weight="thin" className="post-buttons" />
         </header>
         <div className="relative">
             <img src={image} alt={`${username} post`} className="object-cover mx-auto border-2 border-gray-50  rounded-sm shadow-sm cursor-pointer" onDoubleClick={handleLikePost} />
@@ -126,18 +126,19 @@ export default function Post({ username, caption, profileImage, image, id }: Pos
               { 
                 hasLiked 
                 ? 
-                  <Heart 
+                  <Heart
                   onClick={handleLikePost}
                   weight="fill" className="post-buttons text-red-600 hover:bg-transparent hover:text-gray-300"/>
                 :
                   <Heart
+                  weight="thin"
                   onClick={handleLikePost}
                   className="post-buttons"/>
                 }
-                <ChatCircle className="post-buttons" onClick={handleChatIconClick} />
-                <PaperPlaneTilt className="post-buttons"/>
+                <ChatCircle weight="thin" className="post-buttons" onClick={handleChatIconClick} />
+                <PaperPlaneTilt weight="thin" className="post-buttons"/>
             </div>
-        <BookmarkSimple className="post-buttons"/>
+        <BookmarkSimple weight="thin" className="post-buttons"/>
         </div>
         {
             caption 

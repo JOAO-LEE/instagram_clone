@@ -6,7 +6,6 @@ import Stories from "./Stories/Stories";
 import Suggestions from "./Suggestions/Suggestions";
 import UploadModal from "../Modals/UploadModal/UploadModal";
 import { useModalState } from "../../../store/modalState";
-import { useSession } from "next-auth/react";
 
 export default function Feed() {
     const { isOpen } = useModalState();

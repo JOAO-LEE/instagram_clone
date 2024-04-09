@@ -24,7 +24,7 @@ export default function ProfilePosts({ userPosts, setStateFunction }: { userPost
         <main className="grid grid-cols-3 gap-2">
             {
                 userPosts.length ? userPosts.map((userPost, index) => (
-                    <div className="w-fit relative" key={index} 
+                    <div className="w-fit relative cursor-pointer" key={index} 
                     onMouseOver={() => handleMouseOver(index)}
                     onMouseLeave={() => handleMouseLeave(index)}
                     >
