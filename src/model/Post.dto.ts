@@ -5,5 +5,4 @@ export interface PostDTO {
     profileImage: string;
     image: string
     uid?: string
-
 }
