@@ -4,6 +4,7 @@ import { PostDTO } from "@/model/Post.dto";
 import { useSession } from "next-auth/react";
 import { addDoc, collection, deleteDoc, doc, onSnapshot, orderBy, query, serverTimestamp, setDoc } from "firebase/firestore";
 import { HeartBreak, TrashSimple, User, BookmarkSimple, ChatCircle, DotsThree, Heart, PaperPlaneTilt, Smiley } from "@phosphor-icons/react";
+import Link from "next/link";
 
 export default function Post({ username, caption, profileImage, image, id }: PostDTO) {
     const { data: session } = useSession();
@@ -95,18 +96,18 @@ export default function Post({ username, caption, profileImage, image, id }: Pos
     return (
      <section className="border-b w-full mx-auto p-1">
         <header className="flex items-center p-1">
-            {profileImage ? <img src={profileImage} alt={`${username} profile photo`} className="h-12 rounded-full object-cover border p-1 mr-3" /> : <User weight="thin" size={"48px"} className="p-1 mr-3 border rounded-full"/>}
-            <p className="font-semibold flex-1 text-sm">{username}</p>
+            <Link href={`/user/${username}`}>
+                {profileImage ? <img src={profileImage} alt={`${username} profile photo`} className="h-12 rounded-full object-cover border p-1 mr-3" /> : <User weight="thin" size={"48px"} className="p-1 mr-3 border rounded-full"/>}
+            </Link>
+            <Link href={`/user/${username}`} className="font-semibold flex-1 text-sm">{username}</Link>
         <DotsThree weight="thin" className="post-buttons" />
         </header>
         <div className="relative">
-            <img src={image} alt={`${username} post`} className="object-cover mx-auto border-2 border-gray-50  rounded-sm shadow-sm cursor-pointer" onDoubleClick={handleLikePost} />
+            <img src={image} alt={`${username} post`} className="object-cover  mx-auto border-2 border-gray-50 rounded-sm shadow-sm cursor-pointer" onDoubleClick={handleLikePost} />
             <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex items-center justify-center">
                 { (hasLiked && showHeart) && <Heart weight="fill" className="text-[150px] opacity-60 text-red-500 animate-ping"/> }
                 { (!hasLiked && showHeart) && <HeartBreak  weight="fill" className="text-[150px] opacity-60 text-gray-500 animate-ping"/> }
             </div>
-         
-
         </div>
           { 
             likes.length 
@@ -144,42 +145,45 @@ export default function Post({ username, caption, profileImage, image, id }: Pos
             caption 
             && 
                 (
-                    <p className="mt-3 truncate text-sm"><span className="font-bold mr-1">{username}</span>{caption}</p>
+                    <p className="mt-3 truncate text-sm"><Link href={`/user/${username}`}><span className="font-bold mr-1">{username}</span></Link>{caption}</p>
                 ) 
         }
-        {comments.length > 0 && (
-            <div className="mt-1">
-                { 
-                    !hasToShowComments 
-                    ?  
-                        ( 
-                            <p className="text-gray-400 cursor-pointer text-sm" onClick={() => setHasToShowComments(!hasToShowComments)}>View { comments.length === 1 ? "one" : "all" } {comments.length > 1 && comments.length} comment{comments.length > 1 ? "s" : ""}</p> 
-                        )
-                    :  
-                        (
-                            <p className="text-gray-400 cursor-pointer text-sm" onClick={() => setHasToShowComments(!hasToShowComments)}>Hide { comments.length === 1 ? "one" : "all" } { comments.length > 1 && comments.length} comment{comments.length > 1 ? "s" : ""} </p>
-                        ) 
-                }
-                { 
-                    hasToShowComments 
-                    ? 
-                        (
-                            comments.map((comment, index) => (
-                                <div key={index} className="group flex gap-1 items-center relative"> 
-                                    <p className="font-semibold text-sm">{comment.data().username}</p>
-                                    <p className="truncate text-sm flex-1">{comment.data().comment}</p>
-                                    {(session?.user.username === comment.data().username || username === session?.user.username) && <TrashSimple onClick={() => handleDeleteComment(comment.id)} className="text-black absolute right-2 top-1/2 transform -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-500 hover:text-red-500 ease-in-out cursor-pointer" weight="light"/>}
+        {
+            comments.length > 0 
+            && 
+                (
+                    <div className="mt-1">
+                        { 
+                            !hasToShowComments 
+                            ?  
+                                ( 
+                                    <p className="text-gray-400 cursor-pointer text-sm" onClick={() => setHasToShowComments(!hasToShowComments)}>View { comments.length === 1 ? "one" : "all" } {comments.length > 1 && comments.length} comment{comments.length > 1 ? "s" : ""}</p> 
+                                )
+                            :  
+                                (
+                                    <p className="text-gray-400 cursor-pointer text-sm" onClick={() => setHasToShowComments(!hasToShowComments)}>Hide { comments.length === 1 ? "one" : "all" } { comments.length > 1 && comments.length} comment{comments.length > 1 ? "s" : ""} </p>
+                                ) 
+                        }
+                        { 
+                            hasToShowComments 
+                            ? 
+                                (
+                                    comments.map((comment, index) => (
+                                        <div key={index} className="group flex gap-1 items-center relative"> 
+                                            <Link href={`/user/${comment.data().username}`}><p className="font-semibold text-sm">{comment.data().username}</p></Link>
+                                            <p className="truncate text-sm flex-1">{comment.data().comment}</p>
+                                            {(session?.user.username === comment.data().username || username === session?.user.username) && <TrashSimple onClick={() => handleDeleteComment(comment.id)} className="text-black absolute right-2 top-1/2 transform -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-500 hover:text-red-500 ease-in-out cursor-pointer" weight="light"/>}
 
-                                </div>
-                            ))
-                        )
-                    : 
-                        (
-                            <></>
-                        )   
-                } 
-            </div>
-        )}
+                                        </div>
+                                    ))
+                                )
+                            : 
+                                (
+                                    <></>
+                                )   
+                        } 
+                    </div>
+            )}
         <form
         onSubmit={handlePostComment} 
         className="flex items-center m-0">

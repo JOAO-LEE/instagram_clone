@@ -4,6 +4,7 @@ import {  doc, getDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { db } from "../../../../firebase";
 import { PostDTO } from "@/model/Post.dto";
+import MiniProfile from "@/components/Feed/MiniProfile/MiniProfile";
 
 export default function  ProfilePage({params: { id }}: { params: { id: string }}) {
     const [post, setPost] = useState<PostDTO>({} as PostDTO)
@@ -39,13 +40,14 @@ export default function  ProfilePage({params: { id }}: { params: { id: string }}
             console.error(error)
         }
     }
+    
+  return (
+    <main className="">
+      <div className="w-1/4 p-1">
+        <Post caption={post?.caption} id={id} image={post?.image} profileImage={post?.profileImage} username={post?.username} uid={post?.uid}/>
+      </div>
+    </main>
+  )
+}
 
-
-   
-    return (
-        <div className="w-1/4 p-4 max-h-fit mx-auto">
-            {/* <img src={post?.data().image} alt="" /> */}
-            <Post caption={post?.caption} id={id} image={post?.image} profileImage={post?.profileImage} username={post?.username} uid={post?.uid}/>
-        </div>
-    )
-  }
+  // w-full flex justify-center h-dvh items-center

@@ -1,6 +1,5 @@
 "use client";
 
-import { ChatCircle, Gear, Heart } from "@phosphor-icons/react";
 import { useSession } from "next-auth/react";
 import { useModalState } from "../../../store/modalState";
 import UploadModal from "../Modals/UploadModal/UploadModal";
