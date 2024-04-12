@@ -5,16 +5,18 @@ import { useSession } from "next-auth/react";
 import { addDoc, collection, deleteDoc, doc, onSnapshot, orderBy, query, serverTimestamp, setDoc } from "firebase/firestore";
 import { HeartBreak, TrashSimple, User, BookmarkSimple, ChatCircle, DotsThree, Heart, PaperPlaneTilt, Smiley } from "@phosphor-icons/react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function Post({ username, caption, profileImage, image, id }: PostDTO) {
     const { data: session } = useSession();
+    const router = useRouter();
     const commentRef = useRef<HTMLInputElement>(null);
     const [comment, setComment] = useState<string>("");
     const [comments, setComments] = useState<Array<any>>([]);
     const [hasLiked, setHasLiked] = useState<boolean>(false)
     const [likes, setLikes] = useState<any[]>([]);
     const [hasToShowComments, setHasToShowComments] = useState<boolean>(false);
-    const [showHeart, setShowHeart] = useState<boolean>(false)
+    const [showHeart, setShowHeart] = useState<boolean>(false);
     
     useEffect(() => {
         const unsubscribe = onSnapshot(query(collection(db, "posts", id, "comments"), orderBy("timestamp", "desc")), 
@@ -59,6 +61,7 @@ export default function Post({ username, caption, profileImage, image, id }: Pos
             comment: commentToSend,
             username: session?.user.username,
             userImage: session?.user.image ?? "",
+            uid: session?.user.uid,
             timestamp: serverTimestamp()
         });
     };
@@ -169,11 +172,18 @@ export default function Post({ username, caption, profileImage, image, id }: Pos
                             ? 
                                 (
                                     comments.map((comment, index) => (
-                                        <div key={index} className="group flex gap-1 items-center relative"> 
-                                            <Link href={`/user/${comment.data().username}`}><p className="font-semibold text-sm">{comment.data().username}</p></Link>
+                                        <div key={index} className="group flex gap-1 items-center relative">
+                                            <Link href={{pathname: `user/${comment.data().username}`, query: {uid: `${comment.data().uid}`}  }}>
+                                                <p className="font-semibold text-sm">{comment.data().username}</p>
+                                            </Link> 
                                             <p className="truncate text-sm flex-1">{comment.data().comment}</p>
-                                            {(session?.user.username === comment.data().username || username === session?.user.username) && <TrashSimple onClick={() => handleDeleteComment(comment.id)} className="text-black absolute right-2 top-1/2 transform -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-500 hover:text-red-500 ease-in-out cursor-pointer" weight="light"/>}
-
+                                            {
+                                                (session?.user.username === comment.data().username || username === session?.user.username) 
+                                                && 
+                                                    (
+                                                        <TrashSimple onClick={() => handleDeleteComment(comment.id)} className="text-black absolute right-2 top-1/2 transform -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-500 hover:text-red-500 ease-in-out cursor-pointer" weight="light"/>
+                                                    )
+                                            }
                                         </div>
                                     ))
                                 )

@@ -2,6 +2,10 @@
 
 export default function Error() {
     return (
-        <p>Um erro ocorreu.</p>
+        <main className="h-dvh flex items-end">
+            <section>
+            
+            </section>
+        </main>
     )
 }

@@ -1,6 +1,5 @@
 "use client";
 
-import { useSession } from "next-auth/react";
 import { useModalState } from "../../../store/modalState";
 import UploadModal from "../Modals/UploadModal/UploadModal";
 import { useEffect, useState } from "react";
@@ -11,62 +10,67 @@ import ProfileActions from "./ProfileActions/ProfileActions";
 import { ProfilePostDTO } from "@/model/ProfilePost.dto";
 import ProfilePosts from "./ProfilePosts/ProfilePosts";
 import ProfileInfo from "./ProfileInfo/ProfileInfo/ProfileInfo";
+import { useSearchParams } from 'next/navigation'
 
-export default function Profile() {
-    const { data: session } = useSession();
+export default function Profile({ username }: { username: string }) {
+    const searchParams = useSearchParams();
+    const uidParam = searchParams.get('uid');
     const { isOpen } = useModalState();
     const [userPosts, setUserPosts] = useState<ProfilePostDTO[]>([]);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+
 
     useEffect(() => {
         const fetchUserPosts = async () => {
             try {
-                if (session && (session.user.username && session.user.uid)) {
+                setIsLoading(true);
+                const posts = query(collection(db, "posts"),
+                    where("username", "==", username), 
+                    where("uid", "==", uidParam));
+                    
+                const queryPosts = await getDocs(posts);
 
-                    const posts = query(collection(db, "posts"),
-                        where("username", "==", session.user.username), 
-                        where("uid", "==", session.user.uid));
-                       
-                    const queryPosts = await getDocs(posts);
+                const postsData = queryPosts.docs.map(async(doc)=> {
 
-                    const postsData = queryPosts.docs.map(async(doc)=> {
-
-                        const likes = query(collection(db, "posts", doc.id, "likes"))
-                        const queryLikes = await getDocs(likes);
-                        const likesAmount = queryLikes.docs.map(docLikes => {
-                            return docLikes.data();
-                        });
-
-                        const comments = query(collection(db, "posts", doc.id, "comments"))
-                        const queryComments = await getDocs(comments);
-                        const commentsAmount = queryComments.docs.map(docComments => {
-                            return docComments.data();
-                        });
-
-                        return { 
-                            id: doc.id,
-                            stats: false, 
-                            ...doc.data(), 
-                            likesAmount: likesAmount.length, 
-                            commentsAmount: commentsAmount.length 
-                        } as ProfilePostDTO;
+                    const likes = query(collection(db, "posts", doc.id, "likes"))
+                    const queryLikes = await getDocs(likes);
+                    const likesAmount = queryLikes.docs.map(docLikes => {
+                        return docLikes.data();
                     });
-                    const promiseAllPosts = await Promise.all(postsData);
-                    setUserPosts(promiseAllPosts);
-                }
+
+                    const comments = query(collection(db, "posts", doc.id, "comments"))
+                    const queryComments = await getDocs(comments);
+                    const commentsAmount = queryComments.docs.map(docComments => {
+                        return docComments.data();
+                    });
+
+                    return { 
+                        id: doc.id,
+                        stats: false, 
+                        ...doc.data(), 
+                        likesAmount: likesAmount.length, 
+                        commentsAmount: commentsAmount.length 
+                    } as ProfilePostDTO;
+                });
+                const promiseAllPosts = await Promise.all(postsData);
+                setUserPosts(promiseAllPosts);
+                setIsLoading(false);
+
             } catch (error) {
+                setIsLoading(false)
                 console.error("Error fetching user posts:", error);
             }
         };
         
-        if (session) {
+        if (username && uidParam) {
             fetchUserPosts();
         }
-    }, [session, db]);
+    }, [db]);
     
     return (
         <>
             {
-                userPosts.length === 0 && !(session?.user.username && session.user.uid)
+                isLoading
                 ?
                     (
                         <ProfileLoadingSkeleton />
@@ -74,12 +78,13 @@ export default function Profile() {
                 :   
                     (
                         <div className="flex gap-1 flex-col items-center">
-                            <ProfileInfo session={session} userPosts={userPosts} />
+                            <ProfileInfo userPosts={userPosts} userInfo={{username, uid: uidParam!}}/>
                             <ProfileActions />
                             <ProfilePosts userPosts={userPosts} setStateFunction={setUserPosts}/>
                         </div> 
                     )
             }
+            {(!isLoading && !userPosts.length) && <p>There are no posts...</p>}
             {
                 isOpen 
                 && 

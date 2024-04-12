@@ -27,6 +27,7 @@ export default function SignForm({ pageType }: { pageType: number }) {
                     await addDoc(collection(db, "users"), {
                         uid: userCredential.user.uid,
                         email: email,
+                        profileImage: null
                     });
                     await signIn("credentials", { email, password, redirect: true, callbackUrl: "/" });
                 }
@@ -37,8 +38,6 @@ export default function SignForm({ pageType }: { pageType: number }) {
             router.push("/");
         } catch (error) {
             setHasFormError(true);
-        } finally {
-            setIsLoading(false);
         }
     }
 

@@ -1,7 +1,7 @@
 import Sidebar from "@/components/Sidebar/Sidebar";
 import Profile from "@/components/Profile/Profile";
 
-export default function ProfilePage({params: {profile}}: {params: {profile: string}}) {
+export default function ProfilePage({ params: { profile } }: { params: { profile: string } }) {
   // console.log({profile}, "oi")
   return (
     <div className="flex md:gap-3">
