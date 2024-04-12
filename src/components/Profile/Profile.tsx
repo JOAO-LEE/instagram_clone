@@ -11,6 +11,8 @@ import { ProfilePostDTO } from "@/model/ProfilePost.dto";
 import ProfilePosts from "./ProfilePosts/ProfilePosts";
 import ProfileInfo from "./ProfileInfo/ProfileInfo/ProfileInfo";
 import { useSearchParams } from 'next/navigation'
+import { useSession } from "next-auth/react";
+import NoPosts from "../Feed/Posts/Post/NoPosts";
 
 export default function Profile({ username }: { username: string }) {
     const searchParams = useSearchParams();
@@ -18,12 +20,18 @@ export default function Profile({ username }: { username: string }) {
     const { isOpen } = useModalState();
     const [userPosts, setUserPosts] = useState<ProfilePostDTO[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
-
+    const [isLoggedUser, setIsLoggedUser] = useState<boolean>(false);
+    const { data: session} = useSession();
 
     useEffect(() => {
-        const fetchUserPosts = async () => {
+        const fetchUserInfo = async () => {
+            const isItLoggedUser = uidParam === session?.user.uid && username === session?.user.username;
             try {
                 setIsLoading(true);
+                if (isItLoggedUser) {
+                    setIsLoggedUser(true)
+                }
+
                 const posts = query(collection(db, "posts"),
                     where("username", "==", username), 
                     where("uid", "==", uidParam));
@@ -63,7 +71,7 @@ export default function Profile({ username }: { username: string }) {
         };
         
         if (username && uidParam) {
-            fetchUserPosts();
+            fetchUserInfo();
         }
     }, [db]);
     
@@ -84,7 +92,14 @@ export default function Profile({ username }: { username: string }) {
                         </div> 
                     )
             }
-            {(!isLoading && !userPosts.length) && <p>There are no posts...</p>}
+            {   
+                (!isLoading && !userPosts.length) 
+                &&
+                    (
+                        <NoPosts username={username}/>
+                    )
+                 
+            }
             {
                 isOpen 
                 && 

@@ -5,11 +5,9 @@ import { useSession } from "next-auth/react";
 import { addDoc, collection, deleteDoc, doc, onSnapshot, orderBy, query, serverTimestamp, setDoc } from "firebase/firestore";
 import { HeartBreak, TrashSimple, User, BookmarkSimple, ChatCircle, DotsThree, Heart, PaperPlaneTilt, Smiley } from "@phosphor-icons/react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 
 export default function Post({ username, caption, profileImage, image, id }: PostDTO) {
     const { data: session } = useSession();
-    const router = useRouter();
     const commentRef = useRef<HTMLInputElement>(null);
     const [comment, setComment] = useState<string>("");
     const [comments, setComments] = useState<Array<any>>([]);
@@ -38,7 +36,6 @@ export default function Post({ username, caption, profileImage, image, id }: Pos
 
     useEffect(() => {
         const liked = likes.findIndex((like: any) => like.id === session?.user?.uid);
-        console.log(liked)
         if (liked !== -1) {
             setHasLiked(true);
             return;

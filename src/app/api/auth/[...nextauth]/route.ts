@@ -1,5 +1,5 @@
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
+import { addDoc, collection, getDocs, query, serverTimestamp, where } from "firebase/firestore";
 import NextAuth, { NextAuthOptions } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import GoogleProvider from 'next-auth/providers/google';
@@ -30,7 +30,7 @@ export const authOptions: NextAuthOptions = {
     },
     secret: process.env.NEXTAUTH_SECRET,
     callbacks: {
-        async jwt({ token, user, session, profile }) {
+        async jwt({ token, user }) {
             try {
                 if (user) {
                     token.uid = user.uid;
@@ -43,25 +43,25 @@ export const authOptions: NextAuthOptions = {
             return token;
         },
         async session({ session, token }) {
+            const username = session.user?.email?.slice(0, session.user?.email.indexOf('@'));
+            session.user.username = username
+            session.user.uid = token.sub ?? token.uid as string;
             try {
                 if (session.user) {
-                    const username = session.user?.email?.slice(0, session.user?.email.indexOf('@'));
-                    session.user.username = username
-                    const userQuery = query(collection(db, "users"), where("uid", "==", session.user.uid));
+                    const userQuery = query(collection(db, "users"), where("uid", "==", session.user?.uid));
                     const userDocs = await getDocs(userQuery);
                     if (userDocs.empty) {
-                        session.user.uid = token.sub ?? token.uid as string;
                         await addDoc(collection(db, "users"), {
                             username, 
                             uid: session.user.uid,
                             email: session.user.email,
-                            profileImage: session.user.image ?? null
+                            profileImage: session.user.image ?? null,
+                            createdAt: serverTimestamp()
                         });
                     }
                 }
-
             } catch (error) {
-                console.error(error)
+                console.error({error})
             }
             return session;
         },

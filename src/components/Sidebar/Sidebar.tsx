@@ -5,8 +5,8 @@ import ThreadsIcon from "@/assets/icons/ThreadsIcon";
 
 export default function Sidebar() {
     return ( 
-        <nav className="hidden sm:inline-block sticky top-0 max-h-svh border border-b-0 border-l-0 box-border">
-            <div className="flex flex-col p-4 h-lvh box-border">
+        <nav className="hidden sm:inline-block sticky top-0 max-h-dvh border border-b-0 border-l-0 box-border">
+            <div className="flex flex-col p-4 h-screen box-border">
                 <div className="cursor-pointer h-24 w-[103px] relative hidden md:inline-grid lg:inline-grid p-1">
                     <Image 
                     width={100}

@@ -8,7 +8,6 @@ import { PostDTO } from "@/model/Post.dto";
 export default function  ProfilePage({params: { id }}: { params: { id: string }}) {
     const [post, setPost] = useState<PostDTO>({} as PostDTO)
 
-
     useEffect(() => {
         const getData = async (): Promise<void> => {
           try {
@@ -27,13 +26,13 @@ export default function  ProfilePage({params: { id }}: { params: { id: string }}
             let post: any;
             const docRef = doc(db, "posts", id);
             const docSnap = await getDoc(docRef);
-            console.log(docSnap)
+
     
             if (!docSnap.exists()) {
                 throw new Error()
             } 
             post = docSnap.data();
-            console.log(post)
+
             return post
         } catch (error) {
             console.error(error)

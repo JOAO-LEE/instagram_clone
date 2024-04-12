@@ -4,6 +4,7 @@ import { useModalState } from "../../../../store/modalState";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { Compass, FilmSlate, Heart, House, MagnifyingGlass, MessengerLogo, Plus, User } from "@phosphor-icons/react";
+import Link from "next/link";
 
 export default function Navigation() {
     const { action } = useModalState();
@@ -40,9 +41,11 @@ export default function Navigation() {
                 <Plus weight="thin" className="text-2xl" />
                 <p className="sm:hidden md:inline lg:inline">Create</p>
             </li>
-           <li className="sidebar-buttons" onClick={() => router.push(`/user/${session?.user.username}`)}>
-                {session?.user.image ? <img src={session?.user.image!} alt="User profile image" className="h-6 rounded-full" /> :  <User weight="thin" size={25} className="border rounded-full" /> }
-                <p className="sm:hidden md:inline lg:inline">Profile</p>
+           <li className="sidebar-buttons">
+                <Link href={{pathname: `user/${session?.user.username}`, query: { uid: session?.user.uid }  }}>
+                    {session?.user.image ? <img src={session?.user.image!} alt="User profile image" className="h-6 rounded-full" /> :  <User weight="thin" size={25} className="border rounded-full" /> }
+                    <p className="sm:hidden md:inline lg:inline">Profile</p>
+                </Link>
             </li>
         </ul>
     )
