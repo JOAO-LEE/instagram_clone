@@ -6,7 +6,8 @@ import { addDoc, collection, deleteDoc, doc, onSnapshot, orderBy, query, serverT
 import { HeartBreak, TrashSimple, User, BookmarkSimple, ChatCircle, DotsThree, Heart, PaperPlaneTilt, Smiley } from "@phosphor-icons/react";
 import Link from "next/link";
 
-export default function Post({ username, caption, profileImage, image, id }: PostDTO) {
+export default function Post({ username, caption, profileImage, image, id, uid }: PostDTO) {
+
     const { data: session } = useSession();
     const commentRef = useRef<HTMLInputElement>(null);
     const [comment, setComment] = useState<string>("");
@@ -15,6 +16,7 @@ export default function Post({ username, caption, profileImage, image, id }: Pos
     const [likes, setLikes] = useState<any[]>([]);
     const [hasToShowComments, setHasToShowComments] = useState<boolean>(false);
     const [showHeart, setShowHeart] = useState<boolean>(false);
+
     
     useEffect(() => {
         const unsubscribe = onSnapshot(query(collection(db, "posts", id, "comments"), orderBy("timestamp", "desc")), 
@@ -96,10 +98,12 @@ export default function Post({ username, caption, profileImage, image, id }: Pos
     return (
      <section className="border-b w-full mx-auto p-1">
         <header className="flex items-center p-1">
-            <Link href={`/user/${username}`}>
+            <Link href={{pathname: `user/${username}`, query: {uid} }}>
                 {profileImage ? <img src={profileImage} alt={`${username} profile photo`} className="h-12 rounded-full object-cover border p-1 mr-3" /> : <User weight="thin" size={"48px"} className="p-1 mr-3 border rounded-full"/>}
             </Link>
-            <Link href={`/user/${username}`} className="font-semibold flex-1 text-sm">{username}</Link>
+            <Link href={{pathname: `user/${username}`, query: {uid} }} className="font-semibold flex-1 text-sm">
+                {username}
+            </Link>
         <DotsThree weight="thin" className="post-buttons" />
         </header>
         <div className="relative">
@@ -145,7 +149,7 @@ export default function Post({ username, caption, profileImage, image, id }: Pos
             caption 
             && 
                 (
-                    <p className="mt-3 truncate text-sm"><Link href={`/user/${username}`}><span className="font-bold mr-1">{username}</span></Link>{caption}</p>
+                    <p className="mt-3 truncate text-sm"><Link href={{pathname: `user/${username}`, query: {uid} }}><span className="font-bold mr-1">{username}</span></Link>{caption}</p>
                 ) 
         }
         {
@@ -170,7 +174,7 @@ export default function Post({ username, caption, profileImage, image, id }: Pos
                                 (
                                     comments.map((comment, index) => (
                                         <div key={index} className="group flex gap-1 items-center relative">
-                                            <Link href={{pathname: `user/${comment.data().username}`, query: {uid: `${comment.data().uid}`}  }}>
+                                            <Link href={{pathname: `user/${comment.data().username}`, query: {uid: `${comment.data().uid}`} }}>
                                                 <p className="font-semibold text-sm">{comment.data().username}</p>
                                             </Link> 
                                             <p className="truncate text-sm flex-1">{comment.data().comment}</p>

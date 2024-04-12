@@ -16,8 +16,10 @@ export default  function Posts() {
         const unsubscribe = onSnapshot(query(collection(db, "posts"), orderBy("timestamp", "desc")), 
         (snapshot) => {
             setPosts(snapshot.docs);
+            
         });
         return () => unsubscribe()
+
 
     }, [db]);
 
@@ -30,7 +32,7 @@ export default  function Posts() {
                     <>
                         {
                             posts.map((post: any) => (
-                                <Post key={post.id} username={post.data().username} caption={post.data().caption} image={post.data().image} profileImage={post.data().profileImage} id={post.id}  />
+                                <Post key={post.id} username={post.data().username} caption={post.data().caption} image={post.data().image} profileImage={post.data().profileImage} id={post.id} uid={post.data().uid} />
                             )) 
                         } 
                     </> 

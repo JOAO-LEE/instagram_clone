@@ -20,18 +20,13 @@ export default function Profile({ username }: { username: string }) {
     const { isOpen } = useModalState();
     const [userPosts, setUserPosts] = useState<ProfilePostDTO[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
-    const [isLoggedUser, setIsLoggedUser] = useState<boolean>(false);
     const { data: session} = useSession();
 
     useEffect(() => {
         const fetchUserInfo = async () => {
+            setIsLoading(true);
             const isItLoggedUser = uidParam === session?.user.uid && username === session?.user.username;
             try {
-                setIsLoading(true);
-                if (isItLoggedUser) {
-                    setIsLoggedUser(true)
-                }
-
                 const posts = query(collection(db, "posts"),
                     where("username", "==", username), 
                     where("uid", "==", uidParam));
@@ -98,7 +93,6 @@ export default function Profile({ username }: { username: string }) {
                     (
                         <NoPosts username={username}/>
                     )
-                 
             }
             {
                 isOpen 
