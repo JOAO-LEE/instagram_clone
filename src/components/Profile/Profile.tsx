@@ -23,8 +23,8 @@ export default function Profile({ username }: { username: string }) {
     const { data: session} = useSession();
 
     useEffect(() => {
+        setIsLoading(true);
         const fetchUserInfo = async () => {
-            setIsLoading(true);
             try {
                 const posts = query(collection(db, "posts"),
                     where("username", "==", username), 
@@ -67,40 +67,25 @@ export default function Profile({ username }: { username: string }) {
         if (username && uidParam) {
             fetchUserInfo();
         }
-    }, [db]);
+    }, []);
     
     return (
         <>
             {
-                isLoading
-                ?
-                    (
-                        <ProfileLoadingSkeleton />
-                    ) 
-                :   
-                    (
-                        <div className="flex gap-1 flex-col items-center">
-                            <ProfileInfo userPosts={userPosts} userInfo={{username, uid: uidParam!}}/>
-                            <ProfileActions />
-                            <ProfilePosts userPosts={userPosts} setStateFunction={setUserPosts}/>
-                        </div> 
-                    )
-            }
-            {   
-                (!isLoading && !userPosts.length) 
-                &&
-                    (
-                        <NoPosts username={username}/>
-                    )
+                !isLoading && userPosts.length > 0 && (
+                    <div className="flex gap-1 flex-col items-center">
+                        <ProfileInfo userPosts={userPosts} userInfo={{username, uid: uidParam!}}/>
+                        <ProfileActions />
+                        <ProfilePosts userPosts={userPosts} setStateFunction={setUserPosts}/>
+                    </div> 
+                )
             }
             {
-                isOpen 
-                && 
-                    (
-                        <UploadModal />
-
-                    )
+                isOpen && (
+                    <UploadModal />
+                )
             }
+            { isLoading && <ProfileLoadingSkeleton /> }
         </>
     )         
 }

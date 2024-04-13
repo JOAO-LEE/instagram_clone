@@ -2,7 +2,7 @@ import Image from "next/image";
 import SignForm from "./SignForm";
 import Link from "next/link";
 import Downloads from "../Downloads/Downloads";
-import { SignEnum } from "@/enum/SignEnum";
+import { SignEnum } from "@/enum/SignEnum.enum";
 import SignGoogle from "../SignGoogle/SignGoogle";
 
 

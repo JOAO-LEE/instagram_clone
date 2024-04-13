@@ -3,85 +3,96 @@
 import { ProfilePostDTO } from "@/model/ProfilePost.dto";
 import ProfileStats from "../ProfileStats";
 import { Gear, UserPlus, User, UserCheck } from "@phosphor-icons/react";
-// import { User } from "@phosphor-icons/react/dist/ssr/User";
 import { useSession } from "next-auth/react";
 import { PostDTO } from "@/model/Post.dto";
 import { useEffect, useState } from "react";
-import { collection, deleteDoc, doc, getDoc, getDocs, onSnapshot, query, setDoc, where } from "firebase/firestore";
+import { collection, deleteDoc, doc, getDoc, getDocs, onSnapshot, orderBy, query, setDoc, where } from "firebase/firestore";
 import { db } from "../../../../../firebase";
-import { username } from "minifaker";
-
-type UserInfo = Pick<PostDTO, 'uid' | 'username'>;
+import { UserInfo, UserPageDTO } from "@/model/UserPage.dto";
+import { getUser } from "@/utils/getUser";
 
 export default function ProfileInfo({ userPosts, userInfo }: { userPosts: Array<ProfilePostDTO>, userInfo: UserInfo } ) {
     const { data: session } = useSession();
     const [isLoggedUser, setIsLoggedUser] = useState<boolean>(false);
     const [user, setUser] = useState<any>();
     const [follows, setFollows] = useState<boolean>(false);
+    // const [userPage, setUserPage] = useState<UserPageDTO>({} as UserPageDTO)
+
     useEffect(() => {
-        const isLoggedUserConfirmation = session?.user.username === userInfo.username && session?.user.uid === userInfo.uid
+        const isLoggedUserConfirmation = session?.user.username === userInfo.username && session?.user.uid === userInfo.uid;
         if (isLoggedUserConfirmation) {
-            setIsLoggedUser(true)
-            // const unsubscribe = onSnapshot(query(collection(db, "users", "following"), where("uid", "==", userInfo.uid)), 
-            // (snapshot) => {
-           
-                return;
-        // });
-        }
-        
-
-        getUser()
-    }, [])
-
- 
-    const getUser = async () => {
-        try {
-            const userQuery = query(collection(db, "users"),
-            where("uid", "==", userInfo.uid)); 
-            const searchedUser = await getDocs(userQuery);
-            // const
-            if (searchedUser.empty) {
-                throw new Error('User does not exist.')
-            }
-            const foundUser = searchedUser.docs[0]?.data();
-            setUser(foundUser);
-
-        } catch (error) {
-            console.log(error);
-        }
-    }
-
-    const getLoggedUser = async () => {
-        const userQuery = query(collection(db, "users"), where("uid", "==", session?.user?.uid));
-        const userDocs = await getDocs(userQuery);
-        console.log(userDocs.docs[0].id)
-        return userDocs.docs[0];
-    }
-
-    const handleFollow = async (): Promise<void> => {
-        const loggedUser = await getLoggedUser();
-        if (!isLoggedUser && !follows) {
-            console.log('oi')
-            await setDoc(doc(db, "users", loggedUser.id, "following", userInfo.uid! ), { uid: userInfo.uid, username: userInfo.username });
-            setFollows(true);
+            setIsLoggedUser(true);
+            // const fetchedLoggedUser = async () => {
+            //     const loggedUser = await getUser(session?.user.uid!);
+            //     setUserPage(prev => ({...prev, uid: loggedUser.data().uid, username: session?.user?.username! }));
+            //     onSnapshot(query(collection(db, "users", loggedUser.id, "following")), 
+            //     (snapshot) => {
+            //         setUserPage(prev => ({ ...prev, following: snapshot.docs.map(doc => doc.data as UserInfo) }));
+            //     });
+            //     onSnapshot(query(collection(db, "users", loggedUser.id, "followers")), 
+            //     (snapshot) => {
+            //         setUserPage(prev => ({ ...prev, followers: snapshot.docs.map(doc => doc.data as UserInfo) }));
+            //     });
+            // }
+            // fetchedLoggedUser()
             return;
         }
-        await deleteDoc(doc(db, "users", loggedUser.id, "following", userInfo.uid!))
+
+
+        const fetchedUser = async () => {
+            try {
+                if (session) {
+                    const userFetched = await getUser(userInfo.uid!);
+                    const queryFollowing = query(collection(db, "users", userFetched.id, "followers"), where("uid", "==", session?.user?.uid!));
+                    const userResult = await getDocs(queryFollowing);
+                    console.log(userResult)
+                    if (userResult.docs.length) {
+                        setFollows(true);
+                        return;
+                    }
+                    setFollows(false); 
+                }
+                
+            } catch (error) {
+                
+            }
+        }
+        fetchedUser()
+
+        // setUser(prev => ({ ...prev}));
+    }, [session]);
+
+   
+
+    const handleFollow = async (): Promise<void> => {
+        try {
+            const loggedUser = await getUser(session?.user.uid!);
+            const visitedUser = await getUser(userInfo.uid!);
+            if (!isLoggedUser && !follows) {
+                await setDoc(doc(db, "users", loggedUser.id, "following", userInfo.uid!), { uid: userInfo.uid, username: userInfo.username });
+                await setDoc(doc(db, "users", visitedUser.id, "followers", session?.user.uid!), { uid: session?.user.uid , username: session?.user.username })
+                setFollows(true);
+                return;
+            }
+            await deleteDoc(doc(db, "users", loggedUser.id, "following", userInfo.uid!))
+            await deleteDoc(doc(db, "users", visitedUser.id, "followers", session?.user.uid!))
+
         setFollows(false);
+        } catch (error) {
+        }
     };
 
     return (
         <header className="flex gap-4 p-4">
-
             <section className="p-2">
-            {
+            {/* {
                 isLoggedUser && session?.user.image 
                 ? 
                     (
                         <img src={session?.user.image} alt="" className="rounded-full" />
                     ) 
                 : 
-                !isLoggedUser && user?.profileImage 
+                isLoggedUser && user?.profileImage 
                 ? 
                     (
                         <img src={user?.profileImage} alt="" className="rounded-full" />
@@ -90,7 +101,7 @@ export default function ProfileInfo({ userPosts, userInfo }: { userPosts: Array<
                     (
                         <User size={"74.172px"} weight="thin" className="border rounded-full" />
                     )
-            }
+            } */}
             </section>
             <section className="flex flex-col w-full p-2">
                 <section className="flex gap-2 items-center p-4 w-full">

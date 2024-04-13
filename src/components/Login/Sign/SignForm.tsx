@@ -3,7 +3,7 @@
 import { FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { CircleNotch } from "@phosphor-icons/react";
-import { SignEnum } from "@/enum/SignEnum";
+import { SignEnum } from "@/enum/SignEnum.enum";
 import { signIn, useSession } from "next-auth/react";
 import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
 import { addDoc, collection } from "firebase/firestore";

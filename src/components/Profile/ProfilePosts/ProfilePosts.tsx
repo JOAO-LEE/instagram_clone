@@ -1,7 +1,9 @@
 "use client";
 
+import NoPosts from "@/components/Feed/Posts/Post/NoPosts";
 import { ProfilePostDTO } from "@/model/ProfilePost.dto";
 import { Heart, ChatCircle } from "@phosphor-icons/react";
+import { username } from "minifaker";
 import { useRouter } from "next/navigation";
 import { Dispatch, SetStateAction } from "react";
 
@@ -60,8 +62,10 @@ export default function ProfilePosts({ userPosts, setStateFunction }: { userPost
                     </div>
                 ))
                 :
-                <>
-                </>
+                (
+                    <NoPosts username={'user'}/>
+                )
+                
             }
         </main>
     )
