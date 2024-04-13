@@ -72,25 +72,25 @@ export default function ProfileInfo({ userPosts, userInfo }: { userPosts: Array<
 
     return (
         <header className="flex gap-4 p-4">
+
             <section className="p-2">
-                { 
-                    isLoggedUser
-                    ? 
-                        (
-                            <img src={session?.user.image!} alt="" className="rounded-full" />
-                        ) 
-                    : 
-                        (
-                            <img src={user?.profileImage} alt="" className="rounded-full" />
-                        ) 
-                } 
-                {
-                    user && !user?.profileImage
-                    && 
-                        (
-                            <User size={"74.172px"} weight="thin" className="border rounded-full" />
-                        )
-                }
+            {
+                isLoggedUser && session?.user.image 
+                ? 
+                    (
+                        <img src={session?.user.image} alt="" className="rounded-full" />
+                    ) 
+                : 
+                !isLoggedUser && user?.profileImage 
+                ? 
+                    (
+                        <img src={user?.profileImage} alt="" className="rounded-full" />
+                    ) 
+                :   
+                    (
+                        <User size={"74.172px"} weight="thin" className="border rounded-full" />
+                    )
+            }
             </section>
             <section className="flex flex-col w-full p-2">
                 <section className="flex gap-2 items-center p-4 w-full">

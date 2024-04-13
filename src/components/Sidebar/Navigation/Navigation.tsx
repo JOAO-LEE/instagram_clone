@@ -4,23 +4,23 @@ import { useModalState } from "../../../../store/modalState";
 import { useSession } from "next-auth/react";
 import { usePathname, useRouter } from "next/navigation";
 import { Compass, FilmSlate, Heart, House, MagnifyingGlass, MessengerLogo, Plus, User } from "@phosphor-icons/react";
-import Link from "next/link";
 
 export default function Navigation() {
     const { action } = useModalState();
     const { data: session } = useSession();
     const router = useRouter();
     const pathName = usePathname();
-    // const location = uselo
-
+ 
     const handleNavigateToProfile = () => {
-        console.log(pathName)
-        const isProfilePage = pathName.includes(`/user/${session?.user?.username}`);
-        if(isProfilePage) {
-            router.refresh()
+
+        const userInfo = `${session?.user?.username}?uid=${session?.user?.uid}`;
+        const isProfilePage = pathName.includes(`/user/${userInfo}`);
+        
+        if (isProfilePage) {
+            router.refresh();
             return;
         }
-        router.push(`user/${session?.user?.username}?uid=${session?.user?.uid}`)
+        router.push(`/user/${userInfo}`);
     };
     
     return (
@@ -54,10 +54,18 @@ export default function Navigation() {
                 <p className="sm:hidden md:inline lg:inline">Create</p>
             </li>
            <li className="sidebar-buttons" onClick={handleNavigateToProfile}>
-                {/* <Link href={{pathname: `user/${session?.user.username}`, query: { uid: session?.user.uid }  }}> */}
-                    {session?.user.image ? <img src={session?.user.image!} alt="User profile image" className="h-6 rounded-full" /> :  <User weight="thin" size={25} className="border rounded-full" /> }
-                    <p className="sm:hidden md:inline lg:inline">Profile</p>
-                {/* </Link> */}
+                {
+                    session?.user.image 
+                    ?
+                        (
+                            <img src={session?.user.image!} alt="User profile image" className="h-6 rounded-full" /> 
+                        )
+                    :  
+                        ( 
+                            <User weight="thin" size={25} className="border rounded-full" /> 
+                        )
+                }
+                <p className="sm:hidden md:inline lg:inline">Profile</p>
             </li>
         </ul>
     )

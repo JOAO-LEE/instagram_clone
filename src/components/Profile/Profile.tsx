@@ -25,7 +25,6 @@ export default function Profile({ username }: { username: string }) {
     useEffect(() => {
         const fetchUserInfo = async () => {
             setIsLoading(true);
-            const isItLoggedUser = uidParam === session?.user.uid && username === session?.user.username;
             try {
                 const posts = query(collection(db, "posts"),
                     where("username", "==", username), 
