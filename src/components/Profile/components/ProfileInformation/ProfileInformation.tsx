@@ -1,7 +1,7 @@
 'use client'
 
 import { ProfilePostDTO } from "@/model/ProfilePost.dto";
-import ProfileStats from "../ProfileStats";
+import ProfileStats from "../ProfileStats/ProfileStats";
 import { Gear, UserPlus, User, UserCheck } from "@phosphor-icons/react";
 import { useSession } from "next-auth/react";
 import { PostDTO } from "@/model/Post.dto";
@@ -10,56 +10,37 @@ import { collection, deleteDoc, doc, getDoc, getDocs, onSnapshot, orderBy, query
 import { db } from "../../../../../firebase";
 import { UserInfo, UserPageDTO } from "@/model/UserPage.dto";
 import { getUser } from "@/utils/getUser";
+import { LoggedUser } from "@/enum/LoggedUser.enum";
+import { ProfileInfo } from "@/model/Profile/ProfileInfo";
 
-export default function ProfileInfo({ userPosts, userInfo }: { userPosts: Array<ProfilePostDTO>, userInfo: UserInfo } ) {
+export default function ProfileInfo({ userInfo, isLoggedUser }: ProfileInfo) {
     const { data: session } = useSession();
-    const [isLoggedUser, setIsLoggedUser] = useState<boolean>(false);
-    const [user, setUser] = useState<any>();
+    // const [user, setUser] = useState<any>();
     const [follows, setFollows] = useState<boolean>(false);
-    // const [userPage, setUserPage] = useState<UserPageDTO>({} as UserPageDTO)
 
     useEffect(() => {
-        const isLoggedUserConfirmation = session?.user.username === userInfo.username && session?.user.uid === userInfo.uid;
-        if (isLoggedUserConfirmation) {
-            setIsLoggedUser(true);
-            // const fetchedLoggedUser = async () => {
-            //     const loggedUser = await getUser(session?.user.uid!);
-            //     setUserPage(prev => ({...prev, uid: loggedUser.data().uid, username: session?.user?.username! }));
-            //     onSnapshot(query(collection(db, "users", loggedUser.id, "following")), 
-            //     (snapshot) => {
-            //         setUserPage(prev => ({ ...prev, following: snapshot.docs.map(doc => doc.data as UserInfo) }));
-            //     });
-            //     onSnapshot(query(collection(db, "users", loggedUser.id, "followers")), 
-            //     (snapshot) => {
-            //         setUserPage(prev => ({ ...prev, followers: snapshot.docs.map(doc => doc.data as UserInfo) }));
-            //     });
-            // }
-            // fetchedLoggedUser()
-            return;
-        }
-
 
         const fetchedUser = async () => {
             try {
-                if (session) {
-                    const userFetched = await getUser(userInfo.uid!);
-                    const queryFollowing = query(collection(db, "users", userFetched.id, "followers"), where("uid", "==", session?.user?.uid!));
-                    const userResult = await getDocs(queryFollowing);
-                    console.log(userResult)
-                    if (userResult.docs.length) {
-                        setFollows(true);
-                        return;
-                    }
-                    setFollows(false); 
+                const userFetched = await getUser(userInfo.uid!);
+                console.log(userFetched)
+                const queryFollowing = query(collection(db, "users", userFetched.id, "followers"), where("uid", "==", session?.user?.uid!));
+                const userResult = await getDocs(queryFollowing);
+                if (userResult.docs.length) {
+                    setFollows(true);
+                    return;
                 }
-                
+                setFollows(false); 
             } catch (error) {
+                console.log(error)
                 
             }
         }
-        fetchedUser()
 
-        // setUser(prev => ({ ...prev}));
+        if (session && session?.user?.uid) {
+            fetchedUser()
+        }
+
     }, [session]);
 
    
@@ -79,6 +60,7 @@ export default function ProfileInfo({ userPosts, userInfo }: { userPosts: Array<
 
         setFollows(false);
         } catch (error) {
+
         }
     };
 
@@ -109,7 +91,7 @@ export default function ProfileInfo({ userPosts, userInfo }: { userPosts: Array<
                         <p className="font-semibold text-lg">{userInfo.username}</p>
                     </div>
                     {
-                        isLoggedUser 
+                        LoggedUser.isLoggedUser === isLoggedUser 
                         ? 
                             (
                                 <>
@@ -146,9 +128,8 @@ export default function ProfileInfo({ userPosts, userInfo }: { userPosts: Array<
                                 </div>
                             )
                     }
-                  
                 </section>
-                <ProfileStats userPosts={userPosts}/>   
+                <ProfileStats userInfo={userInfo} isLoggedUser={isLoggedUser} />   
             </section>
     </header>
     )
