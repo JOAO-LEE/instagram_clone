@@ -49,10 +49,10 @@ export default function ProfileStats({ userInfo, isLoggedUser }: ProfileInfo) {
                 (snapshot) => {
                     setStats(prev => ({ ...prev, followers: snapshot.docs.length } as StatsDto));
                 });
-                setLoadingStats(false);
             } catch (error) {
                 setLoadingStats(false);
             }
+            setLoadingStats(false);
         }
 
     return (
