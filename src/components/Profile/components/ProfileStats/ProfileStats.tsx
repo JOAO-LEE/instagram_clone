@@ -32,7 +32,6 @@ export default function ProfileStats({ userInfo, isLoggedUser }: ProfileInfo) {
     }, [session]);
 
        const getUserStats = async (uid: string) => {
-            setLoadingStats(true);
             try {
                 const loggedUser = await getUser(uid);
                 onSnapshot(query(collection(db, "posts"), where("uid", "==", loggedUser.data().uid)), 

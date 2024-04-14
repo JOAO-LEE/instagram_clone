@@ -3,7 +3,7 @@
 import { useModalState } from "../../../store/modalState";
 import UploadModal from "../Modals/UploadModal/UploadModal";
 import { useEffect, useState } from "react";
-import ProfileActions from "./components/ProfileActions/ProfileActions";
+import ProfileActions from "./components/ProfilePostsInfos/ProfileActionsInfos";
 import ProfilePosts from "./components/ProfilePosts/ProfilePosts";
 import ProfileInfo from "./components/ProfileInformation/ProfileInformation";
 import { useSearchParams } from 'next/navigation'

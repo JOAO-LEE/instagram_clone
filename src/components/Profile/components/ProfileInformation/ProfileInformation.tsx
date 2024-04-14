@@ -12,10 +12,14 @@ import { UserInfo, UserPageDTO } from "@/model/UserPage.dto";
 import { getUser } from "@/utils/getUser";
 import { LoggedUser } from "@/enum/LoggedUser.enum";
 import { ProfileInfo } from "@/model/Profile/ProfileInfo";
+import { ProfileActionsLoadingLoggedUser } from "../Loadings/ProfileActionsLoadingLoggedUser";
+import { ProfileActionsLoadingNotLogged } from "../Loadings/ProfileActionsLoadingNotLoggedUser";
+import ProfileActionsLogged from "../ProfileActions/LoggedUser/ProfileActionsLoggedUser";
+import ProfileActionsNotLoggedUser from "../ProfileActions/NotLoggedUser/ProfileActionsNotLoggedUser";
 
-export default function ProfileInfo({ userInfo, isLoggedUser }: ProfileInfo) {
+export default function ProfileInformation({ userInfo, isLoggedUser }: ProfileInfo) {
     const { data: session } = useSession();
-    // const [user, setUser] = useState<any>();
+    const [loadingProfileInfo, setLoadingProfileInfo] = useState<boolean>(true);
     const [follows, setFollows] = useState<boolean>(false);
 
     useEffect(() => {
@@ -23,15 +27,21 @@ export default function ProfileInfo({ userInfo, isLoggedUser }: ProfileInfo) {
         const fetchedUser = async () => {
             try {
                 const userFetched = await getUser(userInfo.uid!);
-                console.log(userFetched)
-                const queryFollowing = query(collection(db, "users", userFetched.id, "followers"), where("uid", "==", session?.user?.uid!));
+                const queryFollowing = query(collection(db, "users", userFetched.id, "followers"), 
+                    where("uid", "==", session?.user?.uid!));
+
                 const userResult = await getDocs(queryFollowing);
+                
                 if (userResult.docs.length) {
                     setFollows(true);
+                    setLoadingProfileInfo(false);
                     return;
                 }
+                setLoadingProfileInfo(false);
                 setFollows(false); 
+
             } catch (error) {
+                setLoadingProfileInfo(false);
                 console.log(error)
                 
             }
@@ -60,6 +70,7 @@ export default function ProfileInfo({ userInfo, isLoggedUser }: ProfileInfo) {
 
         setFollows(false);
         } catch (error) {
+            console.log(error)
 
         }
     };
@@ -87,24 +98,51 @@ export default function ProfileInfo({ userInfo, isLoggedUser }: ProfileInfo) {
             </section>
             <section className="flex flex-col w-full p-2">
                 <section className="flex gap-2 items-center p-4 w-full">
-                    <div className="grow">
-                        <p className="font-semibold text-lg">{userInfo.username}</p>
-                    </div>
                     {
+                        !loadingProfileInfo 
+                        &&
+                            (
+                                <div className="grow">
+                                    <p className="font-semibold text-lg">{userInfo.username}</p>
+                                </div>
+                            )
+                    }
+                    {
+                        loadingProfileInfo && (isLoggedUser === LoggedUser.isLoggedUser)
+                        ? 
+                            (
+                                <ProfileActionsLoadingLoggedUser />
+                            )
+                        : 
+                        loadingProfileInfo && (isLoggedUser === LoggedUser.isNotLoggedUser)
+                        ?
+                            (
+                                <ProfileActionsLoadingNotLogged />
+                            )
+                        : 
+                        isLoggedUser === LoggedUser.isLoggedUser 
+                        ?
+                            (
+                                <ProfileActionsLogged />
+                            )
+                        :
+                            (
+                                <ProfileActionsNotLoggedUser follows={follows} handleFollow={handleFollow}/>
+                            )
+                    }
+                    
+                </section>
+                <ProfileStats userInfo={userInfo} isLoggedUser={isLoggedUser} />   
+            </section>
+    </header>
+    )
+}
+
+{/* {
                         LoggedUser.isLoggedUser === isLoggedUser 
                         ? 
                             (
-                                <>
-                                    <div>
-                                        <button className="text-xs font-semibold bg-gray-300 p-2 rounded-md hover:bg-gray-400">Edit Profile</button>
-                                    </div>
-                                    <div>
-                                        <button className="text-xs font-semibold bg-gray-300 p-2 rounded-md hover:bg-gray-400">View Archive</button>
-                                    </div>
-                                    <div className="">
-                                        <Gear size={"30px"} weight="light" />
-                                    </div>
-                                </>
+                               
                             )
                         :
                             (
@@ -127,10 +165,4 @@ export default function ProfileInfo({ userInfo, isLoggedUser }: ProfileInfo) {
                                     </button>
                                 </div>
                             )
-                    }
-                </section>
-                <ProfileStats userInfo={userInfo} isLoggedUser={isLoggedUser} />   
-            </section>
-    </header>
-    )
-}
+                    } */}
