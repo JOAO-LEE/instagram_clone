@@ -60,7 +60,7 @@ export default function ProfileStats({ userInfo, isLoggedUser }: ProfileInfo) {
                 !loadingStats && stats
                 ?
                 (
-                    <section className="flex gap-8 p-2 text-lg">  
+                    <section className="flex gap-8 p-2 text-lg w-full">  
                         <span className=""><p className="font-semibold inline">{stats?.posts}</p> post{stats && stats?.posts > 1 || stats && stats?.posts === 0 ? "s" : ""}</span>
                         <span className=""><p className="font-semibold inline">{stats?.followers}</p> follower{stats && stats?.followers > 1 || stats && stats?.followers === 0 ? "s" : ""}</span>
                         <span className="grow"><p className="font-semibold inline" >{stats?.following}</p> following</span>

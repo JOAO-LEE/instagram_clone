@@ -20,40 +20,42 @@ import ProfileActionsNotLoggedUser from "../ProfileActions/NotLoggedUser/Profile
 export default function ProfileInformation({ userInfo, isLoggedUser }: ProfileInfo) {
     const { data: session } = useSession();
     const [loadingProfileInfo, setLoadingProfileInfo] = useState<boolean>(true);
+    const [userImage, setUserImage] = useState<string>("")
+
     const [follows, setFollows] = useState<boolean>(false);
 
     useEffect(() => {
 
-        const fetchedUser = async () => {
-            try {
-                const userFetched = await getUser(userInfo.uid!);
-                const queryFollowing = query(collection(db, "users", userFetched.id, "followers"), 
-                    where("uid", "==", session?.user?.uid!));
-
-                const userResult = await getDocs(queryFollowing);
-                
-                if (userResult.docs.length) {
-                    setFollows(true);
-                    setLoadingProfileInfo(false);
-                    return;
-                }
-                setLoadingProfileInfo(false);
-                setFollows(false); 
-
-            } catch (error) {
-                setLoadingProfileInfo(false);
-                console.log(error)
-                
-            }
-        }
-
         if (session && session?.user?.uid) {
-            fetchedUser()
+            fetchFollowsAndImage(userInfo.uid)
         }
 
     }, [session]);
 
-   
+    const fetchFollowsAndImage = async (uid: string): Promise<void>  => {
+        try {
+            const userFetched = await getUser(uid);
+            const profileImage = userFetched.data().profileImage
+            setUserImage(profileImage);
+            const queryFollowing = query(collection(db, "users", userFetched.id, "followers"), 
+                where("uid", "==", session?.user.uid!));
+
+            const userResult = await getDocs(queryFollowing);
+            console.log(userResult)
+            
+            if (userResult.docs.length) {
+                setFollows(true);
+                setLoadingProfileInfo(false);
+                return;
+            }
+            setLoadingProfileInfo(false);
+            setFollows(false); 
+
+        } catch (error) {
+            setLoadingProfileInfo(false);
+            console.log(error)  
+        }
+    }
 
     const handleFollow = async (): Promise<void> => {
         try {
@@ -76,28 +78,32 @@ export default function ProfileInformation({ userInfo, isLoggedUser }: ProfileIn
     };
 
     return (
-        <header className="flex gap-4 p-4">
+        <header className="flex gap-4 p-4 w-1/3">
             <section className="p-2">
-            {/* {
-                isLoggedUser && session?.user.image 
+            {
+                loadingProfileInfo && !userImage
+                ?
+                    (
+                        <div className="rounded-full animate-pulse bg-gray-200 size-20"></div>
+                    )
+                : !loadingProfileInfo && userImage 
                 ? 
                     (
-                        <img src={session?.user.image} alt="" className="rounded-full" />
+                        <img src={userImage} alt="" className="rounded-full" />
                     ) 
-                : 
-                isLoggedUser && user?.profileImage 
-                ? 
-                    (
-                        <img src={user?.profileImage} alt="" className="rounded-full" />
-                    ) 
-                :   
+                : !loadingProfileInfo && !userImage
+                ?
                     (
                         <User size={"74.172px"} weight="thin" className="border rounded-full" />
                     )
-            } */}
+                :   (
+                        <>
+                        </>
+                    )    
+            }
             </section>
             <section className="flex flex-col w-full p-2">
-                <section className="flex gap-2 items-center p-4 w-full">
+                <section className="flex gap-2 items-center p-4">
                     {
                         !loadingProfileInfo 
                         &&
@@ -137,32 +143,3 @@ export default function ProfileInformation({ userInfo, isLoggedUser }: ProfileIn
     </header>
     )
 }
-
-{/* {
-                        LoggedUser.isLoggedUser === isLoggedUser 
-                        ? 
-                            (
-                               
-                            )
-                        :
-                            (
-                                <div>
-                                    <button className="text-xs font-semibold bg-gray-300 p-2 rounded-md hover:bg-gray-400" onClick={handleFollow}>
-                                        <div className="flex items-center gap-2">
-                                            {
-                                                !follows 
-                                                ? 
-                                                    ( 
-                                                        <UserPlus weight="thin" className="inline text-xl" /> 
-                                                    )
-                                                :  
-                                                    ( 
-                                                        <UserCheck weight="thin" className="inline text-xl" />
-                                                    )
-                                            }
-                                            <p>{!follows ? "Follow" : "Following"}</p>
-                                        </div>
-                                    </button>
-                                </div>
-                            )
-                    } */}
