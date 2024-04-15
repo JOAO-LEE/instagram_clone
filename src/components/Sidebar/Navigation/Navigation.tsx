@@ -4,9 +4,10 @@ import { useModalState } from "../../../../store/modalState";
 import { useSession } from "next-auth/react";
 import { usePathname, useRouter } from "next/navigation";
 import { Compass, FilmSlate, Heart, House, MagnifyingGlass, MessengerLogo, Plus, User } from "@phosphor-icons/react";
+import UploadModal from "@/components/Modals/UploadModal/UploadModal";
 
 export default function Navigation() {
-    const { action } = useModalState();
+    const { action, isOpen } = useModalState();
     const { data: session } = useSession();
     const router = useRouter();
     const pathName = usePathname();
@@ -24,6 +25,7 @@ export default function Navigation() {
     };
     
     return (
+        <>
         <ul className="flex flex-col gap-7">
             <li className="sidebar-buttons" onClick={() => router.push("/")}>
                 <House weight="thin" className="text-2xl" />
@@ -68,5 +70,7 @@ export default function Navigation() {
                 <p className="sm:hidden md:inline lg:inline">Profile</p>
             </li>
         </ul>
+        {isOpen &&  <UploadModal />}
+        </>
     )
 }

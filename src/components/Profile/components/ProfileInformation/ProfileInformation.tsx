@@ -1,14 +1,11 @@
 'use client'
 
-import { ProfilePostDTO } from "@/model/ProfilePost.dto";
 import ProfileStats from "../ProfileStats/ProfileStats";
-import { Gear, UserPlus, User, UserCheck } from "@phosphor-icons/react";
+import { User } from "@phosphor-icons/react";
 import { useSession } from "next-auth/react";
-import { PostDTO } from "@/model/Post.dto";
 import { useEffect, useState } from "react";
 import { collection, deleteDoc, doc, getDoc, getDocs, onSnapshot, orderBy, query, setDoc, where } from "firebase/firestore";
 import { db } from "../../../../../firebase";
-import { UserInfo, UserPageDTO } from "@/model/UserPage.dto";
 import { getUser } from "@/utils/getUser";
 import { LoggedUser } from "@/enum/LoggedUser.enum";
 import { ProfileInfo } from "@/model/Profile/ProfileInfo";
@@ -16,6 +13,7 @@ import { ProfileActionsLoadingLoggedUser } from "../Loadings/ProfileActionsLoadi
 import { ProfileActionsLoadingNotLogged } from "../Loadings/ProfileActionsLoadingNotLoggedUser";
 import ProfileActionsLogged from "../ProfileActions/LoggedUser/ProfileActionsLoggedUser";
 import ProfileActionsNotLoggedUser from "../ProfileActions/NotLoggedUser/ProfileActionsNotLoggedUser";
+import { ProfileImageLoading } from "../Loadings/ProfileImageLoading";
 
 export default function ProfileInformation({ userInfo, isLoggedUser }: ProfileInfo) {
     const { data: session } = useSession();
@@ -84,7 +82,7 @@ export default function ProfileInformation({ userInfo, isLoggedUser }: ProfileIn
                 loadingProfileInfo && !userImage
                 ?
                     (
-                        <div className="rounded-full animate-pulse bg-gray-200 size-20"></div>
+                        <ProfileImageLoading />
                     )
                 : !loadingProfileInfo && userImage 
                 ? 

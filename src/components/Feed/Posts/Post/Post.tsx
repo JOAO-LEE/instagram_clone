@@ -106,7 +106,7 @@ export default function Post({ username, caption, profileImage, image, id, uid }
             </Link>
         <DotsThree weight="thin" className="post-buttons" />
         </header>
-        <div className="relative">
+        <div className="relative mx-auto">
             <img src={image} alt={`${username} post`} className="object-cover  mx-auto border-2 border-gray-50 rounded-sm shadow-sm cursor-pointer" onDoubleClick={handleLikePost} />
             <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex items-center justify-center">
                 { (hasLiked && showHeart) && <Heart weight="fill" className="text-[150px] opacity-60 text-red-500 animate-ping"/> }

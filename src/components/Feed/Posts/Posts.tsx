@@ -1,4 +1,5 @@
-'use client'
+"use client"
+
 import { PostDTO } from "@/model/Post.dto";
 import Post from "./Post/Post";
 import { redirect } from "next/navigation";
