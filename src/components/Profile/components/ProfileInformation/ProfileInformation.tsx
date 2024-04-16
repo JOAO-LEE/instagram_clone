@@ -39,7 +39,6 @@ export default function ProfileInformation({ userInfo, isLoggedUser }: ProfileIn
                 where("uid", "==", session?.user.uid!));
 
             const userResult = await getDocs(queryFollowing);
-            console.log(userResult)
             
             if (userResult.docs.length) {
                 setFollows(true);
@@ -50,8 +49,7 @@ export default function ProfileInformation({ userInfo, isLoggedUser }: ProfileIn
             setFollows(false); 
 
         } catch (error) {
-            setLoadingProfileInfo(false);
-            console.log(error)  
+            setLoadingProfileInfo(false);  
         }
     }
 
@@ -70,7 +68,6 @@ export default function ProfileInformation({ userInfo, isLoggedUser }: ProfileIn
 
         setFollows(false);
         } catch (error) {
-            console.log(error)
 
         }
     };

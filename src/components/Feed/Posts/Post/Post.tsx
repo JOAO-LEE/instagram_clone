@@ -5,9 +5,9 @@ import { useSession } from "next-auth/react";
 import { addDoc, collection, deleteDoc, doc, onSnapshot, orderBy, query, serverTimestamp, setDoc } from "firebase/firestore";
 import { HeartBreak, TrashSimple, User, BookmarkSimple, ChatCircle, DotsThree, Heart, PaperPlaneTilt, Smiley } from "@phosphor-icons/react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function Post({ username, caption, profileImage, image, id, uid }: PostDTO) {
-
     const { data: session } = useSession();
     const commentRef = useRef<HTMLInputElement>(null);
     const [comment, setComment] = useState<string>("");
@@ -16,8 +16,8 @@ export default function Post({ username, caption, profileImage, image, id, uid }
     const [likes, setLikes] = useState<any[]>([]);
     const [hasToShowComments, setHasToShowComments] = useState<boolean>(false);
     const [showHeart, setShowHeart] = useState<boolean>(false);
+    const router = useRouter();
 
-    
     useEffect(() => {
         const unsubscribe = onSnapshot(query(collection(db, "posts", id, "comments"), orderBy("timestamp", "desc")), 
             (snapshot) => {
@@ -70,7 +70,7 @@ export default function Post({ username, caption, profileImage, image, id, uid }
             const documentRef = doc(db, "posts", id, "comments", idComment);
             await deleteDoc(documentRef);
         } catch (error) {
-        console.error("Erro ao excluir o documento:", error);
+            console.error("Erro ao excluir o documento:", error);
         }
     };
 
@@ -89,28 +89,38 @@ export default function Post({ username, caption, profileImage, image, id, uid }
         setTimeout(() => {
             setShowHeart(true)
         }, 250)
-        await setDoc(doc(db, "posts", id, "likes", session?.user.uid!), { timestamp: serverTimestamp(), uid: session?.user.uid!, username: session?.user.username })
+        await setDoc(doc(db, "posts", id, "likes", session?.user.uid!), { timestamp: serverTimestamp(), uid: session?.user.uid!, username: session?.user.username });
         setTimeout(() => {
             setShowHeart(false)
         }, 500)
     };
 
     return (
-     <section className="border-b w-full mx-auto p-1">
-        <header className="flex items-center p-1">
-            <Link href={{pathname: `user/${username}`, query: {uid} }}>
-                {profileImage ? <img src={profileImage} alt={`${username} profile photo`} className="h-12 rounded-full object-cover border p-1 mr-3" /> : <User weight="thin" size={"48px"} className="p-1 mr-3 border rounded-full"/>}
+     <section className="border-b w-full mx-auto p-2">
+        <header className="flex items-center p-2">
+            <Link href={{pathname: `/user/${username}`, query: { uid } }}>
+                { 
+                    profileImage 
+                    ?
+                        (
+                            <img src={profileImage} alt={`${username} profile photo`} className="h-12 rounded-full object-cover border p-1 mr-3" />
+                        ) 
+                    : 
+                        (
+                            <User weight="thin" size={"48px"} className="p-1 mr-3 border rounded-full"/>
+                        )
+                }
             </Link>
-            <Link href={{pathname: `user/${username}`, query: {uid} }} className="font-semibold flex-1 text-sm">
+            <Link href={{pathname: `/user/${username}`, query: { uid } }} className="font-semibold flex-1 text-sm">
                 {username}
             </Link>
         <DotsThree weight="thin" className="post-buttons" />
         </header>
-        <div className="relative mx-auto">
-            <img src={image} alt={`${username} post`} className="object-cover  mx-auto border-2 border-gray-50 rounded-sm shadow-sm cursor-pointer" onDoubleClick={handleLikePost} />
+        <div className="relative mx-auto mt-1">
+            <img src={image} alt={`${username} post`} className="object-cover mx-auto border-2 border-gray-50 rounded-sm shadow-sm cursor-pointer" onDoubleClick={handleLikePost} />
             <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex items-center justify-center">
-                { (hasLiked && showHeart) && <Heart weight="fill" className="text-[150px] opacity-60 text-red-500 animate-ping"/> }
-                { (!hasLiked && showHeart) && <HeartBreak  weight="fill" className="text-[150px] opacity-60 text-gray-500 animate-ping"/> }
+                { (hasLiked && showHeart) && <Heart weight="fill" className="text-[150px] opacity-60 text-red-500 animate-ping" /> }
+                { (!hasLiked && showHeart) && <HeartBreak  weight="fill" className="text-[150px] opacity-60 text-gray-500 animate-ping" /> }
             </div>
         </div>
           { 
@@ -126,7 +136,7 @@ export default function Post({ username, caption, profileImage, image, id, uid }
                     <></>
                 )
           }
-        <div className="flex justify-between mt-3">
+        <div className="flex justify-between mt-2">
             <div className="flex gap-2">
               { 
                 hasLiked 
@@ -149,7 +159,7 @@ export default function Post({ username, caption, profileImage, image, id, uid }
             caption 
             && 
                 (
-                    <p className="mt-3 truncate text-sm"><Link href={{pathname: `user/${username}`, query: {uid} }}><span className="font-bold mr-1">{username}</span></Link>{caption}</p>
+                    <p className="mt-3 truncate text-sm"><Link href={{pathname: `/user/${username}`, query: {uid} }}><span className="font-bold mr-1">{username}</span></Link>{caption}</p>
                 ) 
         }
         {
@@ -174,7 +184,7 @@ export default function Post({ username, caption, profileImage, image, id, uid }
                                 (
                                     comments.map((comment, index) => (
                                         <div key={index} className="group flex gap-1 items-center relative">
-                                            <Link href={{pathname: `user/${comment.data().username}`, query: {uid: `${comment.data().uid}`} }}>
+                                            <Link href={{pathname: `/user/${comment.data().username}`, query: {uid: `${comment.data().uid}`} }}>
                                                 <p className="font-semibold text-sm">{comment.data().username}</p>
                                             </Link> 
                                             <p className="truncate text-sm flex-1">{comment.data().comment}</p>

@@ -7,6 +7,7 @@ import ProfileInfo from "./components/ProfileInformation/ProfileInformation";
 import { useSearchParams } from 'next/navigation'
 import { useSession } from "next-auth/react";
 import { LoggedUser } from "@/enum/LoggedUser.enum";
+import { db } from "../../../firebase";
 
 export default function Profile({ username }: { username: string }) { 
     const [isLoggedUser, setIsLoggedUser] = useState<LoggedUser>(LoggedUser.isNotLoggedUser);
@@ -17,11 +18,10 @@ export default function Profile({ username }: { username: string }) {
     useEffect(() => {
         const isLoggedUserConfirmation = session?.user?.username === username && session?.user?.uid === uidParam;
         if (session && isLoggedUserConfirmation) {
-            console.log(isLoggedUserConfirmation)
             setIsLoggedUser(LoggedUser.isLoggedUser);
         }
        
-    }, [session]);
+    }, [session, db]);
     
     return (
         <main className="flex gap-1 flex-col items-center">

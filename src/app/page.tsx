@@ -3,8 +3,8 @@ import Feed from "@/components/Feed/Feed";
 
 export default function HomePage() {
   return (
-    <div className="flex md:gap-3">
-      <div className="sm:inline-block">
+    <div className="flex flex-col-reverse sm:flex-row md:gap-3">
+      <div className="">
         <Sidebar />
       </div>
       <div className="w-full">

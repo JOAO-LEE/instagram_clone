@@ -2,7 +2,7 @@ import { GridNine, IdentificationBadge, BookmarkSimple } from "@phosphor-icons/r
 
 export default function ProfileActions() {
     return (
-        <section className="flex gap-8 justify-center p-2 text-gray-300 text-xs border-t border-gray-200 w-1/2 cursor-not-allowed" title="Feature not implemented yet!">
+        <section className="flex gap-8 justify-center p-2 text-gray-300 text-xs border-t border-gray-200 w-1/2 cursor-not-allowed hover:blur-sm" title="Feature not implemented yet!">
             <div className="flex items-center gap-2 p-1">
                 <GridNine weight="light" className="text-xl"  />
                 <p className="uppercase font-semibold">posts</p>

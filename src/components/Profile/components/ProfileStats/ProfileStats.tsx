@@ -17,7 +17,6 @@ export default function ProfileStats({ userInfo, isLoggedUser }: ProfileInfo) {
     useEffect(() => {
 
         const fetchedStats = async () => {
-            console.log(LoggedUser.isLoggedUser === isLoggedUser)
             if  (LoggedUser.isLoggedUser === isLoggedUser) {
                 await getUserStats(session?.user.uid!)
                 return;

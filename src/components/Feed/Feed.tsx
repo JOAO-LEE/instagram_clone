@@ -13,7 +13,7 @@ export default function Feed() {
                 <Stories />
                 <Posts />
             </section>
-            <aside className="hidden lg:inline-block w-fit min-w-max">
+            <aside className="hidden xl:inline-block w-fit min-w-max">
                 <MiniProfile  />
                 <Suggestions />
             </aside> 
