@@ -7,7 +7,7 @@ import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { addDoc, collection, doc, serverTimestamp, updateDoc } from "firebase/firestore";
 import { db, storage } from "../../../../firebase";
 import { useSession } from "next-auth/react";
-import { getDownloadURL, ref, uploadBytesResumable, uploadString } from "firebase/storage";
+import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 
 export default function UploadModal() {
   const { data: session } = useSession();
@@ -67,9 +67,10 @@ export default function UploadModal() {
 
   return (
     <ReactModal
-    className="max-w-2xl w-[50%] md:w-3/4 h-[450px] sm:h-[500px] md:h-[550px] 2xl:h-[750px] bg-white shadow-md shadow-gray-800 flex flex-col focus:outline-none border border-gray-300 rounded-lg"
+    className="max-w-2xl w-2/3 bg-white shadow-md shadow-gray-800 flex flex-col focus:outline-none border border-gray-300 rounded-lg md:w-3/4 h-[450px] sm:h-[500px] md:h-[550px] 2xl:h-[750px]"
     isOpen={isOpen}
     ariaHideApp={false}
+
     onRequestClose={() => {
       action();
       setSelectedFile(null);
@@ -120,7 +121,7 @@ export default function UploadModal() {
             <input type="text" placeholder="Enter your caption" className="focus:ring-0 border-none placeholder-shown:text-center text-center text-sm w-full" max={50} onChange={(e) => setCaption(e.target.value)} value={caption}/>
             <button 
             onClick={uploadPhoto}
-            disabled= {loading || !selectedFile || caption.trim() === ""} className="font-semibold text-xs bg-sky-500 text-white p-3 rounded-lg cursor-pointer disabled:cursor-not-allowed disabled:text-slate-500 disabled:bg-gray-300 w-1/4 hover:bg-blue-500">
+            disabled= {loading || !selectedFile} className="font-semibold text-xs bg-sky-500 text-white p-3 rounded-lg cursor-pointer disabled:cursor-not-allowed disabled:text-slate-500 disabled:bg-gray-300 w-1/4 hover:bg-blue-500">
               { loading ? <CircleNotch className="text-lg text-sky-500 animate-spin min-w-full" /> : "Upload" }
             </button>
           </div>

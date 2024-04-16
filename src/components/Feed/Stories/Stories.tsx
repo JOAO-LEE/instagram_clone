@@ -33,7 +33,7 @@ export default function Stories() {
 
     return (
 
-        <section className="flex space-x-2 p-6 mt-8 rounded-sm overflow-x-scroll scrollbar-none max-w-full sm:max-w-max">
+        <section className="flex space-x-2 p-6 mt-8 rounded-sm overflow-x-scroll scrollbar-none sm:max-w-min">
             {
                 stories.length 
                 ? (

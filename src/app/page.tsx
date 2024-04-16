@@ -4,7 +4,7 @@ import Feed from "@/components/Feed/Feed";
 export default function HomePage() {
   return (
     <div className="flex flex-col-reverse sm:flex-row md:gap-3">
-      <div className="">
+      <div className="z-10">
         <Sidebar />
       </div>
       <div className="w-full">

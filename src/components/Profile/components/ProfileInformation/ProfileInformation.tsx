@@ -73,7 +73,7 @@ export default function ProfileInformation({ userInfo, isLoggedUser }: ProfileIn
     };
 
     return (
-        <header className="flex gap-4 p-4 w-1/3">
+        <header className="flex gap-4 p-4">
             <section className="p-2">
             {
                 loadingProfileInfo && !userImage

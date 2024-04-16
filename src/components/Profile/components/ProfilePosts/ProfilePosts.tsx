@@ -63,7 +63,7 @@ export default function ProfilePosts({ userInfo, isLoggedUser }: ProfileInfo) {
             fetchUserInfo();
         }
 
-    }, []);
+    }, [db]);
 
     const handleMouseOver = (index: number) => {
         setUserPosts(prevPosts => {
@@ -91,7 +91,7 @@ export default function ProfilePosts({ userInfo, isLoggedUser }: ProfileInfo) {
                     )
                 :
                     (
-                        <main className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
+                        <main className="grid gap-3 grid-cols-2 sm:gap-2 sm:grid-cols-3 ">
                         {
                             (!loadingPosts && userPosts.length >= 1) && userPosts.map((userPost, index) => (
                                 <div className="w-fit relative cursor-pointer" key={index} 

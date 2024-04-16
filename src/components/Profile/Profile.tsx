@@ -24,7 +24,7 @@ export default function Profile({ username }: { username: string }) {
     }, [session, db]);
     
     return (
-        <main className="flex gap-1 flex-col items-center">
+        <main className="flex gap-1 flex-col justify-center items-center max-w-full">
             <ProfileInfo userInfo={{username, uid: uidParam!}} isLoggedUser={isLoggedUser} />
             <ProfileActions />
             <ProfilePosts userInfo={{username, uid: uidParam!}} isLoggedUser={isLoggedUser} />
