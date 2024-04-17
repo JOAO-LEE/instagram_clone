@@ -1,7 +1,7 @@
 "use client";
 
 import ReactModal from "react-modal";
-import { useModalState } from "../../../../store/modalState";
+import { useUploadModalState } from "../../../../store/modalState";
 import { CircleNotch, ImageSquare, Video, TrashSimple } from "@phosphor-icons/react";
 import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { addDoc, collection, doc, serverTimestamp, updateDoc } from "firebase/firestore";
@@ -11,12 +11,12 @@ import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 
 export default function UploadModal() {
   const { data: session } = useSession();
-  const { isOpen, action } = useModalState();
+  const { isUploadModalOpen, action } = useUploadModalState();
   const [selectedFile, setSelectedFile] = useState<any>(null);
   const [imageFileUrl, setImageFileUrl] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [caption, setCaption] = useState<string>("");
-
+  
   const addImageToPost = (e: ChangeEvent<HTMLInputElement>): void => {
     const fileReader = new FileReader();
     const file = e?.target?.files![0];
@@ -62,17 +62,17 @@ export default function UploadModal() {
     };
     
     const docRef = await addDoc(collection(db, "posts"), postInfo);
-    action();
+    action("upload");
   };
 
   return (
     <ReactModal
     className="max-w-2xl w-2/3 bg-white shadow-md shadow-gray-800 flex flex-col focus:outline-none border border-gray-300 rounded-lg md:w-3/4 h-[450px] sm:h-[500px] md:h-[550px] 2xl:h-[750px]"
-    isOpen={isOpen}
+    isOpen={isUploadModalOpen.find(modal => modal.isOpen === true)?.isOpen!}
     ariaHideApp={false}
 
     onRequestClose={() => {
-      action();
+      action("upload");
       setSelectedFile(null);
     }}
     shouldCloseOnEsc={true}

@@ -3,6 +3,10 @@
 @tailwind utilities;
 
 
+body {
+    -webkit-font-smoothing: antialiased;
+}
+
 @layer components {
     .sidebar-buttons {
         @apply flex items-center rounded-lg hover:bg-neutral-100 transition-colors duration-300 sm:text-sm md:gap-4 cursor-pointer p-1 sm:w-full

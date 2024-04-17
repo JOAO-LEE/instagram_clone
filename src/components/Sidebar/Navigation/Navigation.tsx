@@ -1,13 +1,14 @@
 "use client"
 
-import { useModalState } from "../../../../store/modalState";
+import { useUploadModalState } from "../../../../store/modalState";
 import { useSession } from "next-auth/react";
 import { usePathname, useRouter } from "next/navigation";
 import { Compass, FilmSlate, Heart, House, MagnifyingGlass, MessengerLogo, Plus, User } from "@phosphor-icons/react";
 import UploadModal from "@/components/Modals/UploadModal/UploadModal";
+import { LogoutModal } from "@/components/Modals/LogoutModal/LogoutModal";
 
 export default function Navigation() {
-    const { action, isOpen } = useModalState();
+    const { action, isUploadModalOpen } = useUploadModalState();
     const { data: session } = useSession();
     const router = useRouter();
     const pathName = usePathname();
@@ -51,7 +52,7 @@ export default function Navigation() {
                     <Heart weight="thin" className="text-2xl transition-transform duration-500 group-hover:scale-125" />
                     <p className="sm:hidden md:inline lg:inline">Notifications</p>
                 </li>
-                <li className="group sidebar-buttons" onClick={action}>
+                <li className="group sidebar-buttons" onClick={() => action("upload")}>
                     <Plus weight="thin" className="text-2xl transition-transform duration-500 group-hover:scale-125" />
                     <p className="hidden sm:hidden md:inline lg:inline">Create</p>
                 </li>
@@ -70,8 +71,7 @@ export default function Navigation() {
                     <p className="hidden sm:hidden md:inline lg:inline">Profile</p>
                 </li>
             </ul>
-
-            {isOpen && <UploadModal />}
+            {isUploadModalOpen.find(modal => (modal.isOpen === true) && modal.modalType === "upload")?.isOpen && <UploadModal />}
         </>
     )
 }
