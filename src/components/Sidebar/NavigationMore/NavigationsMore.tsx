@@ -30,11 +30,11 @@ export default function NavigationMore() {
                 {
                     opened 
                     ?
-                    <X className="text-2xl animate-spin-once" />
+                    <X className={`text-2xl ${opened && "animate-spin-once"}`} />
                     :
                     <List className="text-2xl transition-all duration-500 group-hover:scale-125" weight="thin" />
                 }
-                <p className="sm:hidden md:inline lg:inline">More</p>
+                <p className="sm:hidden md:inline lg:inline">{!opened ? "More" : "Close"}</p>
             </li>
             { 
                 opened 

@@ -4,7 +4,7 @@ import ProfileStats from "../ProfileStats/ProfileStats";
 import { User } from "@phosphor-icons/react";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
-import { collection, deleteDoc, doc, getDoc, getDocs, onSnapshot, orderBy, query, setDoc, where } from "firebase/firestore";
+import { collection, deleteDoc, doc, getDocs, query, setDoc, where } from "firebase/firestore";
 import { db } from "../../../../../firebase";
 import { getUser } from "@/utils/getUser";
 import { LoggedUser } from "@/enum/LoggedUser.enum";
@@ -37,9 +37,7 @@ export default function ProfileInformation({ userInfo, isLoggedUser }: ProfileIn
             setUserImage(profileImage);
             const queryFollowing = query(collection(db, "users", userFetched.id, "followers"), 
                 where("uid", "==", session?.user.uid!));
-
             const userResult = await getDocs(queryFollowing);
-            
             if (userResult.docs.length) {
                 setFollows(true);
                 setLoadingProfileInfo(false);
@@ -47,7 +45,6 @@ export default function ProfileInformation({ userInfo, isLoggedUser }: ProfileIn
             }
             setLoadingProfileInfo(false);
             setFollows(false); 
-
         } catch (error) {
             setLoadingProfileInfo(false);  
         }
@@ -73,7 +70,7 @@ export default function ProfileInformation({ userInfo, isLoggedUser }: ProfileIn
     };
 
     return (
-        <header className="flex gap-4 p-4">
+        <header className="flex p-4">
             <section className="p-2">
             {
                 loadingProfileInfo && !userImage
@@ -98,7 +95,7 @@ export default function ProfileInformation({ userInfo, isLoggedUser }: ProfileIn
             }
             </section>
             <section className="flex flex-col w-full p-2">
-                <section className="flex gap-2 items-center p-4">
+                <section className="flex justify-between items-center p-4">
                     {
                         !loadingProfileInfo 
                         &&
@@ -124,7 +121,7 @@ export default function ProfileInformation({ userInfo, isLoggedUser }: ProfileIn
                         isLoggedUser === LoggedUser.isLoggedUser 
                         ?
                             (
-                                <ProfileActionsLogged />
+                                <ProfileActionsLogged username={userInfo.username} />
                             )
                         :
                             (

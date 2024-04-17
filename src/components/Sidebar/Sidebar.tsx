@@ -8,8 +8,8 @@ import NavigationMore from "./NavigationMore/NavigationsMore";
 export default function Sidebar() {
     return ( 
         <>
-            <nav className="w-full fixed bottom-0 bg-white border-2 border-r-0 sm:border-r sm:border border-b-0 border-l-0 box-border sm:inline-block sm:bg-transparent sm:sticky sm:top-0 sm:max-h-dvh">
-                <div className="flex p-2 sm:flex-col sm:h-screen box-border">
+            <nav className="w-full fixed bottom-0 bg-white border-2 border-r-0 sm:border-r sm:border border-b-0 border-l-0 box-border sm:inline-block md:bg-transparent sm:sticky sm:top-0 sm:max-h-dvh ">
+                <div className="flex p-2 sm:flex-col sm:h-dvh box-border">
                     <div className="cursor-pointer h-24 w-[103px] relative hidden md:inline-grid lg:inline-grid p-1">
                         <Link href="/">
                             <Image 

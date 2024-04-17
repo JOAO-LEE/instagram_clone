@@ -7,7 +7,7 @@ import { HeartBreak, TrashSimple, User, BookmarkSimple, ChatCircle, DotsThree, H
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-export default function Post({ username, caption, profileImage, image, id, uid }: PostDTO) {
+export default function Post({ username, caption, profileImage, image, id, uid, index, length }: PostDTO) {
     const { data: session } = useSession();
     const commentRef = useRef<HTMLInputElement>(null);
     const [comment, setComment] = useState<string>("");
@@ -96,7 +96,7 @@ export default function Post({ username, caption, profileImage, image, id, uid }
     };
 
     return (
-     <section className="border-b w-full mx-auto p-2">
+     <section className={`border-b w-full mx-auto p-2 ${index + 1 === length && "mb-10"}`}>
         <header className="flex items-center p-2">
             <Link href={{pathname: `/user/${username}`, query: { uid } }}>
                 { 
@@ -212,7 +212,7 @@ export default function Post({ username, caption, profileImage, image, id, uid }
             ref={commentRef} 
             onChange={(e) => setComment(e.target.value)}
             value={comment}
-            type="text" name="" id="" placeholder="Add a comment" className="flex-1 border-none focus:ring-0 text-sm"/>
+            type="text" name="" id="" placeholder="Add a comment" className="flex-1 border-none focus:ring-0"/>
             <Smiley size={15}/> 
         </form>
      </section>

@@ -11,7 +11,7 @@ export function LogoutModal() {
     return (
         <>
             <ReactModal
-            className="bg-white shadow-md shadow-gray-800 flex flex-col focus:outline-none border border-gray-300 rounded-lg w-72 h-40 p-4"
+            className="bg-white shadow-md shadow-gray-800 focus:outline-none rounded-lg w-72 h-40"
             isOpen={isUploadModalOpen.find(modal => (modal.isOpen === true) && modal.modalType === "logout")?.isOpen!}
             ariaHideApp={false}
 
@@ -28,15 +28,12 @@ export function LogoutModal() {
             },
             }}
             >
-                <div className="flex flex-col gap-4  items-center px-2 w-full text-sm h-full">
-                    <div className="flex-1">
+                <div className="flex flex-col items-center w-full text-sm h-full">
+                    <div className="flex-1 p-4">
                         <p >Would you like to logout?</p>
                     </div>
-                    <div className="flex flex-col gap-2 text-xs border-t border-t-gray-300 rounded-t-md border-b border-b-gray-300 rounded-b-md p-2 w-full">
-                        <button onClick={() => signOut({callbackUrl: "/sign-in", redirect: true})} className="font-bold text-red-600 hover:text-red-400 transition duration-100">Yes</button>
-                        <hr />
-                        <button onClick={() => action("logout")} className="font-bold hover:text-gray-300 transition duration-100">Cancel</button>
-                    </div>
+                        <button onClick={() => signOut({callbackUrl: "/sign-in", redirect: true})} className="font-bold text-red-600 hover:bg-gray-200 transition-all duration-200 p-2 w-full rounded-lg border-t border-t-gray-100">Yes</button>
+                        <button onClick={() => action("logout")} className="font-bold hover:bg-gray-200 transition duration-100 p-2 w-full rounded-lg border-t border-t-gray-100">Cancel</button>
                 </div>
             </ReactModal>
         </>

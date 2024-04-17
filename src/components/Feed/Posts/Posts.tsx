@@ -31,8 +31,8 @@ export default  function Posts() {
                 (
                     <>
                         {
-                            posts.map((post: any) => (
-                                <Post key={post.id} username={post.data().username} caption={post.data().caption} image={post.data().image} profileImage={post.data().profileImage} id={post.id} uid={post.data().uid} />
+                            posts.map((post: any, index: number) => (
+                                <Post key={post.id} username={post.data().username} caption={post.data().caption} image={post.data().image} profileImage={post.data().profileImage} id={post.id} uid={post.data().uid} index={index} length={posts.length} />
                             )) 
                         } 
                     </> 
