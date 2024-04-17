@@ -8,13 +8,18 @@ const config: Config = {
   ],
   theme: {
     extend: {
-      backgroundImage: {
-        "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
-        "gradient-conic":
-          "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
+      keyframes: {
+        'spin-once': {
+          '0%': { transform: 'rotate(0deg) scale(0.5)', opacity: '0.5' },
+          '100%': { transform: 'rotate(180deg) scale(1)', opacity: '1' },
+        },
       },
+      animation: {
+        'spin-once': 'spin-once 1s ease-in-out',
+      }
     },
   },
+
   plugins: [require('@tailwindcss/forms'), require('tailwind-scrollbar')],
 };
 export default config;

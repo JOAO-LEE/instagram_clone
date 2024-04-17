@@ -1,7 +1,7 @@
 "use client"
 
 import ThreadsIcon from "@/assets/icons/ThreadsIcon";
-import { Gear, List, SignOut } from "@phosphor-icons/react";
+import { Gear, List, SignOut, X } from "@phosphor-icons/react";
 import { useEffect, useState } from "react";
 import { useUploadModalState } from "../../../../store/modalState";
 import { LogoutModal } from "@/components/Modals/LogoutModal/LogoutModal";
@@ -18,6 +18,8 @@ export default function NavigationMore() {
         }
     }
 
+    const logoutModalOpen = isUploadModalOpen.find(modal => modal.isOpen && modal.modalType === "logout");
+
     return (
         <ul className="hidden sm:flex flex-col gap-3.5 relative">
             <li className="group hidden 2xl:flex sidebar-buttons">
@@ -25,7 +27,13 @@ export default function NavigationMore() {
                 <p className="sm:hidden md:inline lg:inline">Threads</p>
             </li>
             <li className="group sidebar-buttons" onClick={() => setOpened(!opened)}>
-                <List className="text-2xl transition-transform duration-500 group-hover:scale-125" weight="thin" />
+                {
+                    opened 
+                    ?
+                    <X className="text-2xl animate-spin-once" />
+                    :
+                    <List className="text-2xl transition-all duration-500 group-hover:scale-125" weight="thin" />
+                }
                 <p className="sm:hidden md:inline lg:inline">More</p>
             </li>
             { 
@@ -38,7 +46,7 @@ export default function NavigationMore() {
                                 <Gear weight="thin" className="text-xl transition-transform duration-500 group-hover:scale-110"/>
                                 <p className="text-xs ">Settings</p>
                             </li>
-                            <li className="group flex gap-2 p-4 cursor-pointer items-center hover:bg-neutral-100 transition-colors duration-300" onClick={() => handleModal()} >
+                            <li className="group flex gap-2 p-4 cursor-pointer items-center hover:bg-neutral-100 transition-colors duration-300" onClick={() => handleModal()}>
                                 <SignOut weight="thin" className="text-xl transition-transform duration-500 group-hover:scale-110" />
                                 <p className="text-xs ">Logout</p>
                             </li>
@@ -46,7 +54,7 @@ export default function NavigationMore() {
                     )
                  
             }
-            {isUploadModalOpen.find(modal => (modal.isOpen === true) && modal.modalType === "logout")?.isOpen && <LogoutModal/>}
+            { logoutModalOpen && <LogoutModal/>}
         </ul>
     )
 }
