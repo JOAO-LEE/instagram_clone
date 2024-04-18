@@ -26,7 +26,7 @@ export default async function ProfilePage({
       <div className="sm:inline-block">
         <Sidebar />
       </div>
-      <div className="max-w-full mx-auto">
+      <div className="w-full max-w-full mx-auto">
         {children}
       </div>
     </div>

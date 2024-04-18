@@ -128,7 +128,6 @@ export default function ProfileInformation({ userInfo, isLoggedUser }: ProfileIn
                                 <ProfileActionsNotLoggedUser follows={follows} handleFollow={handleFollow}/>
                             )
                     }
-                    
                 </section>
                 <ProfileStats userInfo={userInfo} isLoggedUser={isLoggedUser} />   
             </section>
