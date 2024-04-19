@@ -18,7 +18,6 @@ export default function UploadModal() {
   const [caption, setCaption] = useState<string>("");
   
   const addImageToPost = (e: ChangeEvent<HTMLInputElement>): void => {
-    const fileReader = new FileReader();
     const file = e?.target?.files![0];
     if (file) {
       setSelectedFile(file);
