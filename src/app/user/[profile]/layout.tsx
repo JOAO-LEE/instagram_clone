@@ -22,7 +22,7 @@ export default async function ProfilePage({
 }>)
 {
   return (
-    <div className="flex sm:gap-3">
+    <div className="flex">
       <div className="sm:inline-block">
         <Sidebar />
       </div>

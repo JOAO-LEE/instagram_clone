@@ -18,7 +18,11 @@ export const authOptions: NextAuthOptions = {
                 return await signInWithEmailAndPassword(auth, (credentials as any).email || '', (credentials as any).password || '')
                     .then(userCredential => {
                         if (userCredential) {
+                            console.log(userCredential.user)
+                            
                             return userCredential.user;
+
+
                         }
                         return null
                     })
@@ -43,29 +47,43 @@ export const authOptions: NextAuthOptions = {
             return token;
         },
         async session({ session, token }) {
-            const username = session.user?.email?.slice(0, session.user?.email.indexOf('@'));
-            session.user.username = username
-            session.user.uid = token.sub ?? token.uid as string;
             try {
                 if (session.user) {
-                    const userQuery = query(collection(db, "users"), where("uid", "==", session.user?.uid));
+                    const username = session?.user?.email?.split('@')[0];
+                    const userQuery = query(collection(db, "users"), where("email", "==", session.user?.email));
                     const userDocs = await getDocs(userQuery);
+                    
                     if (userDocs.empty) {
                         await addDoc(collection(db, "users"), {
-                            username, 
+                            username,
                             uid: session.user.uid,
                             email: session.user.email,
                             profileImage: session.user.image ?? null,
                             createdAt: serverTimestamp()
                         });
+                        session.user.username = username;
+                        session.user.uid = token.sub ?? token.uid as string;
+                        return session;
                     }
+                    
+                    const userInfo = userDocs.docs[0].data();
+                    session.user.username = userInfo.username;
+                    session.user.name = userInfo.name;
+                    session.user.biography = userInfo.biography;
+                    session.user.site = userInfo.website;
+
+                    session.user.uid = token.sub ?? token.uid as string;
                 }
+                // console.log(user)
+                
             } catch (error) {
                 console.error({error})
             }
             return session;
         },
-    }
+
+    },
+
 };
 
 const handler = NextAuth(authOptions);

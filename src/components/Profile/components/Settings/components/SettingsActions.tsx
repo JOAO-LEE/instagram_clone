@@ -1,6 +1,7 @@
 "use client"
+
 import { FormErrors } from "@/model/Profile/Settings/SettingsContext";
-import { useRouter } from "next/navigation"
+import { useRouter } from "next/navigation";
 
 export default function SettingsActions(formErrors: FormErrors) {
     const router = useRouter();

@@ -1,16 +1,24 @@
+"use client"
+
 import { regexUsername, regexWebSite } from "@/utils/regex/formSettingsRegex";
 import { Session } from "next-auth";
 import { SettingsContext } from "./SettingsContext";
 import { ChangeEvent, FormEvent, ReactNode, useState } from "react";
 import { FormErrors, SettingsFormProps } from "@/model/Profile/Settings/SettingsContext";
-
-
+import { collection, doc, getDoc, serverTimestamp, updateDoc } from "firebase/firestore";
+import { ref, uploadString } from "firebase/storage";
+import { db, storage } from "../../../firebase";
+import { getUser } from "@/utils/getUser";
+import { useSession } from "next-auth/react";
 
 export default function SettingsProvider ({ children, session }: { children: ReactNode, session: Session }) {
+    console.log(session?.user?.name)
     const [formSettings, setFormSettings] = useState<Session["user"]>({...session?.user!, biography: session?.user?.biography ?? "", site: session?.user?.site ?? "", name: session?.user?.name ?? "" });
     const [formErrors, setFormErrors] = useState<FormErrors>({});
     const [touchedFields, setTouchedFields] = useState<Record<string, boolean>>({});
     const [selectedPhoto, setSelectedPhoto] = useState<string>("");
+    const [loadingUpdate, setLoadingUpdate] = useState<boolean>(false);
+    const {update} = useSession()
     
     const handleFieldBlur = (name: string): void => {
         setTouchedFields(prev => ({ ...prev, [name]: true }));
@@ -34,15 +42,15 @@ export default function SettingsProvider ({ children, session }: { children: Rea
         });
     };
 
-      const verifyFormErrors = (name: string, settings: Session["user"]): void => {
+    const verifyFormErrors = (name: string, settings: Session["user"]): void => {
         let isValid: boolean;
     
         switch (name) {
             case "username":
-                isValid = regexUsername.test(settings.username!) || (!touchedFields.username || settings.username! === "");
+                isValid = regexUsername.test(settings.username!) && (!settings.username!.includes("..")) || settings.username!.length < 3;
                 break;
             case "site":
-                isValid = settings.site === "" ? true : regexWebSite.test(settings.site);
+                isValid = settings.site === "" ? true : regexWebSite.test(settings.site!);
                 break;
             default:
                 isValid = true;
@@ -55,10 +63,30 @@ export default function SettingsProvider ({ children, session }: { children: Rea
         }));
     };
     
-    const handleSubmit = (e: FormEvent<HTMLFormElement>): void => {
+    const handleSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
         e.preventDefault();
+        if (loadingUpdate) return;
+        const userFetchedUser = await getUser(session.user.uid!);
+        console.log(userFetchedUser)
 
+        // if()
 
+        const updateSettings = {
+            username: formSettings.username!.trim(),
+            biography: formSettings.biography!.trim(),
+            website: formSettings.site!.trim(),
+            name: formSettings.name!.trim()
+        }
+
+        // setLoading(true);
+    
+        // const username = session?.user.username;
+        // const profileImage = session?.user.image;
+        // const timestamp = serverTimestamp();
+        await updateDoc(doc(db, "users", userFetchedUser.id), {...updateSettings});
+        await update();
+        // const imageRef = ref(storage, `posts/${docRef.id}/image` )
+        // await uploadString(imageRef, selectedFile, "data_url");
     };
 
     const settings: SettingsFormProps = {
@@ -77,6 +105,10 @@ export default function SettingsProvider ({ children, session }: { children: Rea
         settingsFormErrorState: {
             formErrors,
             setFormErrors
+        },
+        touchedFieldState: {
+            touchedFields,
+            setTouchedFields
         }
     }
 
