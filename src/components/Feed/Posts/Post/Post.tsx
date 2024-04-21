@@ -17,6 +17,8 @@ export default function Post({ username, caption, profileImage, image, id, uid, 
     const [hasToShowComments, setHasToShowComments] = useState<boolean>(false);
     const [showHeart, setShowHeart] = useState<boolean>(false);
 
+   
+
     useEffect(() => {
         const unsubscribe = onSnapshot(query(collection(db, "posts", id, "comments"), orderBy("timestamp", "desc")), 
             (snapshot) => {

@@ -33,6 +33,7 @@ interface SettingsFormProps {
     settingsFormState: SettingsFormState
     settingsFormErrorState: FormErrorState
     selectedPhotoState: SelectedPhotoState
+    touchedFieldsState: TouchedFieldState
 }
 
 export type { FormErrors, SettingsFormState, TouchedFieldState, SelectedPhotoState, SettingsFormProps };

@@ -1,3 +1,5 @@
+"use client"
+
 import { regexUsername, regexWebSite } from "@/utils/regex/formSettingsRegex";
 import { Session } from "next-auth";
 import { SettingsContext } from "./SettingsContext";
@@ -10,12 +12,13 @@ import { getUser } from "@/utils/getUser";
 import { useSession } from "next-auth/react";
 
 export default function SettingsProvider ({ children, session }: { children: ReactNode, session: Session }) {
+    console.log(session)
     const [formSettings, setFormSettings] = useState<Session["user"]>({...session?.user!, biography: session?.user?.biography ?? "", site: session?.user?.site ?? "", name: session?.user?.name ?? "" });
     const [formErrors, setFormErrors] = useState<FormErrors>({});
     const [touchedFields, setTouchedFields] = useState<Record<string, boolean>>({});
     const [selectedPhoto, setSelectedPhoto] = useState<any>("");
     const [loadingUpdate, setLoadingUpdate] = useState<boolean>(false);
-    const {update} = useSession()
+    // const {update, data} = useSession()
     
     const handleFieldBlur = (name: string): void => {
         setTouchedFields(prev => ({ ...prev, [name]: true }));
@@ -52,7 +55,7 @@ export default function SettingsProvider ({ children, session }: { children: Rea
                 isValid = regexUsername.test(settings.username!) || (!touchedFields.username || settings.username! === "");
                 break;
             case "site":
-                isValid = settings.site === "" ? true : regexWebSite.test(settings.site);
+                isValid = settings.site === "" ? true : regexWebSite.test(settings.site!);
                 break;
             default:
                 isValid = true;
@@ -88,7 +91,7 @@ export default function SettingsProvider ({ children, session }: { children: Rea
         }
 
         await updateDoc(doc(db, "users", userFetchedUser.id), {...updateSettings});
-        await update();
+        // await update();
         console.log(session.user)
     };
 
@@ -108,6 +111,10 @@ export default function SettingsProvider ({ children, session }: { children: Rea
         settingsFormErrorState: {
             formErrors,
             setFormErrors
+        },
+        touchedFieldsState: {
+            touchedFields,
+            setTouchedFields
         }
     }
 

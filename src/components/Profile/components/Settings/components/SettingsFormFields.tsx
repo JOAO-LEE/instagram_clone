@@ -4,17 +4,26 @@ import { ChangeEvent, useState } from "react";
 import UsernameError from "./UsernameError";
 import { TrashSimple } from "@phosphor-icons/react";
 import { Session } from "next-auth";
+import { FormFields } from "@/model/Profile/Settings/SettingsFormFields";
 
 
-export default function SettingsFormFields({handleFieldBlur, handleSettingsForm, touchedFields, formErrors, formSettings}) {
+export default function SettingsFormFields(formProps: FormFields) {
+
+    const {
+    formErrors,
+    formSettings,
+    handleFieldBlur,
+    handleSettingsForm,
+    touchedFields,
+    } = formProps;
   
     return (
         <section className="flex flex-col gap-4 flex-1">
             <div className="flex flex-col">
-                <label className={`font-light text-lg ${touchedFields.username && formErrors.username ? "text-red-600" : ""}`}>Username</label>
-                <input type="text" spellCheck={false} name="username" onBlur={() => handleFieldBlur("username")} value={formSettings?.username} onChange={(e) => handleSettingsForm(e)} className={`rounded ${touchedFields.username && formErrors.username ? "border-red-500" : "border-gray-200"} focus:ring-0`} />
+                <label className={`font-light text-lg ${touchedFields?.username && formErrors?.username ? "text-red-600" : ""}`}>Username</label>
+                <input type="text" spellCheck={false} name="username" onBlur={() => handleFieldBlur("username")} value={formSettings.username!} onChange={(e) => handleSettingsForm(e)} className={`rounded ${touchedFields?.username && formErrors.username ? "border-red-500" : "border-gray-200"} focus:ring-0`} />
                 {
-                    formErrors.username 
+                    formErrors?.username 
                     &&
                         (
                             <UsernameError />
@@ -26,10 +35,10 @@ export default function SettingsFormFields({handleFieldBlur, handleSettingsForm,
                 <input type="text" spellCheck={false} name="name" value={formSettings.name!} onChange={(e) => handleSettingsForm(e)} className="rounded border-gray-200 focus:ring-0" />
             </div>
             <div className="flex flex-col">
-                <label className={`font-light text-lg ${touchedFields.site && formErrors.site && "text-red-600"}`}>Website</label>
-                <input type="text" name="site" value={formSettings.site} onChange={(e) => handleSettingsForm(e)} onBlur={() => handleFieldBlur("site")} className={`rounded ${touchedFields.site && formErrors.site ? "border-red-500" : "border-gray-200"} focus:ring-0`} />
+                <label className={`font-light text-lg ${touchedFields?.site && formErrors?.site && "text-red-600"}`}>Website</label>
+                <input type="text" name="site" value={formSettings.site} onChange={(e) => handleSettingsForm(e)} onBlur={() => handleFieldBlur("site")} className={`rounded ${touchedFields?.site && formErrors?.site ? "border-red-500" : "border-gray-200"} focus:ring-0`} />
                 {
-                    touchedFields.site && formErrors.site 
+                    touchedFields?.site && formErrors?.site 
                     &&
                         (
                             <span className="mt-1 text-xs text-red-400">Website format required (eg: "https://...").</span>

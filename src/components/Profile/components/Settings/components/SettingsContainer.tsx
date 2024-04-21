@@ -9,7 +9,7 @@ import SettingsActions from "./SettingsActions";
 import PhotoSelection from "./PhotoSelection";
 
 export default function SettingsContainer() {
-    const { handleSubmit, chooseProfileImage, settingsFormState, selectedPhotoState, handleSettingsForm, handleFieldBlur, settingsFormErrorState  } = useContext(SettingsContext);
+    const { handleSubmit, chooseProfileImage, settingsFormState, selectedPhotoState, handleSettingsForm, handleFieldBlur, settingsFormErrorState,touchedFieldsState  } = useContext(SettingsContext);
     return (
         <section className="w-full sm:w-3/4 p-2">
             <h1 className="text-xl font-semibold pb-4 ">Edit Profile</h1> 
@@ -19,7 +19,13 @@ export default function SettingsContainer() {
                     <PhotoSelection chooseProfileImage={chooseProfileImage} />
                 </section>
                 <div className="flex justify-between items-center gap-4">
-                    <SettingsFormFields />
+                    <SettingsFormFields
+                    formErrors={settingsFormErrorState.formErrors}
+                    formSettings={settingsFormState.formSettings}
+                    handleFieldBlur={handleFieldBlur}
+                    handleSettingsForm={handleSettingsForm}
+                    touchedFields={touchedFieldsState.touchedFields}
+                    />
                     <ImagePreview { ...selectedPhotoState } />
                 </div>
                 <SettingsActions {...settingsFormErrorState.formErrors} />

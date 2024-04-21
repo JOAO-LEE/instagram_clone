@@ -12,7 +12,7 @@ import PostLoadingSkelenton from "@/components/Loadings/PostLoadingSkeleton";
 export default  function Posts() {
     const { data: session, status } =  useSession();
     const [posts, setPosts] = useState<Array<any>>([]);
-
+    console.log(session)
     useEffect(() => {
         const unsubscribe = onSnapshot(query(collection(db, "posts"), orderBy("timestamp", "desc")), 
         (snapshot) => {
