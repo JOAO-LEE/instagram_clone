@@ -6,7 +6,7 @@ import { SettingsContext } from "./SettingsContext";
 import { ChangeEvent, FormEvent, ReactNode, useState } from "react";
 import { FormErrors, SettingsFormProps } from "@/model/Profile/Settings/SettingsContext";
 import { collection, doc, getDoc, serverTimestamp, updateDoc } from "firebase/firestore";
-import { ref, uploadString } from "firebase/storage";
+import { getDownloadURL, ref, uploadString } from "firebase/storage";
 import { db, storage } from "../../../firebase";
 import { getUser } from "@/utils/getUser";
 import { useSession } from "next-auth/react";
@@ -16,7 +16,7 @@ export default function SettingsProvider ({ children, session }: { children: Rea
     const [formSettings, setFormSettings] = useState<Session["user"]>({...session?.user!, biography: session?.user?.biography ?? "", site: session?.user?.site ?? "", name: session?.user?.name ?? "" });
     const [formErrors, setFormErrors] = useState<FormErrors>({});
     const [touchedFields, setTouchedFields] = useState<Record<string, boolean>>({});
-    const [selectedPhoto, setSelectedPhoto] = useState<string>("");
+    const [selectedPhoto, setSelectedPhoto] = useState<any>("");
     const [loadingUpdate, setLoadingUpdate] = useState<boolean>(false);
     const {update} = useSession()
     
@@ -27,10 +27,15 @@ export default function SettingsProvider ({ children, session }: { children: Rea
     
     const chooseProfileImage = (e: ChangeEvent<HTMLInputElement>): void => {
         const file = e?.target?.files![0];
+        const fileReader = new FileReader();
         if (file) {
-            const imageChosen = URL.createObjectURL(file);
-            setSelectedPhoto(imageChosen);
+            fileReader.readAsDataURL(file);
+
+            fileReader.onload = (readerEvent) => {
+                setSelectedPhoto(readerEvent.target?.result)
+            }
         }
+        console.log(selectedPhoto)
     };
 
     const handleSettingsForm = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
@@ -66,27 +71,28 @@ export default function SettingsProvider ({ children, session }: { children: Rea
     const handleSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
         e.preventDefault();
         if (loadingUpdate) return;
+
         const userFetchedUser = await getUser(session.user.uid!);
-        console.log(userFetchedUser)
 
-        // if()
-
-        const updateSettings = {
+        let updateSettings: any = {
             username: formSettings.username!.trim(),
             biography: formSettings.biography!.trim(),
-            website: formSettings.site!.trim(),
+            site: formSettings.site!.trim(),
             name: formSettings.name!.trim()
         }
 
-        // setLoading(true);
-    
-        // const username = session?.user.username;
-        // const profileImage = session?.user.image;
-        // const timestamp = serverTimestamp();
+        if (!session.user.image && selectedPhoto) {
+            console.log(selectedPhoto)
+            const fileName = `${new Date().getDate()}-${session.user.uid}`;
+            const storageRef = ref(storage, `/user_photos/${fileName}`);
+            await uploadString(storageRef, selectedPhoto, "data_url");
+            const photoUrl = await getDownloadURL(storageRef);
+            updateSettings.profileImage = photoUrl;
+        }
+
         await updateDoc(doc(db, "users", userFetchedUser.id), {...updateSettings});
         await update();
-        // const imageRef = ref(storage, `posts/${docRef.id}/image` )
-        // await uploadString(imageRef, selectedFile, "data_url");
+        console.log(session.user)
     };
 
     const settings: SettingsFormProps = {

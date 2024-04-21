@@ -3,8 +3,8 @@
 import ReactModal from "react-modal";
 import { useUploadModalState } from "../../../../store/modalState";
 import { CircleNotch, ImageSquare, Video, TrashSimple } from "@phosphor-icons/react";
-import { ChangeEvent, useEffect, useRef, useState } from "react";
-import { addDoc, collection, doc, serverTimestamp, updateDoc } from "firebase/firestore";
+import { ChangeEvent, useState } from "react";
+import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 import { db, storage } from "../../../../firebase";
 import { useSession } from "next-auth/react";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";

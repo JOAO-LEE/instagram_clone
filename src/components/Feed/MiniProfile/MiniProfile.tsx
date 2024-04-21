@@ -5,7 +5,7 @@ import MiniProfileLoadingSkeleton from "@/components/Loadings/MiniProfileLoading
 
 export default function MiniProfile() {
     const { data: session, status,  } =  useSession();
-    console.log(session?.user)
+    console.log({aqui: session?.user})
 
     return (
         <>

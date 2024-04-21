@@ -14,18 +14,20 @@ export const authOptions: NextAuthOptions = {
         Credentials({
             name: 'Credentials',
             credentials: {},
+            
             async authorize(credentials): Promise<any> {
                 return await signInWithEmailAndPassword(auth, (credentials as any).email || '', (credentials as any).password || '')
                     .then(userCredential => {
                         if (userCredential) {
-                            console.log(userCredential.user)
+                            // console.log(userCredential.user)
                             
                             return userCredential.user;
 
 
                         }
                         return null
-                    })
+                    }).catch(rej => console.log)
+                // return await 
             }
         })
     ],
@@ -47,40 +49,48 @@ export const authOptions: NextAuthOptions = {
             return token;
         },
         async session({ session, token }) {
-            try {
-                if (session.user) {
-                    const username = session?.user?.email?.split('@')[0];
-                    const userQuery = query(collection(db, "users"), where("email", "==", session.user?.email));
-                    const userDocs = await getDocs(userQuery);
-                    
-                    if (userDocs.empty) {
-                        await addDoc(collection(db, "users"), {
-                            username,
-                            uid: session.user.uid,
-                            email: session.user.email,
-                            profileImage: session.user.image ?? null,
-                            createdAt: serverTimestamp()
-                        });
-                        session.user.username = username;
-                        session.user.uid = token.sub ?? token.uid as string;
-                        return session;
-                    }
-                    
-                    const userInfo = userDocs.docs[0].data();
-                    session.user.username = userInfo.username;
-                    session.user.name = userInfo.name;
-                    session.user.biography = userInfo.biography;
-                    session.user.site = userInfo.website;
 
-                    session.user.uid = token.sub ?? token.uid as string;
-                }
-                // console.log(user)
+            console.log("chegou")
+            if(session) {
+                session.user.username = session?.user?.email?.split('@')[0];
                 
-            } catch (error) {
-                console.error({error})
             }
             return session;
+            // try {
+            //     // console.log("criando usuário aqui no route")
+            //     const username = session?.user?.email?.split('@')[0];
+            //     session.user.username = username;
+            //     session.user.uid = token.sub ?? token.uid as string;
+            //     if (session.user) {
+            //         const userQuery = query(collection(db, "users"), where("email", "==", session.user?.email));
+            //         const userDocs = await getDocs(userQuery);
+                    
+            //         if (userDocs.empty) {
+            //             console.log({aqui: session})
+            //             await addDoc(collection(db, "users"), {
+            //                 username,
+            //                 uid: session.user.uid,
+            //                 email: session.user.email,
+            //                 profileImage: session.user.image ?? null,
+            //                 createdAt: serverTimestamp()
+            //             });
+            //             return session;
+            //         }
+            //         const userInfo = userDocs.docs[0].data();
+            //         session.user.username = userInfo.username;
+            //         session.user.name = userInfo.name ?? "";
+            //         session.user.biography = userInfo.biography ?? "";
+            //         session.user.site = userInfo.website ?? "";
+            //         session.user.image = userInfo.profileImage ?? "";
+            //         session.user.uid = token.sub ?? token.uid as string;
+            //     }
+            // } catch (error) {
+            //     console.error({error})
+            // }
+            // return session;
         },
+
+
 
     },
 

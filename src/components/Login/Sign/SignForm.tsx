@@ -17,23 +17,28 @@ export default function SignForm({ pageType }: { pageType: number }) {
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [hasFormError, setHasFormError] = useState<boolean>(false);
     const router = useRouter();
+    const { data: session } = useSession();
 
-    const sign = async (): Promise<void> => {
+    const sign = async (): Promise<any> => {
         setIsLoading(true);
         try {
             if (pageType === SignEnum.SignUp) {
-                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-                const username = email.split('@')[0];
-                if (userCredential) {
-                    await addDoc(collection(db, "users"), {
-                        uid: userCredential.user.uid,
-                        email: email,
-                        profileImage: "",
-                        username 
-                    });
-                    router.push("/")
-                    console.log("criando usuário")
-                }
+                createUserWithEmailAndPassword(auth, email, password);
+                // const username = email.split('@')[0];
+                // console.log(userCredential)
+                // if (userCredential) {
+                //     await addDoc(collection(db, "users"), {
+                //         uid: userCredential.user.uid,
+                //         email: email,
+                //         profileImage: "",
+                //         username 
+                //     });
+                    console.log(session)
+                //     // router.push("/")
+                //     // update()
+                //     console.log("criando usuário")
+                // }
+                
                 return;
             } else {
                 console.log("tá vindo aqui?")
