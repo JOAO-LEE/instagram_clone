@@ -19,7 +19,6 @@ export default function Stories() {
         });
         const getUser = async () => {
             const session = await getSession();
-            console.log(session)
             if (session) {
                 userStories.unshift({
                     image: session.user.image ?? "", username: session.user.username ?? "", id: userStories.length + 1

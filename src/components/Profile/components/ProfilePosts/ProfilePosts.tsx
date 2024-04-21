@@ -15,7 +15,6 @@ export default function ProfilePosts({ userInfo, isLoggedUser }: ProfileInfo) {
     const [userPosts, setUserPosts] = useState<ProfilePostDTO[]>([]);
     const [loadingPosts, setLoadingPosts] = useState<boolean>(true);
     const router = useRouter();
-    console.log(userInfo)
 
     useEffect(() => {
         setLoadingPosts(true);
@@ -92,15 +91,13 @@ export default function ProfilePosts({ userInfo, isLoggedUser }: ProfileInfo) {
                     )
                 :
                     (
-                        <main className="grid gap-3 grid-cols-2 sm:gap-2 sm:grid-cols-3 p-2">
+                        <main className="grid gap-3 grid-cols-2 sm:gap-2 sm:grid-cols-3 ">
                         {
                             (!loadingPosts && userPosts.length >= 1) && userPosts.map((userPost, index) => (
                                 <div className="w-fit relative cursor-pointer" key={index} 
                                 onMouseOver={() => handleMouseOver(index)}
                                 onMouseLeave={() => handleMouseLeave(index)}
-                                onDoubleClick={() => router.push(`/post/${userPost.id}`)}
-                                onTouchStart={() =>handleMouseOver(index) }
-                                onTouchEnd={() => handleMouseLeave(index)}
+                                onClick={() => router.push(`/post/${userPost.id}`)}
                                 >
                                     <img src={userPost.image} alt="" className="h-64 object-cover w-64 hover:brightness-50 transition-all duration-500 hover:scale-105 hover:shadow-lg shadow-black" />
                                     {

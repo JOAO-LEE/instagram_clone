@@ -24,7 +24,7 @@ export default async function SettingsPage() {
                         )
                     :
                         (
-                            <SettingsContainer session={user!}/>
+                            <SettingsContainer />
                         )
                 }
             </SettingsProvider>

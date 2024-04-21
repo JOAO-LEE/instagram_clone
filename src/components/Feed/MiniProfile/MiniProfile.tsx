@@ -4,8 +4,7 @@ import { User } from "@phosphor-icons/react/dist/ssr";
 import MiniProfileLoadingSkeleton from "@/components/Loadings/MiniProfileLoadingSkeleton";
 
 export default function MiniProfile() {
-    const { data: session, status,  } =  useSession();
-    console.log({aqui: session?.user})
+    const { data: session, status } =  useSession();
 
     return (
         <>

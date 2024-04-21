@@ -1,5 +1,3 @@
-"use client"
-
 import { regexUsername, regexWebSite } from "@/utils/regex/formSettingsRegex";
 import { Session } from "next-auth";
 import { SettingsContext } from "./SettingsContext";
@@ -12,7 +10,6 @@ import { getUser } from "@/utils/getUser";
 import { useSession } from "next-auth/react";
 
 export default function SettingsProvider ({ children, session }: { children: ReactNode, session: Session }) {
-    console.log(session?.user?.name)
     const [formSettings, setFormSettings] = useState<Session["user"]>({...session?.user!, biography: session?.user?.biography ?? "", site: session?.user?.site ?? "", name: session?.user?.name ?? "" });
     const [formErrors, setFormErrors] = useState<FormErrors>({});
     const [touchedFields, setTouchedFields] = useState<Record<string, boolean>>({});
@@ -47,15 +44,15 @@ export default function SettingsProvider ({ children, session }: { children: Rea
         });
     };
 
-    const verifyFormErrors = (name: string, settings: Session["user"]): void => {
+      const verifyFormErrors = (name: string, settings: Session["user"]): void => {
         let isValid: boolean;
     
         switch (name) {
             case "username":
-                isValid = regexUsername.test(settings.username!) && (!settings.username!.includes("..")) || settings.username!.length < 3;
+                isValid = regexUsername.test(settings.username!) || (!touchedFields.username || settings.username! === "");
                 break;
             case "site":
-                isValid = settings.site === "" ? true : regexWebSite.test(settings.site!);
+                isValid = settings.site === "" ? true : regexWebSite.test(settings.site);
                 break;
             default:
                 isValid = true;
@@ -111,10 +108,6 @@ export default function SettingsProvider ({ children, session }: { children: Rea
         settingsFormErrorState: {
             formErrors,
             setFormErrors
-        },
-        touchedFieldState: {
-            touchedFields,
-            setTouchedFields
         }
     }
 

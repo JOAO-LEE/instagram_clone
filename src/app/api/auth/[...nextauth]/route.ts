@@ -19,11 +19,12 @@ export const authOptions: NextAuthOptions = {
                 return await signInWithEmailAndPassword(auth, (credentials as any).email || '', (credentials as any).password || '')
                     .then(userCredential => {
                         if (userCredential) {
+<<<<<<< HEAD
                             // console.log(userCredential.user)
                             
+=======
+>>>>>>> parent of c5fd7c8 (Authentication changes - user can now change their info)
                             return userCredential.user;
-
-
                         }
                         return null
                     }).catch(rej => console.log)
@@ -49,11 +50,33 @@ export const authOptions: NextAuthOptions = {
             return token;
         },
         async session({ session, token }) {
+<<<<<<< HEAD
 
             console.log("chegou")
             if(session) {
                 session.user.username = session?.user?.email?.split('@')[0];
                 
+=======
+            const username = session.user?.email?.slice(0, session.user?.email.indexOf('@'));
+            session.user.username = username
+            session.user.uid = token.sub ?? token.uid as string;
+            try {
+                if (session.user) {
+                    const userQuery = query(collection(db, "users"), where("uid", "==", session.user?.uid));
+                    const userDocs = await getDocs(userQuery);
+                    if (userDocs.empty) {
+                        await addDoc(collection(db, "users"), {
+                            username, 
+                            uid: session.user.uid,
+                            email: session.user.email,
+                            profileImage: session.user.image ?? null,
+                            createdAt: serverTimestamp()
+                        });
+                    }
+                }
+            } catch (error) {
+                console.error({error})
+>>>>>>> parent of c5fd7c8 (Authentication changes - user can now change their info)
             }
             return session;
             // try {
@@ -89,11 +112,15 @@ export const authOptions: NextAuthOptions = {
             // }
             // return session;
         },
+<<<<<<< HEAD
 
 
 
     },
 
+=======
+    }
+>>>>>>> parent of c5fd7c8 (Authentication changes - user can now change their info)
 };
 
 const handler = NextAuth(authOptions);

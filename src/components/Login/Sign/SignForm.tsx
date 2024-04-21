@@ -23,25 +23,17 @@ export default function SignForm({ pageType }: { pageType: number }) {
         setIsLoading(true);
         try {
             if (pageType === SignEnum.SignUp) {
-                createUserWithEmailAndPassword(auth, email, password);
-                // const username = email.split('@')[0];
-                // console.log(userCredential)
-                // if (userCredential) {
-                //     await addDoc(collection(db, "users"), {
-                //         uid: userCredential.user.uid,
-                //         email: email,
-                //         profileImage: "",
-                //         username 
-                //     });
-                    console.log(session)
-                //     // router.push("/")
-                //     // update()
-                //     console.log("criando usuário")
-                // }
-                
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                if (userCredential) {
+                    await addDoc(collection(db, "users"), {
+                        uid: userCredential.user.uid,
+                        email: email,
+                        profileImage: null
+                    });
+                    await signIn("credentials", { email, password, redirect: true, callbackUrl: "/" });
+                }
                 return;
             } else {
-                console.log("tá vindo aqui?")
                 await signIn("credentials", { email, password, redirect: true, callbackUrl: "/" });
             }
             router.push("/");
@@ -52,7 +44,7 @@ export default function SignForm({ pageType }: { pageType: number }) {
 
     const handleSign = async (e: FormEvent): Promise<void> => {
         e.preventDefault();
-        await sign();
+        sign();
     };
 
     return (
