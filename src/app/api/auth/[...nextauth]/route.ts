@@ -4,6 +4,10 @@ import NextAuth, { NextAuthOptions } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import GoogleProvider from 'next-auth/providers/google';
 import { auth, db } from '../../../../../firebase';
+import { FirestoreAdapter } from "@auth/firebase-adapter";
+import { Adapter } from "next-auth/adapters";
+import { cert } from "firebase-admin/app";
+// import { firestore } from "lib/firestore"
 
 export const authOptions: NextAuthOptions = {
     providers: [
@@ -33,46 +37,53 @@ export const authOptions: NextAuthOptions = {
         signIn: 'sign-in',
     },
     secret: process.env.NEXTAUTH_SECRET,
-    callbacks: {
-        async jwt({ token, user }) {
-            try {
-                if (user) {
-                    token.uid = user.uid;
-                }
-                return token;
+    adapter: FirestoreAdapter({
+        credential: cert({
+          projectId: process.env.AUTH_FIREBASE_PROJECT_ID,
+          clientEmail: process.env.AUTH_FIREBASE_CLIENT_EMAIL,
+          privateKey: process.env.AUTH_FIREBASE_PRIVATE_KEY!.replace(/\\n/g, '\n'),
+        }),
+      }) as Adapter
+    // callbacks: {
+    //     async jwt({ token, user }) {
+    //         try {
+    //             if (user) {
+    //                 token.uid = user.uid;
+    //             }
+    //             return token;
 
-            } catch (error) {
-                console.error(error)
-            }
-            return token;
-        },
-        async session({ session, token }) {
-            const username = session.user?.email?.slice(0, session.user?.email.indexOf('@'));
-            session.user.username = username
-            session.user.uid = token.sub ?? token.uid as string;
-            try {
-                if (session.user) {
-                    const userQuery = query(collection(db, "users"), where("uid", "==", session?.user?.email));
-                    const userDocs = await getDocs(userQuery);
-                    if (userDocs.empty) {
-                        await addDoc(collection(db, "users"), {
-                            username, 
-                            uid: session.user.uid,
-                            email: session.user.email,
-                            profileImage: session.user.image ?? null,
-                            createdAt: serverTimestamp()
-                        });
-                    }
-                }
-                return session
-            } catch (error) {
-                console.error({error})
+    //         } catch (error) {
+    //             console.error(error)
+    //         }
+    //         return token;
+    //     },
+    //     async session({ session, token }) {
+    //         const username = session.user?.email?.slice(0, session.user?.email.indexOf('@'));
+    //         session.user.username = username
+    //         session.user.uid = token.sub ?? token.uid as string;
+    //         try {
+    //             if (session.user) {
+    //                 const userQuery = query(collection(db, "users"), where("uid", "==", session?.user?.email));
+    //                 const userDocs = await getDocs(userQuery);
+    //                 if (userDocs.empty) {
+    //                     await addDoc(collection(db, "users"), {
+    //                         username, 
+    //                         uid: session.user.uid,
+    //                         email: session.user.email,
+    //                         profileImage: session.user.image ?? null,
+    //                         createdAt: serverTimestamp()
+    //                     });
+    //                 }
+    //             }
+    //             return session
+    //         } catch (error) {
+    //             console.error({error})
 
-            console.log("chegou")
-            return session;
-        }
-    }
-    }
+    //         console.log("chegou")
+    //         return session;
+    //     }
+    // }
+    // }
 
 };
 
